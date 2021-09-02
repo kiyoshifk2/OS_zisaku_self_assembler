@@ -1,0 +1,153 @@
+GAS LISTING make_thread_x.s 			page 1
+
+
+   1              		.file	"make_thread.c"
+   2              		.text
+   3              		.globl	_make_sheet_and_thread
+   4              		.def	_make_sheet_and_thread;	.scl	2;	.type	32;	.endef
+   5              	_make_sheet_and_thread:
+   6              	LFB0:
+   7              		.cfi_startproc
+   8 0000 55       		pushl	%ebp
+   9              		.cfi_def_cfa_offset 8
+  10              		.cfi_offset 5, -8
+  11 0001 89E5     		movl	%esp, %ebp
+  12              		.cfi_def_cfa_register 5
+  13 0003 83EC28   		subl	$40, %esp
+  14 0006 E8000000 		call	_io_load_eflags
+  14      00
+  15 000b 8945F4   		movl	%eax, -12(%ebp)
+  16 000e E8000000 		call	_disable_interrupt
+  16      00
+  17 0013 C7442408 		movl	$65535, 8(%esp)
+  17      FFFF0000 
+  18 001b 8B4514   		movl	20(%ebp), %eax
+  19 001e 89442404 		movl	%eax, 4(%esp)
+  20 0022 8B4510   		movl	16(%ebp), %eax
+  21 0025 890424   		movl	%eax, (%esp)
+  22 0028 E8000000 		call	_sheet_alloc
+  22      00
+  23 002d 8B550C   		movl	12(%ebp), %edx
+  24 0030 8902     		movl	%eax, (%edx)
+  25 0032 A1000000 		movl	_shtctl, %eax
+  25      00
+  26 0037 8B400C   		movl	12(%eax), %eax
+  27 003a 2B4514   		subl	20(%ebp), %eax
+  28 003d 89C2     		movl	%eax, %edx
+  29 003f C1EA1F   		shrl	$31, %edx
+  30 0042 01D0     		addl	%edx, %eax
+  31 0044 D1F8     		sarl	%eax
+  32 0046 89C1     		movl	%eax, %ecx
+  33 0048 A1000000 		movl	_shtctl, %eax
+  33      00
+  34 004d 8B4008   		movl	8(%eax), %eax
+  35 0050 2B4510   		subl	16(%ebp), %eax
+  36 0053 89C2     		movl	%eax, %edx
+  37 0055 C1EA1F   		shrl	$31, %edx
+  38 0058 01D0     		addl	%edx, %eax
+  39 005a D1F8     		sarl	%eax
+  40 005c 89C2     		movl	%eax, %edx
+  41 005e 8B450C   		movl	12(%ebp), %eax
+  42 0061 8B00     		movl	(%eax), %eax
+  43 0063 894C2408 		movl	%ecx, 8(%esp)
+  44 0067 89542404 		movl	%edx, 4(%esp)
+  45 006b 890424   		movl	%eax, (%esp)
+  46 006e E8000000 		call	_sheet_slide
+  46      00
+  47 0073 8B450C   		movl	12(%ebp), %eax
+  48 0076 8B00     		movl	(%eax), %eax
+  49 0078 C7442404 		movl	$1000, 4(%esp)
+  49      E8030000 
+GAS LISTING make_thread_x.s 			page 2
+
+
+  50 0080 890424   		movl	%eax, (%esp)
+  51 0083 E8000000 		call	_sheet_updown
+  51      00
+  52 0088 E8000000 		call	_task_alloc
+  52      00
+  53 008d 8B5508   		movl	8(%ebp), %edx
+  54 0090 8902     		movl	%eax, (%edx)
+  55 0092 8B4518   		movl	24(%ebp), %eax
+  56 0095 890424   		movl	%eax, (%esp)
+  57 0098 E8000000 		call	_memman_alloc
+  57      00
+  58 009d 8B5518   		movl	24(%ebp), %edx
+  59 00a0 01D0     		addl	%edx, %eax
+  60 00a2 8D50F4   		leal	-12(%eax), %edx
+  61 00a5 8B4508   		movl	8(%ebp), %eax
+  62 00a8 8B00     		movl	(%eax), %eax
+  63 00aa 895044   		movl	%edx, 68(%eax)
+  64 00ad 8B4508   		movl	8(%ebp), %eax
+  65 00b0 8B00     		movl	(%eax), %eax
+  66 00b2 8B551C   		movl	28(%ebp), %edx
+  67 00b5 89502C   		movl	%edx, 44(%eax)
+  68 00b8 8B4508   		movl	8(%ebp), %eax
+  69 00bb 8B00     		movl	(%eax), %eax
+  70 00bd C7405408 		movl	$8, 84(%eax)
+  70      000000
+  71 00c4 8B4508   		movl	8(%ebp), %eax
+  72 00c7 8B00     		movl	(%eax), %eax
+  73 00c9 C7405810 		movl	$16, 88(%eax)
+  73      000000
+  74 00d0 8B4508   		movl	8(%ebp), %eax
+  75 00d3 8B00     		movl	(%eax), %eax
+  76 00d5 C7405C08 		movl	$8, 92(%eax)
+  76      000000
+  77 00dc 8B4508   		movl	8(%ebp), %eax
+  78 00df 8B00     		movl	(%eax), %eax
+  79 00e1 C7406008 		movl	$8, 96(%eax)
+  79      000000
+  80 00e8 8B4508   		movl	8(%ebp), %eax
+  81 00eb 8B00     		movl	(%eax), %eax
+  82 00ed C7406408 		movl	$8, 100(%eax)
+  82      000000
+  83 00f4 8B4508   		movl	8(%ebp), %eax
+  84 00f7 8B00     		movl	(%eax), %eax
+  85 00f9 C7406808 		movl	$8, 104(%eax)
+  85      000000
+  86 0100 8B450C   		movl	12(%ebp), %eax
+  87 0103 8B10     		movl	(%eax), %edx
+  88 0105 8B4508   		movl	8(%ebp), %eax
+  89 0108 8B00     		movl	(%eax), %eax
+  90 010a 8B4044   		movl	68(%eax), %eax
+  91 010d 83C004   		addl	$4, %eax
+  92 0110 8910     		movl	%edx, (%eax)
+  93 0112 8B4508   		movl	8(%ebp), %eax
+  94 0115 8B10     		movl	(%eax), %edx
+  95 0117 8B4508   		movl	8(%ebp), %eax
+  96 011a 8B00     		movl	(%eax), %eax
+  97 011c 8B4044   		movl	68(%eax), %eax
+GAS LISTING make_thread_x.s 			page 3
+
+
+  98 011f 83C008   		addl	$8, %eax
+  99 0122 8910     		movl	%edx, (%eax)
+ 100 0124 8B4508   		movl	8(%ebp), %eax
+ 101 0127 8B00     		movl	(%eax), %eax
+ 102 0129 8B5520   		movl	32(%ebp), %edx
+ 103 012c 89542404 		movl	%edx, 4(%esp)
+ 104 0130 890424   		movl	%eax, (%esp)
+ 105 0133 E8000000 		call	_task_run
+ 105      00
+ 106 0138 8B45F4   		movl	-12(%ebp), %eax
+ 107 013b 890424   		movl	%eax, (%esp)
+ 108 013e E8000000 		call	_io_store_eflags
+ 108      00
+ 109 0143 90       		nop
+ 110 0144 C9       		leave
+ 111              		.cfi_restore 5
+ 112              		.cfi_def_cfa 4, 4
+ 113 0145 C3       		ret
+ 114              		.cfi_endproc
+ 115              	LFE0:
+ 116              		.ident	"GCC: (GNU) 10.2.0"
+ 117              		.def	_io_load_eflags;	.scl	2;	.type	32;	.endef
+ 118              		.def	_disable_interrupt;	.scl	2;	.type	32;	.endef
+ 119              		.def	_sheet_alloc;	.scl	2;	.type	32;	.endef
+ 120              		.def	_sheet_slide;	.scl	2;	.type	32;	.endef
+ 121              		.def	_sheet_updown;	.scl	2;	.type	32;	.endef
+ 122              		.def	_task_alloc;	.scl	2;	.type	32;	.endef
+ 123              		.def	_memman_alloc;	.scl	2;	.type	32;	.endef
+ 124              		.def	_task_run;	.scl	2;	.type	32;	.endef
+ 125 0146 9090     		.def	_io_store_eflags;	.scl	2;	.type	32;	.endef

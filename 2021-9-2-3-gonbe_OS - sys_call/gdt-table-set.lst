@@ -1,0 +1,259 @@
+GAS LISTING gdt-table-set_x.s 			page 1
+
+
+   1              		.file	"gdt-table-set.c"
+   2              		.text
+   3              		.globl	_init_gdtidt
+   4              		.def	_init_gdtidt;	.scl	2;	.type	32;	.endef
+   5              	_init_gdtidt:
+   6              	LFB0:
+   7              		.cfi_startproc
+   8 0000 55       		pushl	%ebp
+   9              		.cfi_def_cfa_offset 8
+  10              		.cfi_offset 5, -8
+  11 0001 89E5     		movl	%esp, %ebp
+  12              		.cfi_def_cfa_register 5
+  13 0003 83EC28   		subl	$40, %esp
+  14 0006 C745F000 		movl	$2555904, -16(%ebp)
+  14      002700
+  15 000d C745EC00 		movl	$2553856, -20(%ebp)
+  15      F82600
+  16 0014 C745F400 		movl	$0, -12(%ebp)
+  16      000000
+  17 001b EB33     		jmp	L2
+  18              	L3:
+  19 001d 8B45F4   		movl	-12(%ebp), %eax
+  20 0020 8D14C500 		leal	0(,%eax,8), %edx
+  20      000000
+  21 0027 8B45F0   		movl	-16(%ebp), %eax
+  22 002a 01D0     		addl	%edx, %eax
+  23 002c C744240C 		movl	$0, 12(%esp)
+  23      00000000 
+  24 0034 C7442408 		movl	$0, 8(%esp)
+  24      00000000 
+  25 003c C7442404 		movl	$0, 4(%esp)
+  25      00000000 
+  26 0044 890424   		movl	%eax, (%esp)
+  27 0047 E8410100 		call	_set_segmdesc
+  27      00
+  28 004c 8345F401 		addl	$1, -12(%ebp)
+  29              	L2:
+  30 0050 817DF4FF 		cmpl	$8191, -12(%ebp)
+  30      1F0000
+  31 0057 7EC4     		jle	L3
+  32 0059 8B45F0   		movl	-16(%ebp), %eax
+  33 005c 83C008   		addl	$8, %eax
+  34 005f C744240C 		movl	$16530, 12(%esp)
+  34      92400000 
+  35 0067 C7442408 		movl	$0, 8(%esp)
+  35      00000000 
+  36 006f C7442404 		movl	$-1, 4(%esp)
+  36      FFFFFFFF 
+  37 0077 890424   		movl	%eax, (%esp)
+  38 007a E80E0100 		call	_set_segmdesc
+  38      00
+  39 007f 8B45F0   		movl	-16(%ebp), %eax
+  40 0082 83C010   		addl	$16, %eax
+  41 0085 C744240C 		movl	$16538, 12(%esp)
+  41      9A400000 
+  42 008d C7442408 		movl	$2621440, 8(%esp)
+  42      00002800 
+GAS LISTING gdt-table-set_x.s 			page 2
+
+
+  43 0095 C7442404 		movl	$16777215, 4(%esp)
+  43      FFFFFF00 
+  44 009d 890424   		movl	%eax, (%esp)
+  45 00a0 E8E80000 		call	_set_segmdesc
+  45      00
+  46 00a5 8B45F0   		movl	-16(%ebp), %eax
+  47 00a8 83C018   		addl	$24, %eax
+  48 00ab C744240C 		movl	$154, 12(%esp)
+  48      9A000000 
+  49 00b3 C7442408 		movl	$0, 8(%esp)
+  49      00000000 
+  50 00bb C7442404 		movl	$65535, 4(%esp)
+  50      FFFF0000 
+  51 00c3 890424   		movl	%eax, (%esp)
+  52 00c6 E8C20000 		call	_set_segmdesc
+  52      00
+  53 00cb C7442404 		movl	$2555904, 4(%esp)
+  53      00002700 
+  54 00d3 C70424FF 		movl	$65535, (%esp)
+  54      FF0000
+  55 00da E8000000 		call	_load_gdtr
+  55      00
+  56 00df C745F400 		movl	$0, -12(%ebp)
+  56      000000
+  57 00e6 EB33     		jmp	L4
+  58              	L5:
+  59 00e8 8B45F4   		movl	-12(%ebp), %eax
+  60 00eb 8D14C500 		leal	0(,%eax,8), %edx
+  60      000000
+  61 00f2 8B45EC   		movl	-20(%ebp), %eax
+  62 00f5 01D0     		addl	%edx, %eax
+  63 00f7 C744240C 		movl	$0, 12(%esp)
+  63      00000000 
+  64 00ff C7442408 		movl	$0, 8(%esp)
+  64      00000000 
+  65 0107 C7442404 		movl	$0, 4(%esp)
+  65      00000000 
+  66 010f 890424   		movl	%eax, (%esp)
+  67 0112 E8F10000 		call	_set_gatedesc
+  67      00
+  68 0117 8345F401 		addl	$1, -12(%ebp)
+  69              	L4:
+  70 011b 817DF4FF 		cmpl	$255, -12(%ebp)
+  70      000000
+  71 0122 7EC4     		jle	L5
+  72 0124 C7442404 		movl	$2553856, 4(%esp)
+  72      00F82600 
+  73 012c C70424FF 		movl	$2047, (%esp)
+  73      070000
+  74 0133 E8000000 		call	_load_idtr
+  74      00
+  75 0138 BA000000 		movl	$_asm_inthandler20, %edx
+  75      00
+  76 013d 8B45EC   		movl	-20(%ebp), %eax
+  77 0140 05000100 		addl	$256, %eax
+  77      00
+  78 0145 C744240C 		movl	$142, 12(%esp)
+GAS LISTING gdt-table-set_x.s 			page 3
+
+
+  78      8E000000 
+  79 014d C7442408 		movl	$16, 8(%esp)
+  79      10000000 
+  80 0155 89542404 		movl	%edx, 4(%esp)
+  81 0159 890424   		movl	%eax, (%esp)
+  82 015c E8A70000 		call	_set_gatedesc
+  82      00
+  83 0161 BA000000 		movl	$_asm_syscall40, %edx
+  83      00
+  84 0166 8B45EC   		movl	-20(%ebp), %eax
+  85 0169 05000200 		addl	$512, %eax
+  85      00
+  86 016e C744240C 		movl	$142, 12(%esp)
+  86      8E000000 
+  87 0176 C7442408 		movl	$16, 8(%esp)
+  87      10000000 
+  88 017e 89542404 		movl	%edx, 4(%esp)
+  89 0182 890424   		movl	%eax, (%esp)
+  90 0185 E87E0000 		call	_set_gatedesc
+  90      00
+  91 018a 90       		nop
+  92 018b C9       		leave
+  93              		.cfi_restore 5
+  94              		.cfi_def_cfa 4, 4
+  95 018c C3       		ret
+  96              		.cfi_endproc
+  97              	LFE0:
+  98              		.globl	_set_segmdesc
+  99              		.def	_set_segmdesc;	.scl	2;	.type	32;	.endef
+ 100              	_set_segmdesc:
+ 101              	LFB1:
+ 102              		.cfi_startproc
+ 103 018d 55       		pushl	%ebp
+ 104              		.cfi_def_cfa_offset 8
+ 105              		.cfi_offset 5, -8
+ 106 018e 89E5     		movl	%esp, %ebp
+ 107              		.cfi_def_cfa_register 5
+ 108 0190 817D0CFF 		cmpl	$1048575, 12(%ebp)
+ 108      FF0F00
+ 109 0197 7610     		jbe	L8
+ 110 0199 814D1400 		orl	$32768, 20(%ebp)
+ 110      800000
+ 111 01a0 8B450C   		movl	12(%ebp), %eax
+ 112 01a3 C1E80C   		shrl	$12, %eax
+ 113 01a6 89450C   		movl	%eax, 12(%ebp)
+ 114              	L8:
+ 115 01a9 8B450C   		movl	12(%ebp), %eax
+ 116 01ac 89C2     		movl	%eax, %edx
+ 117 01ae 8B4508   		movl	8(%ebp), %eax
+ 118 01b1 668910   		movw	%dx, (%eax)
+ 119 01b4 8B4510   		movl	16(%ebp), %eax
+ 120 01b7 89C2     		movl	%eax, %edx
+ 121 01b9 8B4508   		movl	8(%ebp), %eax
+ 122 01bc 66895002 		movw	%dx, 2(%eax)
+ 123 01c0 8B4510   		movl	16(%ebp), %eax
+ 124 01c3 C1F810   		sarl	$16, %eax
+ 125 01c6 89C2     		movl	%eax, %edx
+GAS LISTING gdt-table-set_x.s 			page 4
+
+
+ 126 01c8 8B4508   		movl	8(%ebp), %eax
+ 127 01cb 885004   		movb	%dl, 4(%eax)
+ 128 01ce 8B4514   		movl	20(%ebp), %eax
+ 129 01d1 89C2     		movl	%eax, %edx
+ 130 01d3 8B4508   		movl	8(%ebp), %eax
+ 131 01d6 885005   		movb	%dl, 5(%eax)
+ 132 01d9 8B450C   		movl	12(%ebp), %eax
+ 133 01dc C1E810   		shrl	$16, %eax
+ 134 01df 83E00F   		andl	$15, %eax
+ 135 01e2 89C2     		movl	%eax, %edx
+ 136 01e4 8B4514   		movl	20(%ebp), %eax
+ 137 01e7 C1F808   		sarl	$8, %eax
+ 138 01ea 83E0F0   		andl	$-16, %eax
+ 139 01ed 09D0     		orl	%edx, %eax
+ 140 01ef 89C2     		movl	%eax, %edx
+ 141 01f1 8B4508   		movl	8(%ebp), %eax
+ 142 01f4 885006   		movb	%dl, 6(%eax)
+ 143 01f7 8B4510   		movl	16(%ebp), %eax
+ 144 01fa C1E818   		shrl	$24, %eax
+ 145 01fd 89C2     		movl	%eax, %edx
+ 146 01ff 8B4508   		movl	8(%ebp), %eax
+ 147 0202 885007   		movb	%dl, 7(%eax)
+ 148 0205 90       		nop
+ 149 0206 5D       		popl	%ebp
+ 150              		.cfi_restore 5
+ 151              		.cfi_def_cfa 4, 4
+ 152 0207 C3       		ret
+ 153              		.cfi_endproc
+ 154              	LFE1:
+ 155              		.globl	_set_gatedesc
+ 156              		.def	_set_gatedesc;	.scl	2;	.type	32;	.endef
+ 157              	_set_gatedesc:
+ 158              	LFB2:
+ 159              		.cfi_startproc
+ 160 0208 55       		pushl	%ebp
+ 161              		.cfi_def_cfa_offset 8
+ 162              		.cfi_offset 5, -8
+ 163 0209 89E5     		movl	%esp, %ebp
+ 164              		.cfi_def_cfa_register 5
+ 165 020b 8B450C   		movl	12(%ebp), %eax
+ 166 020e 89C2     		movl	%eax, %edx
+ 167 0210 8B4508   		movl	8(%ebp), %eax
+ 168 0213 668910   		movw	%dx, (%eax)
+ 169 0216 8B4510   		movl	16(%ebp), %eax
+ 170 0219 89C2     		movl	%eax, %edx
+ 171 021b 8B4508   		movl	8(%ebp), %eax
+ 172 021e 66895002 		movw	%dx, 2(%eax)
+ 173 0222 8B4514   		movl	20(%ebp), %eax
+ 174 0225 C1F808   		sarl	$8, %eax
+ 175 0228 89C2     		movl	%eax, %edx
+ 176 022a 8B4508   		movl	8(%ebp), %eax
+ 177 022d 885004   		movb	%dl, 4(%eax)
+ 178 0230 8B4514   		movl	20(%ebp), %eax
+ 179 0233 89C2     		movl	%eax, %edx
+ 180 0235 8B4508   		movl	8(%ebp), %eax
+ 181 0238 885005   		movb	%dl, 5(%eax)
+ 182 023b 8B450C   		movl	12(%ebp), %eax
+GAS LISTING gdt-table-set_x.s 			page 5
+
+
+ 183 023e C1E810   		shrl	$16, %eax
+ 184 0241 89C2     		movl	%eax, %edx
+ 185 0243 8B4508   		movl	8(%ebp), %eax
+ 186 0246 66895006 		movw	%dx, 6(%eax)
+ 187 024a 90       		nop
+ 188 024b 5D       		popl	%ebp
+ 189              		.cfi_restore 5
+ 190              		.cfi_def_cfa 4, 4
+ 191 024c C3       		ret
+ 192              		.cfi_endproc
+ 193              	LFE2:
+ 194              		.ident	"GCC: (GNU) 10.2.0"
+ 195              		.def	_load_gdtr;	.scl	2;	.type	32;	.endef
+ 196              		.def	_load_idtr;	.scl	2;	.type	32;	.endef
+ 197              		.def	_asm_inthandler20;	.scl	2;	.type	32;	.endef
+ 198 024d 909090   		.def	_asm_syscall40;	.scl	2;	.type	32;	.endef

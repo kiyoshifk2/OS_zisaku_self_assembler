@@ -1,0 +1,252 @@
+GAS LISTING fifo_x.s 			page 1
+
+
+   1              		.file	"fifo.c"
+   2              		.text
+   3              		.globl	_hoge1
+   4              		.bss
+   5              		.align 4
+   6              	_hoge1:
+   7 0000 00000000 		.space 4
+   8              		.text
+   9              		.globl	_fifo32_init
+  10              		.def	_fifo32_init;	.scl	2;	.type	32;	.endef
+  11              	_fifo32_init:
+  12              	LFB0:
+  13              		.cfi_startproc
+  14 0000 55       		pushl	%ebp
+  15              		.cfi_def_cfa_offset 8
+  16              		.cfi_offset 5, -8
+  17 0001 89E5     		movl	%esp, %ebp
+  18              		.cfi_def_cfa_register 5
+  19 0003 8B4508   		movl	8(%ebp), %eax
+  20 0006 C7401401 		movl	$1, 20(%eax)
+  20      000000
+  21 000d 8B4508   		movl	8(%ebp), %eax
+  22 0010 8B550C   		movl	12(%ebp), %edx
+  23 0013 89500C   		movl	%edx, 12(%eax)
+  24 0016 8B4508   		movl	8(%ebp), %eax
+  25 0019 8B5510   		movl	16(%ebp), %edx
+  26 001c 8910     		movl	%edx, (%eax)
+  27 001e 8B4508   		movl	8(%ebp), %eax
+  28 0021 8B550C   		movl	12(%ebp), %edx
+  29 0024 895010   		movl	%edx, 16(%eax)
+  30 0027 8B4508   		movl	8(%ebp), %eax
+  31 002a C7400400 		movl	$0, 4(%eax)
+  31      000000
+  32 0031 8B4508   		movl	8(%ebp), %eax
+  33 0034 C7400800 		movl	$0, 8(%eax)
+  33      000000
+  34 003b 8B4508   		movl	8(%ebp), %eax
+  35 003e 8B5514   		movl	20(%ebp), %edx
+  36 0041 895018   		movl	%edx, 24(%eax)
+  37 0044 90       		nop
+  38 0045 5D       		popl	%ebp
+  39              		.cfi_restore 5
+  40              		.cfi_def_cfa 4, 4
+  41 0046 C3       		ret
+  42              		.cfi_endproc
+  43              	LFE0:
+  44              		.globl	_fifo32_put
+  45              		.def	_fifo32_put;	.scl	2;	.type	32;	.endef
+  46              	_fifo32_put:
+  47              	LFB1:
+  48              		.cfi_startproc
+  49 0047 55       		pushl	%ebp
+  50              		.cfi_def_cfa_offset 8
+  51              		.cfi_offset 5, -8
+  52 0048 89E5     		movl	%esp, %ebp
+  53              		.cfi_def_cfa_register 5
+  54 004a 83EC28   		subl	$40, %esp
+GAS LISTING fifo_x.s 			page 2
+
+
+  55 004d 8B4508   		movl	8(%ebp), %eax
+  56 0050 8B4014   		movl	20(%eax), %eax
+  57 0053 85C0     		testl	%eax, %eax
+  58 0055 750A     		jne	L4
+  59 0057 B8FFFFFF 		movl	$-1, %eax
+  59      FF
+  60 005c E9C50000 		jmp	L5
+  60      00
+  61              	L4:
+  62 0061 8B4508   		movl	8(%ebp), %eax
+  63 0064 8B4010   		movl	16(%eax), %eax
+  64 0067 85C0     		testl	%eax, %eax
+  65 0069 751B     		jne	L6
+  66 006b 8B4508   		movl	8(%ebp), %eax
+  67 006e 8B4014   		movl	20(%eax), %eax
+  68 0071 83C802   		orl	$2, %eax
+  69 0074 89C2     		movl	%eax, %edx
+  70 0076 8B4508   		movl	8(%ebp), %eax
+  71 0079 895014   		movl	%edx, 20(%eax)
+  72 007c B8FFFFFF 		movl	$-1, %eax
+  72      FF
+  73 0081 E9A00000 		jmp	L5
+  73      00
+  74              	L6:
+  75 0086 8B4508   		movl	8(%ebp), %eax
+  76 0089 8B10     		movl	(%eax), %edx
+  77 008b 8B4508   		movl	8(%ebp), %eax
+  78 008e 8B4004   		movl	4(%eax), %eax
+  79 0091 C1E002   		sall	$2, %eax
+  80 0094 01C2     		addl	%eax, %edx
+  81 0096 8B450C   		movl	12(%ebp), %eax
+  82 0099 8902     		movl	%eax, (%edx)
+  83 009b 8B4508   		movl	8(%ebp), %eax
+  84 009e 8B4004   		movl	4(%eax), %eax
+  85 00a1 8D5001   		leal	1(%eax), %edx
+  86 00a4 8B4508   		movl	8(%ebp), %eax
+  87 00a7 895004   		movl	%edx, 4(%eax)
+  88 00aa 8B4508   		movl	8(%ebp), %eax
+  89 00ad 8B5004   		movl	4(%eax), %edx
+  90 00b0 8B4508   		movl	8(%ebp), %eax
+  91 00b3 8B400C   		movl	12(%eax), %eax
+  92 00b6 39C2     		cmpl	%eax, %edx
+  93 00b8 750A     		jne	L7
+  94 00ba 8B4508   		movl	8(%ebp), %eax
+  95 00bd C7400400 		movl	$0, 4(%eax)
+  95      000000
+  96              	L7:
+  97 00c4 8B4508   		movl	8(%ebp), %eax
+  98 00c7 8B4010   		movl	16(%eax), %eax
+  99 00ca 8D50FF   		leal	-1(%eax), %edx
+ 100 00cd 8B4508   		movl	8(%ebp), %eax
+ 101 00d0 895010   		movl	%edx, 16(%eax)
+ 102 00d3 8B4508   		movl	8(%ebp), %eax
+ 103 00d6 8B4018   		movl	24(%eax), %eax
+ 104 00d9 85C0     		testl	%eax, %eax
+ 105 00db 7444     		je	L8
+ 106 00dd A1000000 		movl	_taskctl, %eax
+GAS LISTING fifo_x.s 			page 3
+
+
+ 106      00
+ 107 00e2 8B400C   		movl	12(%eax), %eax
+ 108 00e5 85C0     		testl	%eax, %eax
+ 109 00e7 7538     		jne	L8
+ 110 00e9 8B4508   		movl	8(%ebp), %eax
+ 111 00ec 8B4018   		movl	24(%eax), %eax
+ 112 00ef 8B4004   		movl	4(%eax), %eax
+ 113 00f2 83F802   		cmpl	$2, %eax
+ 114 00f5 742A     		je	L8
+ 115 00f7 A1000000 		movl	_taskctl, %eax
+ 115      00
+ 116 00fc 8B00     		movl	(%eax), %eax
+ 117 00fe 8945F4   		movl	%eax, -12(%ebp)
+ 118 0101 8B4508   		movl	8(%ebp), %eax
+ 119 0104 8B4018   		movl	24(%eax), %eax
+ 120 0107 C7442404 		movl	$-1, 4(%esp)
+ 120      FFFFFFFF 
+ 121 010f 890424   		movl	%eax, (%esp)
+ 122 0112 E8000000 		call	_task_run
+ 122      00
+ 123 0117 A1000000 		movl	_taskctl, %eax
+ 123      00
+ 124 011c 8B55F4   		movl	-12(%ebp), %edx
+ 125 011f 8910     		movl	%edx, (%eax)
+ 126              	L8:
+ 127 0121 B8000000 		movl	$0, %eax
+ 127      00
+ 128              	L5:
+ 129 0126 C9       		leave
+ 130              		.cfi_restore 5
+ 131              		.cfi_def_cfa 4, 4
+ 132 0127 C3       		ret
+ 133              		.cfi_endproc
+ 134              	LFE1:
+ 135              		.globl	_fifo32_get
+ 136              		.def	_fifo32_get;	.scl	2;	.type	32;	.endef
+ 137              	_fifo32_get:
+ 138              	LFB2:
+ 139              		.cfi_startproc
+ 140 0128 55       		pushl	%ebp
+ 141              		.cfi_def_cfa_offset 8
+ 142              		.cfi_offset 5, -8
+ 143 0129 89E5     		movl	%esp, %ebp
+ 144              		.cfi_def_cfa_register 5
+ 145 012b 83EC10   		subl	$16, %esp
+ 146 012e 8B4508   		movl	8(%ebp), %eax
+ 147 0131 8B4014   		movl	20(%eax), %eax
+ 148 0134 85C0     		testl	%eax, %eax
+ 149 0136 7507     		jne	L10
+ 150 0138 B8FFFFFF 		movl	$-1, %eax
+ 150      FF
+ 151 013d EB67     		jmp	L11
+ 152              	L10:
+ 153 013f 8B4508   		movl	8(%ebp), %eax
+ 154 0142 8B5010   		movl	16(%eax), %edx
+ 155 0145 8B4508   		movl	8(%ebp), %eax
+ 156 0148 8B400C   		movl	12(%eax), %eax
+GAS LISTING fifo_x.s 			page 4
+
+
+ 157 014b 39C2     		cmpl	%eax, %edx
+ 158 014d 7507     		jne	L12
+ 159 014f B8FFFFFF 		movl	$-1, %eax
+ 159      FF
+ 160 0154 EB50     		jmp	L11
+ 161              	L12:
+ 162 0156 8B4508   		movl	8(%ebp), %eax
+ 163 0159 8B10     		movl	(%eax), %edx
+ 164 015b 8B4508   		movl	8(%ebp), %eax
+ 165 015e 8B4008   		movl	8(%eax), %eax
+ 166 0161 C1E002   		sall	$2, %eax
+ 167 0164 01D0     		addl	%edx, %eax
+ 168 0166 8B00     		movl	(%eax), %eax
+ 169 0168 8945FC   		movl	%eax, -4(%ebp)
+ 170 016b 8B4508   		movl	8(%ebp), %eax
+ 171 016e 8B4008   		movl	8(%eax), %eax
+ 172 0171 8D5001   		leal	1(%eax), %edx
+ 173 0174 8B4508   		movl	8(%ebp), %eax
+ 174 0177 895008   		movl	%edx, 8(%eax)
+ 175 017a 8B4508   		movl	8(%ebp), %eax
+ 176 017d 8B5008   		movl	8(%eax), %edx
+ 177 0180 8B4508   		movl	8(%ebp), %eax
+ 178 0183 8B400C   		movl	12(%eax), %eax
+ 179 0186 39C2     		cmpl	%eax, %edx
+ 180 0188 750A     		jne	L13
+ 181 018a 8B4508   		movl	8(%ebp), %eax
+ 182 018d C7400800 		movl	$0, 8(%eax)
+ 182      000000
+ 183              	L13:
+ 184 0194 8B4508   		movl	8(%ebp), %eax
+ 185 0197 8B4010   		movl	16(%eax), %eax
+ 186 019a 8D5001   		leal	1(%eax), %edx
+ 187 019d 8B4508   		movl	8(%ebp), %eax
+ 188 01a0 895010   		movl	%edx, 16(%eax)
+ 189 01a3 8B45FC   		movl	-4(%ebp), %eax
+ 190              	L11:
+ 191 01a6 C9       		leave
+ 192              		.cfi_restore 5
+ 193              		.cfi_def_cfa 4, 4
+ 194 01a7 C3       		ret
+ 195              		.cfi_endproc
+ 196              	LFE2:
+ 197              		.globl	_fifo32_status
+ 198              		.def	_fifo32_status;	.scl	2;	.type	32;	.endef
+ 199              	_fifo32_status:
+ 200              	LFB3:
+ 201              		.cfi_startproc
+ 202 01a8 55       		pushl	%ebp
+ 203              		.cfi_def_cfa_offset 8
+ 204              		.cfi_offset 5, -8
+ 205 01a9 89E5     		movl	%esp, %ebp
+ 206              		.cfi_def_cfa_register 5
+ 207 01ab 8B4508   		movl	8(%ebp), %eax
+ 208 01ae 8B500C   		movl	12(%eax), %edx
+ 209 01b1 8B4508   		movl	8(%ebp), %eax
+ 210 01b4 8B4810   		movl	16(%eax), %ecx
+ 211 01b7 89D0     		movl	%edx, %eax
+GAS LISTING fifo_x.s 			page 5
+
+
+ 212 01b9 29C8     		subl	%ecx, %eax
+ 213 01bb 5D       		popl	%ebp
+ 214              		.cfi_restore 5
+ 215              		.cfi_def_cfa 4, 4
+ 216 01bc C3       		ret
+ 217              		.cfi_endproc
+ 218              	LFE3:
+ 219              		.ident	"GCC: (GNU) 10.2.0"
+ 220 01bd 909090   		.def	_task_run;	.scl	2;	.type	32;	.endef

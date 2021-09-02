@@ -1,0 +1,429 @@
+
+メモリ設定
+
+名前           原点             長さ             属性
+*default*        0x0000000000000000 0xffffffffffffffff
+
+リンカスクリプトおよびメモリマップ
+
+                0x0000000000400000                __image_base__ = 0x400000
+                0x0000000000000000                __dll__ = 0x0
+                0x0000000000400000                ___ImageBase = 0x400000
+                0x0000000000001000                __section_alignment__ = 0x1000
+                0x0000000000000200                __file_alignment__ = 0x200
+                0x0000000000000004                __major_os_version__ = 0x4
+                0x0000000000000000                __minor_os_version__ = 0x0
+                0x0000000000000001                __major_image_version__ = 0x1
+                0x0000000000000000                __minor_image_version__ = 0x0
+                0x0000000000000004                __major_subsystem_version__ = 0x4
+                0x0000000000000000                __minor_subsystem_version__ = 0x0
+                0x0000000000000003                __subsystem__ = 0x3
+                0x0000000000200000                __size_of_stack_reserve__ = 0x200000
+                0x0000000000001000                __size_of_stack_commit__ = 0x1000
+                0x0000000000100000                __size_of_heap_reserve__ = 0x100000
+                0x0000000000001000                __size_of_heap_commit__ = 0x1000
+                0x0000000000000000                __loader_flags__ = 0x0
+                0x0000000000008000                __dll_characteristics__ = 0x8000
+LOAD gonbe_main.o
+LOAD lib.o
+LOAD sjis.o
+LOAD asm_lib.o
+LOAD gdt-table-set.o
+LOAD graphic.o
+LOAD sheet.o
+LOAD string.o
+LOAD timer.o
+LOAD fifo.o
+LOAD mtask.o
+LOAD delay_task.o
+LOAD sys_call.o
+LOAD make_thread.o
+LOAD command.o
+LOAD sedit.o
+LOAD asm80386.o
+LOAD font_lib.o
+
+.text           0x0000000000000000     0xb200
+                0x0000000000000000        0x4 LONG 0x2cc180 _bss_start
+                0x0000000000000004        0x4 LONG 0x3826a0 _data_end
+                0x0000000000000008        0x4 LONG 0x0
+                0x000000000000000c        0x4 LONG 0x0
+                0x0000000000000010        0x4 LONG 0x0
+                0x0000000000000014        0x4 LONG 0x0
+                0x0000000000000018        0x4 LONG 0x0
+                0x000000000000001c        0x4 LONG 0x0
+ *(.text_asm_lib)
+ .text_asm_lib  0x0000000000000020      0x128 asm_lib.o
+                0x0000000000000020                key_input_return
+                0x0000000000000044                key_input
+                0x0000000000000054                enable_interrupt
+                0x0000000000000056                disable_interrupt
+                0x0000000000000058                io_out8
+                0x0000000000000062                load_gdtr
+                0x0000000000000072                load_idtr
+                0x0000000000000092                load_tr
+                0x0000000000000098                load_cr0
+                0x000000000000009c                store_cr0
+                0x00000000000000a4                io_load_eflags
+                0x00000000000000a7                io_store_eflags
+                0x00000000000000ae                ut_setjmp
+                0x00000000000000ba                ut_longjmp
+                0x00000000000000c4                gonbe_hlt
+                0x00000000000000c6                asm_inthandler20
+                0x00000000000000dd                farjmp
+                0x00000000000000e2                asm_syscall40
+                0x000000000000012c                asm_int_0x40
+                0x000000000000013b                dbg1
+ *(.text)
+ .text          0x0000000000000148      0x8d8 gonbe_main.o
+                0x0000000000000148                gonbe_main
+                0x00000000000007d8                init
+                0x0000000000000907                task_idle
+                0x0000000000000914                task_b_main
+                0x00000000000009f4                task_c_main
+ .text          0x0000000000000a20      0x2e4 lib.o
+                0x0000000000000a20                memcheck_sub
+                0x0000000000000a8e                memcheck
+                0x0000000000000b7f                test_speed
+                0x0000000000000be6                bss_clear
+                0x0000000000000c12                ut_getcA
+                0x0000000000000c6a                ut_getc
+                0x0000000000000c8f                ut_gets
+ .text          0x0000000000000d04     0x1360 sjis.o
+                0x0000000000000d04                dispinit
+                0x0000000000000d0a                sjis_parse
+                0x0000000000000e09                sjis_strlen
+                0x0000000000000e3f                disp_sjis
+                0x0000000000000f9b                disp_char
+                0x0000000000000ff7                clear_cur
+                0x0000000000000ffd                read_cur
+                0x0000000000001003                disp_cur
+                0x0000000000001009                disp_U
+                0x0000000000001058                disp_D
+                0x000000000000117d                disp_R
+                0x00000000000011e9                disp_L
+                0x0000000000001254                ut_putc
+                0x0000000000001371                ut_puts
+                0x00000000000014b7                cursor_set
+                0x000000000000153f                pset
+                0x000000000000162b                pget
+                0x0000000000001694                ut_strlen
+                0x00000000000016ba                sprintf_1x
+                0x000000000000170e                sprintf_x
+                0x0000000000001744                sprintf_u
+                0x00000000000017af                printf_x
+                0x00000000000017e2                sprintf_d
+                0x0000000000001816                printf_u
+                0x0000000000001876                printf_d
+                0x00000000000018ad                vsprintf_param
+                0x000000000000196c                vsprintf_pexec
+                0x0000000000001a27                ut_vsprintf
+                0x0000000000001c99                ut_printf
+                0x0000000000001cf4                dot
+                0x0000000000001f28                fatal_a
+                0x0000000000001ffa                clear_screen
+ .text          0x0000000000002064      0x250 gdt-table-set.o
+                0x0000000000002064                init_gdtidt
+                0x00000000000021f1                set_segmdesc
+                0x000000000000226c                set_gatedesc
+ .text          0x00000000000022b4      0x2f0 graphic.o
+                0x00000000000022b4                init_palette
+                0x00000000000022d9                set_palette
+                0x000000000000237f                boxfill8
+                0x00000000000023d1                init_screen8
+ .text          0x00000000000025a4     0x13a4 sheet.o
+                0x00000000000025a4                memman_init
+                0x00000000000025d7                memman_alloc
+                0x0000000000002705                memman_free
+                0x0000000000002900                shtctl_init
+                0x00000000000029b5                sheet_alloc
+                0x0000000000002b29                sheet_slide
+                0x0000000000002bac                select_main_disp
+                0x0000000000002c9c                select_sub_disp
+                0x0000000000002d8c                sheet_refresh
+                0x0000000000002fb5                sheet_refreshsub
+                0x00000000000030fc                sheet_top_disp
+                0x0000000000003276                sheet_refreshmap
+                0x000000000000338a                sheet_free
+                0x00000000000033f4                sheet_updown
+                0x0000000000003632                sheet_resize
+                0x000000000000381e                test_mado
+ .text          0x0000000000003948      0x374 string.o
+                0x0000000000003948                memcpy
+                0x0000000000003989                memset
+                0x00000000000039bc                memcmp
+                0x0000000000003a16                memmove
+                0x0000000000003aa3                strcpy
+                0x0000000000003ad7                strlen
+                0x0000000000003afe                strcmp
+                0x0000000000003b55                strcat
+                0x0000000000003bac                strchr
+                0x0000000000003bdb                strrchr
+                0x0000000000003c30                atoi
+ .text          0x0000000000003cbc      0x608 timer.o
+                0x0000000000003cbc                init_pit
+                0x0000000000003d0b                init_pic
+                0x0000000000003e04                inthandler20
+                0x0000000000003ff3                set_oneshot_timer
+                0x00000000000040a9                GetTickCount
+                0x00000000000040bd                timer_key
+ .text          0x00000000000042c4      0x1c0 fifo.o
+                0x00000000000042c4                fifo32_init
+                0x000000000000430b                fifo32_put
+                0x00000000000043ec                fifo32_get
+                0x000000000000446c                fifo32_status
+ .text          0x0000000000004484      0x6f8 mtask.o
+                0x0000000000004484                task_now
+                0x00000000000044d3                task_add
+                0x000000000000453f                task_remove
+                0x0000000000004637                task_switchsub
+                0x00000000000046b7                task_init
+                0x00000000000047f8                task_alloc
+                0x00000000000048fc                task_run
+                0x000000000000497c                task_sleep
+                0x00000000000049f4                task_switch
+ .text          0x0000000000004b7c      0x11c delay_task.o
+                0x0000000000004b7c                delay_task
+ .text          0x0000000000004c98      0x124 sys_call.o
+                0x0000000000004c98                syscall40
+                0x0000000000004d69                syscall_1
+ .text          0x0000000000004dbc      0x148 make_thread.o
+                0x0000000000004dbc                make_sheet_and_thread
+ .text          0x0000000000004f04      0x4f0 command.o
+                0x0000000000004f04                command_init
+                0x0000000000004f4a                command_make_task
+                0x00000000000050f6                cmd_help
+                0x0000000000005184                command
+ .text          0x00000000000053f4      0xeac sedit.o
+                0x0000000000005b75                sed_jump
+                0x0000000000006195                sedit_main
+ .text          0x00000000000062a0     0x4e48 asm80386.o
+                0x00000000000062a0                a_spskip
+                0x00000000000062ce                a_get1line
+                0x00000000000063b5                a_error_message
+                0x000000000000640f                is_symtop
+                0x0000000000006474                is_symbody
+                0x00000000000064ad                a_getsym
+                0x000000000000653a                a_symsrch
+                0x0000000000006589                a_listout
+                0x0000000000006644                a_listout_nosrc
+                0x00000000000066ed                a_objout
+                0x00000000000067bc                a_getnumb
+                0x0000000000006956                a_factor
+                0x0000000000006c6b                a_factor1
+                0x0000000000006d14                a_term
+                0x0000000000006e15                a_expr
+                0x0000000000006f05                a_get_regoperand
+                0x0000000000006fb5                a_get_const_operand
+                0x00000000000070c9                a_get_EA_operand
+                0x00000000000073a8                a_make_EA_reg
+                0x000000000000743b                a_make_EA_reg_disp
+                0x0000000000007559                a_make_EA_reg_reg
+                0x0000000000007682                a_make_EA_reg_reg_disp
+                0x00000000000077d3                a_make_EA
+                0x000000000000799c                a_get1operand
+                0x0000000000007a1c                a_op_TYPE1
+                0x0000000000007a39                a_op_TYPE2
+                0x0000000000007a59                a_op_TYPE3_a
+                0x0000000000007b33                a_op_TYPE3_b
+                0x0000000000007c34                a_op_TYPE3_c_sub
+                0x0000000000007e9c                a_op_TYPE3_c
+                0x0000000000007f8c                a_op_TYPE3_d
+                0x000000000000807c                a_op_TYPE3_e_sub
+                0x0000000000008383                a_op_TYPE3_e
+                0x0000000000008473                a_op_TYPE3_f
+                0x000000000000861f                a_op_TYPE3
+                0x0000000000008862                a_op_TYPE4
+                0x0000000000008917                a_op_TYPE5_a
+                0x00000000000089cf                a_op_TYPE5_b_sub
+                0x0000000000008c37                a_op_TYPE5_b
+                0x0000000000008ce4                a_op_TYPE5
+                0x0000000000008e2b                a_op_TYPE6_a
+                0x0000000000008f05                a_op_TYPE6
+                0x0000000000009051                a_op_TYPE7
+                0x0000000000009093                a_op_TYPE8
+                0x00000000000090e8                a_op_TYPE9_a
+                0x0000000000009195                a_op_TYPE9_b
+                0x0000000000009242                a_op_TYPE9_c
+                0x0000000000009306                a_op_TYPE9_d
+                0x00000000000094fc                a_op_TYPE9
+                0x0000000000009758                a_op_TYPE10
+                0x00000000000098a6                a_op_TYPE11
+                0x0000000000009b03                a_op_TYPE12
+                0x0000000000009b7c                a_op_TYPE13
+                0x0000000000009d16                a_op_TYPE14
+                0x0000000000009f58                a_op_TYPE_SECTION
+                0x000000000000a0c6                a_op_ORG
+                0x000000000000a0db                a_op_EQU
+                0x000000000000a1fd                a_op_DB
+                0x000000000000a2f9                a_op_DD
+                0x000000000000a3f9                a_op_DW
+                0x000000000000a4f9                a_label_process
+                0x000000000000a672                a_opcode
+                0x000000000000a9a2                a_asm
+                0x000000000000aaa0                registration
+                0x000000000000abc7                a_binout
+                0x000000000000ad67                asm_main
+ .text          0x000000000000b0e8        0x0 font_lib.o
+                0x000000000000b0e8                . = ALIGN (0x4)
+                0x000000000000b0e8                _text_end = .
+                0x000000000028b0e8                . = (_text_end + 0x280000)
+                0x000000000028b0e8                _data_start = .
+
+.reloc          0x000000000028b0e8      0x400
+ *(.reloc)
+ .reloc         0x000000000028b0e8      0x20c dll stuff
+                0x000000000028b2f4                . = ALIGN (0x4)
+
+.rdata          0x000000000028b2f4      0x200
+ *(.rdata)
+ *(.rdata$*)
+ .rdata$zzz     0x000000000028b2f4       0x14 gonbe_main.o
+ .rdata$zzz     0x000000000028b308       0x14 lib.o
+ .rdata$zzz     0x000000000028b31c       0x14 sjis.o
+ .rdata$zzz     0x000000000028b330       0x14 gdt-table-set.o
+ .rdata$zzz     0x000000000028b344       0x14 graphic.o
+ .rdata$zzz     0x000000000028b358       0x14 sheet.o
+ .rdata$zzz     0x000000000028b36c       0x14 string.o
+ .rdata$zzz     0x000000000028b380       0x14 timer.o
+ .rdata$zzz     0x000000000028b394       0x14 fifo.o
+ .rdata$zzz     0x000000000028b3a8       0x14 mtask.o
+ .rdata$zzz     0x000000000028b3bc       0x14 delay_task.o
+ .rdata$zzz     0x000000000028b3d0       0x14 sys_call.o
+ .rdata$zzz     0x000000000028b3e4       0x14 make_thread.o
+ .rdata$zzz     0x000000000028b3f8       0x14 command.o
+ .rdata$zzz     0x000000000028b40c       0x14 sedit.o
+ .rdata$zzz     0x000000000028b420       0x14 asm80386.o
+ .rdata$zzz     0x000000000028b434       0x14 font_lib.o
+                0x000000000028b448                . = ALIGN (0x4)
+
+.buildid        0x000000000028b448      0x200
+ *(.buildid)
+ .buildid       0x000000000028b448       0x35 gonbe_main.o
+                0x000000000028b480                . = ALIGN (0x4)
+
+.eh_frame       0x000000000028b480     0x1a00
+ *(.eh_frame*)
+ .eh_frame      0x000000000028b480       0xa8 gonbe_main.o
+ .eh_frame      0x000000000028b528      0x104 lib.o
+ .eh_frame      0x000000000028b62c      0x428 sjis.o
+ .eh_frame      0x000000000028ba54       0x78 gdt-table-set.o
+ .eh_frame      0x000000000028bacc       0x9c graphic.o
+ .eh_frame      0x000000000028bb68      0x21c sheet.o
+ .eh_frame      0x000000000028bd84      0x178 string.o
+ .eh_frame      0x000000000028befc       0xd8 timer.o
+ .eh_frame      0x000000000028bfd4       0x98 fifo.o
+ .eh_frame      0x000000000028c06c      0x138 mtask.o
+ .eh_frame      0x000000000028c1a4       0x38 delay_task.o
+ .eh_frame      0x000000000028c1dc       0x58 sys_call.o
+ .eh_frame      0x000000000028c234       0x38 make_thread.o
+ .eh_frame      0x000000000028c26c       0x94 command.o
+ .eh_frame      0x000000000028c300      0x2d0 sedit.o
+ .eh_frame      0x000000000028c5d0      0x85c asm80386.o
+                0x000000000028ce2c                . = ALIGN (0x4)
+
+.drectve
+ *(.drectve)
+                0x000000000028ce2c                . = ALIGN (0x4)
+
+.data           0x000000000028ce40    0x24600
+ *(.data)
+ .data          0x000000000028ce40      0x154 gonbe_main.o
+ .data          0x000000000028cf94        0xc lib.o
+ .data          0x000000000028cfa0      0x1e0 sjis.o
+                0x000000000028cfa0                char_to_sjis
+ .data          0x000000000028d180        0x6 asm_lib.o
+ *fill*         0x000000000028d186        0x2 
+ .data          0x000000000028d188        0x0 gdt-table-set.o
+ *fill*         0x000000000028d188       0x18 
+ .data          0x000000000028d1a0       0x60 graphic.o
+ .data          0x000000000028d200       0xb4 sheet.o
+ .data          0x000000000028d2b4        0x0 string.o
+ *fill*         0x000000000028d2b4        0xc 
+ .data          0x000000000028d2c0      0x340 timer.o
+                0x000000000028d2e0                ut_getc_tbl
+ .data          0x000000000028d600        0x0 fifo.o
+ .data          0x000000000028d600       0x1c mtask.o
+ .data          0x000000000028d61c       0x24 delay_task.o
+ .data          0x000000000028d640       0x10 sys_call.o
+ .data          0x000000000028d650        0x0 make_thread.o
+ .data          0x000000000028d650      0x110 command.o
+ .data          0x000000000028d760      0x19c sedit.o
+ *fill*         0x000000000028d8fc        0x4 
+ .data          0x000000000028d900      0xa20 asm80386.o
+                0x000000000028db00                a_sym_code
+                0x000000000028e138                a_error
+ .data          0x000000000028e320    0x230a0 font_lib.o
+                0x000000000028e320                chara_gene
+                0x000000000028e860                KanjiFont12b
+                0x00000000002b13c0                . = ALIGN (0x4)
+
+.bss            0x00000000002b13c0    0xd1400
+ *(.stack_area)
+ .stack_area    0x00000000002b13c0    0x1adc0 gonbe_main.o
+                0x00000000002b13c0                stack_buf
+                0x00000000002c9a60                stack_40
+                0x00000000002cc180                _bss_start = .
+ *(.bss)
+ .bss           0x00000000002cc180      0x240 gonbe_main.o
+                0x00000000002cc180                main_fifo
+                0x00000000002cc1a0                main_fifo_buf
+                0x00000000002cc3a0                binfo
+                0x00000000002cc3a4                memory_mb
+                0x00000000002cc3a8                main_sheet
+                0x00000000002cc3ac                getc_char
+ .bss           0x00000000002cc3c0        0x0 lib.o
+ .bss           0x00000000002cc3c0        0x0 sjis.o
+ .bss           0x00000000002cc3c0        0x0 gdt-table-set.o
+ .bss           0x00000000002cc3c0        0x0 graphic.o
+ .bss           0x00000000002cc3c0     0x1f60 sheet.o
+                0x00000000002cc3c0                memman
+                0x00000000002ce308                shtctl
+ .bss           0x00000000002ce320        0x0 string.o
+ .bss           0x00000000002ce320     0x2740 timer.o
+                0x00000000002ce320                timerctl
+                0x00000000002d0a34                APP_ch
+                0x00000000002d0a38                timer_key_mode
+ .bss           0x00000000002d0a60        0x4 fifo.o
+                0x00000000002d0a60                hoge1
+ .bss           0x00000000002d0a64        0x4 mtask.o
+                0x00000000002d0a64                taskctl
+ .bss           0x00000000002d0a68        0x0 delay_task.o
+ .bss           0x00000000002d0a68        0x0 sys_call.o
+ .bss           0x00000000002d0a68        0x0 make_thread.o
+ .bss           0x00000000002d0a68        0xc command.o
+                0x00000000002d0a68                cmd_sht
+                0x00000000002d0a6c                cmd_task
+                0x00000000002d0a70                run_task
+ .bss           0x00000000002d0a74       0x1c sedit.o
+                0x00000000002d0a74                sed_buf
+ *fill*         0x00000000002d0a90       0x10 
+ .bss           0x00000000002d0aa0    0xb1c00 asm80386.o
+                0x00000000002d0aa0                a_symtbl
+                0x0000000000380720                a_symtbl_ptr
+                0x0000000000380740                a_section
+                0x00000000003821d0                a_section_ptr
+                0x00000000003821d4                a_section_numb
+                0x00000000003821d8                a_srcfile
+                0x00000000003821dc                a_srcfile_len
+                0x00000000003821e0                a_srcfile_ptr
+                0x00000000003821e4                a_objfile
+                0x00000000003821e8                a_objfile_ptr
+                0x00000000003821ec                a_binfile
+                0x00000000003821f0                a_addr_top
+                0x00000000003821f4                a_addr_end
+                0x00000000003821f8                a_bindata
+                0x00000000003821fc                a_inst
+                0x0000000000382208                a_inst_ptr
+                0x0000000000382220                a_linebuf
+                0x0000000000382620                a_linebufp
+                0x0000000000382640                a_symbuf
+                0x0000000000382680                a_addr
+                0x0000000000382684                a_linenumb
+                0x0000000000382688                a_pass
+                0x000000000038268c                a_chg_flag
+ .bss           0x00000000003826a0        0x0 font_lib.o
+                0x00000000003826a0                . = ALIGN (0x4)
+                0x00000000003826a0                _data_end = .
+OUTPUT(gonbe_rear.elf pei-i386)
+LOAD dll stuff

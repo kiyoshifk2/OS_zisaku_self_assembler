@@ -1,0 +1,36 @@
+/*
+;	GDT
+;
+;	short limit bit0-15
+;	short base address bit0-15
+;	char  base address bit16-23
+;	char       bit0    access       セグメントがアクセスされると 1 になる
+;                  bit1-3  type         000: データ読み取り
+;                                       001: データ書き込み
+;                                       010: データ読み取り、エキスパンドダウン
+;                                       011: データ読み書き
+;                                       100: コード実行
+;                                       101: コード実行読み取り
+;                                       110: コード実行、コンフォーミング（特権レベルの低いコードから呼び出せる）
+;                                       111: コード実行、読み取り、コンフォーミング
+;                  bit4    S            0:システムディスクリプタ（1を設定する事）
+;                  bit5-6  DPL          特権レベル（０が最高）
+;                  bit7    P            1:セグメントが実際に存在する
+;	char       bit0-3  limit bit16-19
+;                  bit4    A            使用可能ビット（勝手に使って良い）
+;                  bit5                 常に 0
+;                  bit6    D            0:16ビットセグメント
+;                  bit7    G            0:limit は１倍、1:limit は 4096倍
+;	char base address bit24-31
+*/
+
+
+/*	IDT table 32bit	*/
+
+struct IDTDescr {
+   uint16_t offset_1; // offset bits 0..15
+   uint16_t selector; // a code segment selector in GDT or LDT
+   uint8_t zero;      // unused, set to 0
+   uint8_t type_attr; // type and attributes, see below
+   uint16_t offset_2; // offset bits 16..31
+};

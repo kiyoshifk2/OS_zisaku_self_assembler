@@ -1,0 +1,4 @@
+特殊キー：alt - → ：最上位 sheet の選択、最上位 sheet は縁の色を変えよう
+　　　　：cntl-C   ：最上位 sheet に関連付けられた task の終了
+　　　　：cntl- → ：最上位 sheet の移動
+        ；shift → ：最上位 sheet のサイズ変更

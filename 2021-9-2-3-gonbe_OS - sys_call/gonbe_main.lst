@@ -1,0 +1,1123 @@
+GAS LISTING gonbe_main_x.s 			page 1
+
+
+   1              		.file	"gonbe_main.c"
+   2              		.text
+   3              		.globl	_stack_buf
+   4              		.section	.stack_area,"w"
+   5              		.align 32
+   6              	_stack_buf:
+   7 0000 00000000 		.space 100000
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   8              		.globl	_stack_40
+   9              		.align 32
+  10              	_stack_40:
+  11 186a0 00000000 		.space 10000
+  11      00000000 
+  11      00000000 
+  11      00000000 
+  11      00000000 
+  12              		.globl	_main_fifo
+  13 1adb0 00000000 		.bss
+  13      00000000 
+  13      00000000 
+  13      00000000 
+  14              		.align 4
+  15              	_main_fifo:
+  16 0000 00000000 		.space 28
+  16      00000000 
+  16      00000000 
+  16      00000000 
+  16      00000000 
+  17              		.globl	_main_fifo_buf
+  18 001c 00000000 		.align 32
+  19              	_main_fifo_buf:
+  20 0020 00000000 		.space 512
+  20      00000000 
+  20      00000000 
+  20      00000000 
+  20      00000000 
+  21              		.globl	_binfo
+  22              		.align 4
+  23              	_binfo:
+  24 0220 00000000 		.space 4
+  25              		.globl	_memory_mb
+  26              		.align 4
+  27              	_memory_mb:
+  28 0224 00000000 		.space 4
+  29              		.globl	_main_sheet
+  30              		.align 4
+  31              	_main_sheet:
+  32 0228 00000000 		.space 4
+  33              		.globl	_getc_char
+  34              		.align 4
+  35              	_getc_char:
+  36 022c 00000000 		.space 4
+  37 0230 00000000 		.data
+  37      00000000 
+GAS LISTING gonbe_main_x.s 			page 2
+
+
+  37      00000000 
+  37      00000000 
+  38              	LC0:
+  39 0000 6273735F 		.ascii "bss_clear() %x-%x\12\0"
+  39      636C6561 
+  39      72282920 
+  39      25782D25 
+  39      780A00
+  40              	LC1:
+  41 0013 25644D42 		.ascii "%dMB OK\12\0"
+  41      204F4B0A 
+  41      00
+  42              	LC2:
+  43 001c 7363726E 		.ascii "scrnx=%d scrny=%d\12\0"
+  43      783D2564 
+  43      20736372 
+  43      6E793D25 
+  43      640A00
+  44              	LC3:
+  45 002f 965C9196 		.ascii "\226\\\221\226 read_idt\12\0"
+  45      20726561 
+  45      645F6964 
+  45      740A00
+  46              	LC4:
+  47 003e 3D3D3D20 		.ascii "=== 1234 \203e\203X\203g\12\0"
+  47      31323334 
+  47      20836583 
+  47      5883670A 
+  47      00
+  48              	LC5:
+  49 004f 81936420 		.ascii "\201\223d = |%d|\12\0"
+  49      3D207C25 
+  49      647C0A00 
+  50              	LC6:
+  51 005b 8193     		.ascii "\201\223"
+  52 005d 3664203D 		.ascii "6d = |%6d|\12\0"
+  52      207C2536 
+  52      647C0A00 
+  53              	LC7:
+  54 0069 8193     		.ascii "\201\223"
+  55 006b 30366420 		.ascii "06d = |%06d|\12\0"
+  55      3D207C25 
+  55      3036647C 
+  55      0A00
+  56              	LC8:
+  57 0079 81932D36 		.ascii "\201\223-6d = |%-6d|\12\0"
+  57      64203D20 
+  57      7C252D36 
+  57      647C0A00 
+  58              	LC9:
+  59 0089 8193     		.ascii "\201\223"
+  60 008b 30367820 		.ascii "06x = |%06x|\12\0"
+  60      3D207C25 
+  60      3036787C 
+  60      0A00
+  61              	LC10:
+  62 0099 31323334 		.ascii "1234\0"
+GAS LISTING gonbe_main_x.s 			page 3
+
+
+  62      00
+  63              	LC11:
+  64 009e 8193     		.ascii "\201\223"
+  65 00a0 3673203D 		.ascii "6s = |%6s|\12\0"
+  65      207C2536 
+  65      737C0A00 
+  66              	LC12:
+  67 00ac 8193     		.ascii "\201\223"
+  68 00ae 30366320 		.ascii "06c = |%06c|\12\0"
+  68      3D207C25 
+  68      3036637C 
+  68      0A00
+  69              	LC13:
+  70 00bc 0A202020 		.ascii "\12      \0"
+  70      20202000 
+  71              	LC14:
+  72 00c4 0A534849 		.ascii "\12SHIFT \0"
+  72      46542000 
+  73              	LC15:
+  74 00cc 0A434E54 		.ascii "\12CNTL  \0"
+  74      4C202000 
+  75              	LC16:
+  76 00d4 0A414C54 		.ascii "\12ALT   \0"
+  76      20202000 
+  77              	LC17:
+  78 00dc 0A484154 		.ascii "\12HATA  \0"
+  78      41202000 
+  79              	LC18:
+  80 00e4 0A4D4152 		.ascii "\12MARU  \0"
+  80      55202000 
+  81              	LC19:
+  82 00ec 3D3D3D20 		.ascii "=== 10sec timeout\12\0"
+  82      31307365 
+  82      63207469 
+  82      6D656F75 
+  82      740A00
+  83              	LC20:
+  84 00ff 2A2A2A20 		.ascii "*** undefined cmd %d\12\0"
+  84      756E6465 
+  84      66696E65 
+  84      6420636D 
+  84      64202564 
+  85              		.text
+  86              		.globl	_gonbe_main
+  87              		.def	_gonbe_main;	.scl	2;	.type	32;	.endef
+  88              	_gonbe_main:
+  89              	LFB0:
+  90              		.cfi_startproc
+  91 0000 55       		pushl	%ebp
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 5, -8
+  94 0001 89E5     		movl	%esp, %ebp
+  95              		.cfi_def_cfa_register 5
+  96 0003 83EC38   		subl	$56, %esp
+  97 0006 E8850600 		call	_init
+  97      00
+  98 000b B8040028 		movl	$2621444, %eax
+GAS LISTING gonbe_main_x.s 			page 4
+
+
+  98      00
+  99 0010 8B08     		movl	(%eax), %ecx
+ 100 0012 B8000028 		movl	$2621440, %eax
+ 100      00
+ 101 0017 8B10     		movl	(%eax), %edx
+ 102 0019 A1280200 		movl	_main_sheet, %eax
+ 102      00
+ 103 001e 894C240C 		movl	%ecx, 12(%esp)
+ 104 0022 89542408 		movl	%edx, 8(%esp)
+ 105 0026 C7442404 		movl	$LC0, 4(%esp)
+ 105      00000000 
+ 106 002e 890424   		movl	%eax, (%esp)
+ 107 0031 E8000000 		call	_ut_printf
+ 107      00
+ 108 0036 8B152402 		movl	_memory_mb, %edx
+ 108      0000
+ 109 003c A1280200 		movl	_main_sheet, %eax
+ 109      00
+ 110 0041 89542408 		movl	%edx, 8(%esp)
+ 111 0045 C7442404 		movl	$LC1, 4(%esp)
+ 111      13000000 
+ 112 004d 890424   		movl	%eax, (%esp)
+ 113 0050 E8000000 		call	_ut_printf
+ 113      00
+ 114 0055 A1200200 		movl	_binfo, %eax
+ 114      00
+ 115 005a 0FB74006 		movzwl	6(%eax), %eax
+ 116 005e 0FBFC8   		movswl	%ax, %ecx
+ 117 0061 A1200200 		movl	_binfo, %eax
+ 117      00
+ 118 0066 0FB74004 		movzwl	4(%eax), %eax
+ 119 006a 0FBFD0   		movswl	%ax, %edx
+ 120 006d A1280200 		movl	_main_sheet, %eax
+ 120      00
+ 121 0072 894C240C 		movl	%ecx, 12(%esp)
+ 122 0076 89542408 		movl	%edx, 8(%esp)
+ 123 007a C7442404 		movl	$LC2, 4(%esp)
+ 123      1C000000 
+ 124 0082 890424   		movl	%eax, (%esp)
+ 125 0085 E8000000 		call	_ut_printf
+ 125      00
+ 126 008a A1280200 		movl	_main_sheet, %eax
+ 126      00
+ 127 008f C7442404 		movl	$LC3, 4(%esp)
+ 127      2F000000 
+ 128 0097 890424   		movl	%eax, (%esp)
+ 129 009a E8000000 		call	_ut_printf
+ 129      00
+ 130 009f A1280200 		movl	_main_sheet, %eax
+ 130      00
+ 131 00a4 C7442404 		movl	$LC4, 4(%esp)
+ 131      3E000000 
+ 132 00ac 890424   		movl	%eax, (%esp)
+ 133 00af E8000000 		call	_ut_printf
+ 133      00
+ 134 00b4 A1280200 		movl	_main_sheet, %eax
+ 134      00
+GAS LISTING gonbe_main_x.s 			page 5
+
+
+ 135 00b9 C7442408 		movl	$1234, 8(%esp)
+ 135      D2040000 
+ 136 00c1 C7442404 		movl	$LC5, 4(%esp)
+ 136      4F000000 
+ 137 00c9 890424   		movl	%eax, (%esp)
+ 138 00cc E8000000 		call	_ut_printf
+ 138      00
+ 139 00d1 A1280200 		movl	_main_sheet, %eax
+ 139      00
+ 140 00d6 C7442408 		movl	$1234, 8(%esp)
+ 140      D2040000 
+ 141 00de C7442404 		movl	$LC6, 4(%esp)
+ 141      5B000000 
+ 142 00e6 890424   		movl	%eax, (%esp)
+ 143 00e9 E8000000 		call	_ut_printf
+ 143      00
+ 144 00ee A1280200 		movl	_main_sheet, %eax
+ 144      00
+ 145 00f3 C7442408 		movl	$1234, 8(%esp)
+ 145      D2040000 
+ 146 00fb C7442404 		movl	$LC7, 4(%esp)
+ 146      69000000 
+ 147 0103 890424   		movl	%eax, (%esp)
+ 148 0106 E8000000 		call	_ut_printf
+ 148      00
+ 149 010b A1280200 		movl	_main_sheet, %eax
+ 149      00
+ 150 0110 C7442408 		movl	$1234, 8(%esp)
+ 150      D2040000 
+ 151 0118 C7442404 		movl	$LC8, 4(%esp)
+ 151      79000000 
+ 152 0120 890424   		movl	%eax, (%esp)
+ 153 0123 E8000000 		call	_ut_printf
+ 153      00
+ 154 0128 A1280200 		movl	_main_sheet, %eax
+ 154      00
+ 155 012d C7442408 		movl	$4660, 8(%esp)
+ 155      34120000 
+ 156 0135 C7442404 		movl	$LC9, 4(%esp)
+ 156      89000000 
+ 157 013d 890424   		movl	%eax, (%esp)
+ 158 0140 E8000000 		call	_ut_printf
+ 158      00
+ 159 0145 A1280200 		movl	_main_sheet, %eax
+ 159      00
+ 160 014a C7442408 		movl	$LC10, 8(%esp)
+ 160      99000000 
+ 161 0152 C7442404 		movl	$LC11, 4(%esp)
+ 161      9E000000 
+ 162 015a 890424   		movl	%eax, (%esp)
+ 163 015d E8000000 		call	_ut_printf
+ 163      00
+ 164 0162 A1280200 		movl	_main_sheet, %eax
+ 164      00
+ 165 0167 C7442408 		movl	$49, 8(%esp)
+ 165      31000000 
+ 166 016f C7442404 		movl	$LC12, 4(%esp)
+GAS LISTING gonbe_main_x.s 			page 6
+
+
+ 166      AC000000 
+ 167 0177 890424   		movl	%eax, (%esp)
+ 168 017a E8000000 		call	_ut_printf
+ 168      00
+ 169 017f C7442404 		movl	$10000, 4(%esp)
+ 169      10270000 
+ 170 0187 C7042400 		movl	$_main_fifo, (%esp)
+ 170      000000
+ 171 018e E8000000 		call	_set_oneshot_timer
+ 171      00
+ 172 0193 05000100 		addl	$256, %eax
+ 172      00
+ 173 0198 8945F4   		movl	%eax, -12(%ebp)
+ 174 019b E8000000 		call	_task_init
+ 174      00
+ 175 01a0 8945F0   		movl	%eax, -16(%ebp)
+ 176 01a3 8B45F0   		movl	-16(%ebp), %eax
+ 177 01a6 A3180000 		movl	%eax, _main_fifo+24
+ 177      00
+ 178 01ab C7442404 		movl	$1, 4(%esp)
+ 178      01000000 
+ 179 01b3 8B45F0   		movl	-16(%ebp), %eax
+ 180 01b6 890424   		movl	%eax, (%esp)
+ 181 01b9 E8000000 		call	_task_run
+ 181      00
+ 182 01be A1000000 		movl	_taskctl, %eax
+ 182      00
+ 183 01c3 8B55F0   		movl	-16(%ebp), %edx
+ 184 01c6 89500C   		movl	%edx, 12(%eax)
+ 185 01c9 E8000000 		call	_task_alloc
+ 185      00
+ 186 01ce 8945EC   		movl	%eax, -20(%ebp)
+ 187 01d1 C7042400 		movl	$8192, (%esp)
+ 187      200000
+ 188 01d8 E8000000 		call	_memman_alloc
+ 188      00
+ 189 01dd 05F41F00 		addl	$8180, %eax
+ 189      00
+ 190 01e2 89C2     		movl	%eax, %edx
+ 191 01e4 8B45EC   		movl	-20(%ebp), %eax
+ 192 01e7 895044   		movl	%edx, 68(%eax)
+ 193 01ea BABF0700 		movl	$_task_idle, %edx
+ 193      00
+ 194 01ef 8B45EC   		movl	-20(%ebp), %eax
+ 195 01f2 89502C   		movl	%edx, 44(%eax)
+ 196 01f5 8B45EC   		movl	-20(%ebp), %eax
+ 197 01f8 C7405408 		movl	$8, 84(%eax)
+ 197      000000
+ 198 01ff 8B45EC   		movl	-20(%ebp), %eax
+ 199 0202 C7405810 		movl	$16, 88(%eax)
+ 199      000000
+ 200 0209 8B45EC   		movl	-20(%ebp), %eax
+ 201 020c C7405C08 		movl	$8, 92(%eax)
+ 201      000000
+ 202 0213 8B45EC   		movl	-20(%ebp), %eax
+ 203 0216 C7406008 		movl	$8, 96(%eax)
+ 203      000000
+GAS LISTING gonbe_main_x.s 			page 7
+
+
+ 204 021d 8B45EC   		movl	-20(%ebp), %eax
+ 205 0220 C7406408 		movl	$8, 100(%eax)
+ 205      000000
+ 206 0227 8B45EC   		movl	-20(%ebp), %eax
+ 207 022a C7406808 		movl	$8, 104(%eax)
+ 207      000000
+ 208 0231 C7442404 		movl	$9, 4(%esp)
+ 208      09000000 
+ 209 0239 8B45EC   		movl	-20(%ebp), %eax
+ 210 023c 890424   		movl	%eax, (%esp)
+ 211 023f E8000000 		call	_task_run
+ 211      00
+ 212 0244 E8000000 		call	_command_init
+ 212      00
+ 213 0249 C7442404 		movl	$254, 4(%esp)
+ 213      FE000000 
+ 214 0251 C7042421 		movl	$33, (%esp)
+ 214      000000
+ 215 0258 E8000000 		call	_io_out8
+ 215      00
+ 216              	L29:
+ 217 025d C704240A 		movl	$10, (%esp)
+ 217      000000
+ 218 0264 E8000000 		call	_delay_task
+ 218      00
+ 219 0269 E8000000 		call	_disable_interrupt
+ 219      00
+ 220 026e C7042400 		movl	$_main_fifo, (%esp)
+ 220      000000
+ 221 0275 E8000000 		call	_fifo32_status
+ 221      00
+ 222 027a 85C0     		testl	%eax, %eax
+ 223 027c 750C     		jne	L2
+ 224 027e E8000000 		call	_enable_interrupt
+ 224      00
+ 225 0283 E8000000 		call	_gonbe_hlt
+ 225      00
+ 226 0288 EBD3     		jmp	L29
+ 227              	L2:
+ 228 028a C7042400 		movl	$_main_fifo, (%esp)
+ 228      000000
+ 229 0291 E8000000 		call	_fifo32_get
+ 229      00
+ 230 0296 8945E8   		movl	%eax, -24(%ebp)
+ 231 0299 E8000000 		call	_enable_interrupt
+ 231      00
+ 232 029e 837DE800 		cmpl	$0, -24(%ebp)
+ 233 02a2 0F888303 		js	L4
+ 233      0000
+ 234 02a8 817DE8FF 		cmpl	$255, -24(%ebp)
+ 234      000000
+ 235 02af 0F8F7603 		jg	L4
+ 235      0000
+ 236 02b5 A1000000 		movl	_shtctl, %eax
+ 236      00
+ 237 02ba 8B4010   		movl	16(%eax), %eax
+ 238 02bd 8945E4   		movl	%eax, -28(%ebp)
+GAS LISTING gonbe_main_x.s 			page 8
+
+
+ 239 02c0 A1000000 		movl	_shtctl, %eax
+ 239      00
+ 240 02c5 8B55E4   		movl	-28(%ebp), %edx
+ 241 02c8 83C204   		addl	$4, %edx
+ 242 02cb 8B449004 		movl	4(%eax,%edx,4), %eax
+ 243 02cf 8945E0   		movl	%eax, -32(%ebp)
+ 244 02d2 8B45E0   		movl	-32(%ebp), %eax
+ 245 02d5 890424   		movl	%eax, (%esp)
+ 246 02d8 E8000000 		call	_select_sub_disp
+ 246      00
+ 247 02dd 8B45E0   		movl	-32(%ebp), %eax
+ 248 02e0 8B809000 		movl	144(%eax), %eax
+ 248      0000
+ 249 02e6 83F805   		cmpl	$5, %eax
+ 250 02e9 0F878600 		ja	L5
+ 250      0000
+ 251 02ef 8B048518 		movl	L7(,%eax,4), %eax
+ 251      010000
+ 252 02f6 FFE0     		jmp	*%eax
+ 253              		.data
+ 254 0115 000000   		.align 4
+ 255              	L7:
+ 256 0118 F8020000 		.long	L12
+ 257 011c 0D030000 		.long	L11
+ 258 0120 22030000 		.long	L10
+ 259 0124 37030000 		.long	L9
+ 260 0128 4C030000 		.long	L8
+ 261 012c 61030000 		.long	L6
+ 262              		.text
+ 263              	L12:
+ 264 02f8 C7442404 		movl	$LC13, 4(%esp)
+ 264      BC000000 
+ 265 0300 8B45E0   		movl	-32(%ebp), %eax
+ 266 0303 890424   		movl	%eax, (%esp)
+ 267 0306 E8000000 		call	_ut_printf
+ 267      00
+ 268 030b EB68     		jmp	L5
+ 269              	L11:
+ 270 030d C7442404 		movl	$LC14, 4(%esp)
+ 270      C4000000 
+ 271 0315 8B45E0   		movl	-32(%ebp), %eax
+ 272 0318 890424   		movl	%eax, (%esp)
+ 273 031b E8000000 		call	_ut_printf
+ 273      00
+ 274 0320 EB53     		jmp	L5
+ 275              	L10:
+ 276 0322 C7442404 		movl	$LC15, 4(%esp)
+ 276      CC000000 
+ 277 032a 8B45E0   		movl	-32(%ebp), %eax
+ 278 032d 890424   		movl	%eax, (%esp)
+ 279 0330 E8000000 		call	_ut_printf
+ 279      00
+ 280 0335 EB3E     		jmp	L5
+ 281              	L9:
+ 282 0337 C7442404 		movl	$LC16, 4(%esp)
+ 282      D4000000 
+ 283 033f 8B45E0   		movl	-32(%ebp), %eax
+GAS LISTING gonbe_main_x.s 			page 9
+
+
+ 284 0342 890424   		movl	%eax, (%esp)
+ 285 0345 E8000000 		call	_ut_printf
+ 285      00
+ 286 034a EB29     		jmp	L5
+ 287              	L8:
+ 288 034c C7442404 		movl	$LC17, 4(%esp)
+ 288      DC000000 
+ 289 0354 8B45E0   		movl	-32(%ebp), %eax
+ 290 0357 890424   		movl	%eax, (%esp)
+ 291 035a E8000000 		call	_ut_printf
+ 291      00
+ 292 035f EB14     		jmp	L5
+ 293              	L6:
+ 294 0361 C7442404 		movl	$LC18, 4(%esp)
+ 294      E4000000 
+ 295 0369 8B45E0   		movl	-32(%ebp), %eax
+ 296 036c 890424   		movl	%eax, (%esp)
+ 297 036f E8000000 		call	_ut_printf
+ 297      00
+ 298 0374 90       		nop
+ 299              	L5:
+ 300 0375 8B45E0   		movl	-32(%ebp), %eax
+ 301 0378 890424   		movl	%eax, (%esp)
+ 302 037b E8000000 		call	_select_main_disp
+ 302      00
+ 303 0380 C7052C02 		movl	$0, _getc_char
+ 303      00000000 
+ 303      0000
+ 304 038a 817DE8B8 		cmpl	$184, -24(%ebp)
+ 304      000000
+ 305 0391 7526     		jne	L13
+ 306 0393 837DE400 		cmpl	$0, -28(%ebp)
+ 307 0397 0F8EED02 		jle	L30
+ 307      0000
+ 308 039d A1000000 		movl	_shtctl, %eax
+ 308      00
+ 309 03a2 8B4014   		movl	20(%eax), %eax
+ 310 03a5 8B55E4   		movl	-28(%ebp), %edx
+ 311 03a8 89542404 		movl	%edx, 4(%esp)
+ 312 03ac 890424   		movl	%eax, (%esp)
+ 313 03af E8000000 		call	_sheet_updown
+ 313      00
+ 314 03b4 E9D10200 		jmp	L30
+ 314      00
+ 315              	L13:
+ 316 03b9 817DE8B7 		cmpl	$183, -24(%ebp)
+ 316      000000
+ 317 03c0 752E     		jne	L15
+ 318 03c2 837DE400 		cmpl	$0, -28(%ebp)
+ 319 03c6 0F8EBE02 		jle	L30
+ 319      0000
+ 320 03cc A1000000 		movl	_shtctl, %eax
+ 320      00
+ 321 03d1 8B55E4   		movl	-28(%ebp), %edx
+ 322 03d4 83C204   		addl	$4, %edx
+ 323 03d7 8B449004 		movl	4(%eax,%edx,4), %eax
+ 324 03db C7442404 		movl	$0, 4(%esp)
+GAS LISTING gonbe_main_x.s 			page 10
+
+
+ 324      00000000 
+ 325 03e3 890424   		movl	%eax, (%esp)
+ 326 03e6 E8000000 		call	_sheet_updown
+ 326      00
+ 327 03eb E99A0200 		jmp	L30
+ 327      00
+ 328              	L15:
+ 329 03f0 817DE8B1 		cmpl	$177, -24(%ebp)
+ 329      000000
+ 330 03f7 7537     		jne	L16
+ 331 03f9 837DE400 		cmpl	$0, -28(%ebp)
+ 332 03fd 0F888702 		js	L30
+ 332      0000
+ 333 0403 8B45E0   		movl	-32(%ebp), %eax
+ 334 0406 8B4014   		movl	20(%eax), %eax
+ 335 0409 8D50EC   		leal	-20(%eax), %edx
+ 336 040c 8B45E0   		movl	-32(%ebp), %eax
+ 337 040f 895014   		movl	%edx, 20(%eax)
+ 338 0412 8B45E0   		movl	-32(%ebp), %eax
+ 339 0415 8B4014   		movl	20(%eax), %eax
+ 340 0418 85C0     		testl	%eax, %eax
+ 341 041a 790A     		jns	L17
+ 342 041c 8B45E0   		movl	-32(%ebp), %eax
+ 343 041f C7401400 		movl	$0, 20(%eax)
+ 343      000000
+ 344              	L17:
+ 345 0426 E8000000 		call	_sheet_refresh
+ 345      00
+ 346 042b E95A0200 		jmp	L30
+ 346      00
+ 347              	L16:
+ 348 0430 817DE8B2 		cmpl	$178, -24(%ebp)
+ 348      000000
+ 349 0437 7553     		jne	L18
+ 350 0439 837DE400 		cmpl	$0, -28(%ebp)
+ 351 043d 0F884702 		js	L30
+ 351      0000
+ 352 0443 8B45E0   		movl	-32(%ebp), %eax
+ 353 0446 8B4014   		movl	20(%eax), %eax
+ 354 0449 8D5014   		leal	20(%eax), %edx
+ 355 044c 8B45E0   		movl	-32(%ebp), %eax
+ 356 044f 895014   		movl	%edx, 20(%eax)
+ 357 0452 8B45E0   		movl	-32(%ebp), %eax
+ 358 0455 8B5014   		movl	20(%eax), %edx
+ 359 0458 8B45E0   		movl	-32(%ebp), %eax
+ 360 045b 8B400C   		movl	12(%eax), %eax
+ 361 045e 01C2     		addl	%eax, %edx
+ 362 0460 A1000000 		movl	_shtctl, %eax
+ 362      00
+ 363 0465 8B400C   		movl	12(%eax), %eax
+ 364 0468 39C2     		cmpl	%eax, %edx
+ 365 046a 7E16     		jle	L19
+ 366 046c A1000000 		movl	_shtctl, %eax
+ 366      00
+ 367 0471 8B500C   		movl	12(%eax), %edx
+ 368 0474 8B45E0   		movl	-32(%ebp), %eax
+ 369 0477 8B400C   		movl	12(%eax), %eax
+GAS LISTING gonbe_main_x.s 			page 11
+
+
+ 370 047a 29C2     		subl	%eax, %edx
+ 371 047c 8B45E0   		movl	-32(%ebp), %eax
+ 372 047f 895014   		movl	%edx, 20(%eax)
+ 373              	L19:
+ 374 0482 E8000000 		call	_sheet_refresh
+ 374      00
+ 375 0487 E9FE0100 		jmp	L30
+ 375      00
+ 376              	L18:
+ 377 048c 817DE8B4 		cmpl	$180, -24(%ebp)
+ 377      000000
+ 378 0493 7553     		jne	L20
+ 379 0495 837DE400 		cmpl	$0, -28(%ebp)
+ 380 0499 0F88EB01 		js	L30
+ 380      0000
+ 381 049f 8B45E0   		movl	-32(%ebp), %eax
+ 382 04a2 8B4010   		movl	16(%eax), %eax
+ 383 04a5 8D5014   		leal	20(%eax), %edx
+ 384 04a8 8B45E0   		movl	-32(%ebp), %eax
+ 385 04ab 895010   		movl	%edx, 16(%eax)
+ 386 04ae 8B45E0   		movl	-32(%ebp), %eax
+ 387 04b1 8B5010   		movl	16(%eax), %edx
+ 388 04b4 8B45E0   		movl	-32(%ebp), %eax
+ 389 04b7 8B4008   		movl	8(%eax), %eax
+ 390 04ba 01C2     		addl	%eax, %edx
+ 391 04bc A1000000 		movl	_shtctl, %eax
+ 391      00
+ 392 04c1 8B4008   		movl	8(%eax), %eax
+ 393 04c4 39C2     		cmpl	%eax, %edx
+ 394 04c6 7E16     		jle	L21
+ 395 04c8 A1000000 		movl	_shtctl, %eax
+ 395      00
+ 396 04cd 8B5008   		movl	8(%eax), %edx
+ 397 04d0 8B45E0   		movl	-32(%ebp), %eax
+ 398 04d3 8B4008   		movl	8(%eax), %eax
+ 399 04d6 29C2     		subl	%eax, %edx
+ 400 04d8 8B45E0   		movl	-32(%ebp), %eax
+ 401 04db 895010   		movl	%edx, 16(%eax)
+ 402              	L21:
+ 403 04de E8000000 		call	_sheet_refresh
+ 403      00
+ 404 04e3 E9A20100 		jmp	L30
+ 404      00
+ 405              	L20:
+ 406 04e8 817DE8B3 		cmpl	$179, -24(%ebp)
+ 406      000000
+ 407 04ef 7537     		jne	L22
+ 408 04f1 837DE400 		cmpl	$0, -28(%ebp)
+ 409 04f5 0F888F01 		js	L30
+ 409      0000
+ 410 04fb 8B45E0   		movl	-32(%ebp), %eax
+ 411 04fe 8B4010   		movl	16(%eax), %eax
+ 412 0501 8D50EC   		leal	-20(%eax), %edx
+ 413 0504 8B45E0   		movl	-32(%ebp), %eax
+ 414 0507 895010   		movl	%edx, 16(%eax)
+ 415 050a 8B45E0   		movl	-32(%ebp), %eax
+ 416 050d 8B4010   		movl	16(%eax), %eax
+GAS LISTING gonbe_main_x.s 			page 12
+
+
+ 417 0510 85C0     		testl	%eax, %eax
+ 418 0512 790A     		jns	L23
+ 419 0514 8B45E0   		movl	-32(%ebp), %eax
+ 420 0517 C7401000 		movl	$0, 16(%eax)
+ 420      000000
+ 421              	L23:
+ 422 051e E8000000 		call	_sheet_refresh
+ 422      00
+ 423 0523 E9620100 		jmp	L30
+ 423      00
+ 424              	L22:
+ 425 0528 817DE8AD 		cmpl	$173, -24(%ebp)
+ 425      000000
+ 426 052f 7536     		jne	L24
+ 427 0531 837DE400 		cmpl	$0, -28(%ebp)
+ 428 0535 0F884F01 		js	L30
+ 428      0000
+ 429 053b 8B45E0   		movl	-32(%ebp), %eax
+ 430 053e 8B400C   		movl	12(%eax), %eax
+ 431 0541 8D50EC   		leal	-20(%eax), %edx
+ 432 0544 8B45E0   		movl	-32(%ebp), %eax
+ 433 0547 8B4008   		movl	8(%eax), %eax
+ 434 054a 89542408 		movl	%edx, 8(%esp)
+ 435 054e 89442404 		movl	%eax, 4(%esp)
+ 436 0552 8B45E0   		movl	-32(%ebp), %eax
+ 437 0555 890424   		movl	%eax, (%esp)
+ 438 0558 E8000000 		call	_sheet_resize
+ 438      00
+ 439 055d E8000000 		call	_sheet_refresh
+ 439      00
+ 440 0562 E9230100 		jmp	L30
+ 440      00
+ 441              	L24:
+ 442 0567 817DE8AE 		cmpl	$174, -24(%ebp)
+ 442      000000
+ 443 056e 7536     		jne	L25
+ 444 0570 837DE400 		cmpl	$0, -28(%ebp)
+ 445 0574 0F881001 		js	L30
+ 445      0000
+ 446 057a 8B45E0   		movl	-32(%ebp), %eax
+ 447 057d 8B400C   		movl	12(%eax), %eax
+ 448 0580 8D5014   		leal	20(%eax), %edx
+ 449 0583 8B45E0   		movl	-32(%ebp), %eax
+ 450 0586 8B4008   		movl	8(%eax), %eax
+ 451 0589 89542408 		movl	%edx, 8(%esp)
+ 452 058d 89442404 		movl	%eax, 4(%esp)
+ 453 0591 8B45E0   		movl	-32(%ebp), %eax
+ 454 0594 890424   		movl	%eax, (%esp)
+ 455 0597 E8000000 		call	_sheet_resize
+ 455      00
+ 456 059c E8000000 		call	_sheet_refresh
+ 456      00
+ 457 05a1 E9E40000 		jmp	L30
+ 457      00
+ 458              	L25:
+ 459 05a6 817DE8B0 		cmpl	$176, -24(%ebp)
+ 459      000000
+GAS LISTING gonbe_main_x.s 			page 13
+
+
+ 460 05ad 7536     		jne	L26
+ 461 05af 837DE400 		cmpl	$0, -28(%ebp)
+ 462 05b3 0F88D100 		js	L30
+ 462      0000
+ 463 05b9 8B45E0   		movl	-32(%ebp), %eax
+ 464 05bc 8B400C   		movl	12(%eax), %eax
+ 465 05bf 8B55E0   		movl	-32(%ebp), %edx
+ 466 05c2 8B5208   		movl	8(%edx), %edx
+ 467 05c5 83C214   		addl	$20, %edx
+ 468 05c8 89442408 		movl	%eax, 8(%esp)
+ 469 05cc 89542404 		movl	%edx, 4(%esp)
+ 470 05d0 8B45E0   		movl	-32(%ebp), %eax
+ 471 05d3 890424   		movl	%eax, (%esp)
+ 472 05d6 E8000000 		call	_sheet_resize
+ 472      00
+ 473 05db E8000000 		call	_sheet_refresh
+ 473      00
+ 474 05e0 E9A50000 		jmp	L30
+ 474      00
+ 475              	L26:
+ 476 05e5 817DE8AF 		cmpl	$175, -24(%ebp)
+ 476      000000
+ 477 05ec 7533     		jne	L27
+ 478 05ee 837DE400 		cmpl	$0, -28(%ebp)
+ 479 05f2 0F889200 		js	L30
+ 479      0000
+ 480 05f8 8B45E0   		movl	-32(%ebp), %eax
+ 481 05fb 8B400C   		movl	12(%eax), %eax
+ 482 05fe 8B55E0   		movl	-32(%ebp), %edx
+ 483 0601 8B5208   		movl	8(%edx), %edx
+ 484 0604 83EA14   		subl	$20, %edx
+ 485 0607 89442408 		movl	%eax, 8(%esp)
+ 486 060b 89542404 		movl	%edx, 4(%esp)
+ 487 060f 8B45E0   		movl	-32(%ebp), %eax
+ 488 0612 890424   		movl	%eax, (%esp)
+ 489 0615 E8000000 		call	_sheet_resize
+ 489      00
+ 490 061a E8000000 		call	_sheet_refresh
+ 490      00
+ 491 061f EB69     		jmp	L30
+ 492              	L27:
+ 493 0621 8B45E8   		movl	-24(%ebp), %eax
+ 494 0624 A32C0200 		movl	%eax, _getc_char
+ 494      00
+ 495 0629 EB5F     		jmp	L30
+ 496              	L4:
+ 497 062b 8B45E8   		movl	-24(%ebp), %eax
+ 498 062e 3B45F4   		cmpl	-12(%ebp), %eax
+ 499 0631 7536     		jne	L28
+ 500 0633 A1280200 		movl	_main_sheet, %eax
+ 500      00
+ 501 0638 C7442404 		movl	$LC19, 4(%esp)
+ 501      EC000000 
+ 502 0640 890424   		movl	%eax, (%esp)
+ 503 0643 E8000000 		call	_ut_printf
+ 503      00
+ 504 0648 C7442404 		movl	$10000, 4(%esp)
+GAS LISTING gonbe_main_x.s 			page 14
+
+
+ 504      10270000 
+ 505 0650 C7042400 		movl	$_main_fifo, (%esp)
+ 505      000000
+ 506 0657 E8000000 		call	_set_oneshot_timer
+ 506      00
+ 507 065c 05000100 		addl	$256, %eax
+ 507      00
+ 508 0661 8945F4   		movl	%eax, -12(%ebp)
+ 509 0664 E9F4FBFF 		jmp	L29
+ 509      FF
+ 510              	L28:
+ 511 0669 A1280200 		movl	_main_sheet, %eax
+ 511      00
+ 512 066e 8B55E8   		movl	-24(%ebp), %edx
+ 513 0671 89542408 		movl	%edx, 8(%esp)
+ 514 0675 C7442404 		movl	$LC20, 4(%esp)
+ 514      FF000000 
+ 515 067d 890424   		movl	%eax, (%esp)
+ 516 0680 E8000000 		call	_ut_printf
+ 516      00
+ 517 0685 E9D3FBFF 		jmp	L29
+ 517      FF
+ 518              	L30:
+ 519 068a 90       		nop
+ 520 068b E9CDFBFF 		jmp	L29
+ 520      FF
+ 521              		.cfi_endproc
+ 522              	LFE0:
+ 523              		.globl	_init
+ 524              		.def	_init;	.scl	2;	.type	32;	.endef
+ 525              	_init:
+ 526              	LFB1:
+ 527              		.cfi_startproc
+ 528 0690 55       		pushl	%ebp
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 5, -8
+ 531 0691 89E5     		movl	%esp, %ebp
+ 532              		.cfi_def_cfa_register 5
+ 533 0693 83EC28   		subl	$40, %esp
+ 534 0696 E8000000 		call	_bss_clear
+ 534      00
+ 535 069b C7052002 		movl	$4080, _binfo
+ 535      0000F00F 
+ 535      0000
+ 536 06a5 A1200200 		movl	_binfo, %eax
+ 536      00
+ 537 06aa 0FB74004 		movzwl	4(%eax), %eax
+ 538 06ae 0FBFD0   		movswl	%ax, %edx
+ 539 06b1 A1200200 		movl	_binfo, %eax
+ 539      00
+ 540 06b6 0FB74006 		movzwl	6(%eax), %eax
+ 541 06ba 98       		cwtl
+ 542 06bb 0FAFC2   		imull	%edx, %eax
+ 543 06be 89C2     		movl	%eax, %edx
+ 544 06c0 A1200200 		movl	_binfo, %eax
+ 544      00
+ 545 06c5 8B4008   		movl	8(%eax), %eax
+GAS LISTING gonbe_main_x.s 			page 15
+
+
+ 546 06c8 89542408 		movl	%edx, 8(%esp)
+ 547 06cc C7442404 		movl	$7, 4(%esp)
+ 547      07000000 
+ 548 06d4 890424   		movl	%eax, (%esp)
+ 549 06d7 E8000000 		call	_memset
+ 549      00
+ 550 06dc E8000000 		call	_init_gdtidt
+ 550      00
+ 551 06e1 E8000000 		call	_init_palette
+ 551      00
+ 552 06e6 E8000000 		call	_dispinit
+ 552      00
+ 553 06eb C7442404 		movl	$-1, 4(%esp)
+ 553      FFFFFFFF 
+ 554 06f3 C7042400 		movl	$4194304, (%esp)
+ 554      004000
+ 555 06fa E8000000 		call	_memcheck
+ 555      00
+ 556 06ff A3240200 		movl	%eax, _memory_mb
+ 556      00
+ 557 0704 A1240200 		movl	_memory_mb, %eax
+ 557      00
+ 558 0709 89442408 		movl	%eax, 8(%esp)
+ 559 070d C7442404 		movl	$4194304, 4(%esp)
+ 559      00004000 
+ 560 0715 C7042400 		movl	$_memman, (%esp)
+ 560      000000
+ 561 071c E8000000 		call	_memman_init
+ 561      00
+ 562 0721 E8000000 		call	_shtctl_init
+ 562      00
+ 563 0726 A1200200 		movl	_binfo, %eax
+ 563      00
+ 564 072b 0FB74006 		movzwl	6(%eax), %eax
+ 565 072f 0FBFD0   		movswl	%ax, %edx
+ 566 0732 A1200200 		movl	_binfo, %eax
+ 566      00
+ 567 0737 0FB74004 		movzwl	4(%eax), %eax
+ 568 073b 98       		cwtl
+ 569 073c C7442408 		movl	$65535, 8(%esp)
+ 569      FFFF0000 
+ 570 0744 89542404 		movl	%edx, 4(%esp)
+ 571 0748 890424   		movl	%eax, (%esp)
+ 572 074b E8000000 		call	_sheet_alloc
+ 572      00
+ 573 0750 8945F4   		movl	%eax, -12(%ebp)
+ 574 0753 C7442408 		movl	$0, 8(%esp)
+ 574      00000000 
+ 575 075b C7442404 		movl	$0, 4(%esp)
+ 575      00000000 
+ 576 0763 8B45F4   		movl	-12(%ebp), %eax
+ 577 0766 890424   		movl	%eax, (%esp)
+ 578 0769 E8000000 		call	_sheet_slide
+ 578      00
+ 579 076e C7442404 		movl	$0, 4(%esp)
+ 579      00000000 
+ 580 0776 8B45F4   		movl	-12(%ebp), %eax
+GAS LISTING gonbe_main_x.s 			page 16
+
+
+ 581 0779 890424   		movl	%eax, (%esp)
+ 582 077c E8000000 		call	_sheet_updown
+ 582      00
+ 583 0781 8B45F4   		movl	-12(%ebp), %eax
+ 584 0784 A3280200 		movl	%eax, _main_sheet
+ 584      00
+ 585 0789 C744240C 		movl	$0, 12(%esp)
+ 585      00000000 
+ 586 0791 C7442408 		movl	$_main_fifo_buf, 8(%esp)
+ 586      20000000 
+ 587 0799 C7442404 		movl	$128, 4(%esp)
+ 587      80000000 
+ 588 07a1 C7042400 		movl	$_main_fifo, (%esp)
+ 588      000000
+ 589 07a8 E8000000 		call	_fifo32_init
+ 589      00
+ 590 07ad E8000000 		call	_init_pic
+ 590      00
+ 591 07b2 E8000000 		call	_enable_interrupt
+ 591      00
+ 592 07b7 E8000000 		call	_init_pit
+ 592      00
+ 593 07bc 90       		nop
+ 594 07bd C9       		leave
+ 595              		.cfi_restore 5
+ 596              		.cfi_def_cfa 4, 4
+ 597 07be C3       		ret
+ 598              		.cfi_endproc
+ 599              	LFE1:
+ 600              		.globl	_task_idle
+ 601              		.def	_task_idle;	.scl	2;	.type	32;	.endef
+ 602              	_task_idle:
+ 603              	LFB2:
+ 604              		.cfi_startproc
+ 605 07bf 55       		pushl	%ebp
+ 606              		.cfi_def_cfa_offset 8
+ 607              		.cfi_offset 5, -8
+ 608 07c0 89E5     		movl	%esp, %ebp
+ 609              		.cfi_def_cfa_register 5
+ 610 07c2 83EC08   		subl	$8, %esp
+ 611              	L33:
+ 612 07c5 E8000000 		call	_gonbe_hlt
+ 612      00
+ 613 07ca EBF9     		jmp	L33
+ 614              		.cfi_endproc
+ 615              	LFE2:
+ 616              		.data
+ 617              	LC21:
+ 618 0130 3D3D3D20 		.ascii "=== start task_b\12\0"
+ 618      73746172 
+ 618      74207461 
+ 618      736B5F62 
+ 618      0A00
+ 619              	LC22:
+ 620 0142 0A636F75 		.ascii "\12count=%d\0"
+ 620      6E743D25 
+ 620      6400
+GAS LISTING gonbe_main_x.s 			page 17
+
+
+ 621              		.text
+ 622              		.globl	_task_b_main
+ 623              		.def	_task_b_main;	.scl	2;	.type	32;	.endef
+ 624              	_task_b_main:
+ 625              	LFB3:
+ 626              		.cfi_startproc
+ 627 07cc 55       		pushl	%ebp
+ 628              		.cfi_def_cfa_offset 8
+ 629              		.cfi_offset 5, -8
+ 630 07cd 89E5     		movl	%esp, %ebp
+ 631              		.cfi_def_cfa_register 5
+ 632 07cf 81EC4802 		subl	$584, %esp
+ 632      0000
+ 633 07d5 C745F400 		movl	$0, -12(%ebp)
+ 633      000000
+ 634 07dc A1280200 		movl	_main_sheet, %eax
+ 634      00
+ 635 07e1 C7442404 		movl	$LC21, 4(%esp)
+ 635      30010000 
+ 636 07e9 890424   		movl	%eax, (%esp)
+ 637 07ec E8000000 		call	_ut_printf
+ 637      00
+ 638 07f1 8B450C   		movl	12(%ebp), %eax
+ 639 07f4 8944240C 		movl	%eax, 12(%esp)
+ 640 07f8 8D85D0FD 		leal	-560(%ebp), %eax
+ 640      FFFF
+ 641 07fe 89442408 		movl	%eax, 8(%esp)
+ 642 0802 C7442404 		movl	$128, 4(%esp)
+ 642      80000000 
+ 643 080a 8D45D0   		leal	-48(%ebp), %eax
+ 644 080d 890424   		movl	%eax, (%esp)
+ 645 0810 E8000000 		call	_fifo32_init
+ 645      00
+ 646 0815 C7442404 		movl	$1000, 4(%esp)
+ 646      E8030000 
+ 647 081d 8D45D0   		leal	-48(%ebp), %eax
+ 648 0820 890424   		movl	%eax, (%esp)
+ 649 0823 E8000000 		call	_set_oneshot_timer
+ 649      00
+ 650 0828 05000100 		addl	$256, %eax
+ 650      00
+ 651 082d 8945F0   		movl	%eax, -16(%ebp)
+ 652              	L37:
+ 653 0830 8345F401 		addl	$1, -12(%ebp)
+ 654 0834 E8000000 		call	_disable_interrupt
+ 654      00
+ 655 0839 8D45D0   		leal	-48(%ebp), %eax
+ 656 083c 890424   		movl	%eax, (%esp)
+ 657 083f E8000000 		call	_fifo32_status
+ 657      00
+ 658 0844 85C0     		testl	%eax, %eax
+ 659 0846 7507     		jne	L35
+ 660 0848 E8000000 		call	_enable_interrupt
+ 660      00
+ 661 084d EBE1     		jmp	L37
+ 662              	L35:
+ 663 084f 8D45D0   		leal	-48(%ebp), %eax
+GAS LISTING gonbe_main_x.s 			page 18
+
+
+ 664 0852 890424   		movl	%eax, (%esp)
+ 665 0855 E8000000 		call	_fifo32_get
+ 665      00
+ 666 085a 8945EC   		movl	%eax, -20(%ebp)
+ 667 085d E8000000 		call	_enable_interrupt
+ 667      00
+ 668 0862 8B45EC   		movl	-20(%ebp), %eax
+ 669 0865 3B45F0   		cmpl	-16(%ebp), %eax
+ 670 0868 75C6     		jne	L37
+ 671 086a 8B45F4   		movl	-12(%ebp), %eax
+ 672 086d 89442408 		movl	%eax, 8(%esp)
+ 673 0871 C7442404 		movl	$LC22, 4(%esp)
+ 673      42010000 
+ 674 0879 8B4508   		movl	8(%ebp), %eax
+ 675 087c 890424   		movl	%eax, (%esp)
+ 676 087f E8000000 		call	_ut_printf
+ 676      00
+ 677 0884 C7442404 		movl	$1000, 4(%esp)
+ 677      E8030000 
+ 678 088c 8D45D0   		leal	-48(%ebp), %eax
+ 679 088f 890424   		movl	%eax, (%esp)
+ 680 0892 E8000000 		call	_set_oneshot_timer
+ 680      00
+ 681 0897 05000100 		addl	$256, %eax
+ 681      00
+ 682 089c 8945F0   		movl	%eax, -16(%ebp)
+ 683 089f 8B450C   		movl	12(%ebp), %eax
+ 684 08a2 890424   		movl	%eax, (%esp)
+ 685 08a5 E8000000 		call	_task_sleep
+ 685      00
+ 686 08aa EB84     		jmp	L37
+ 687              		.cfi_endproc
+ 688              	LFE3:
+ 689              		.data
+ 690              	LC23:
+ 691 014c 696E3D25 		.ascii "in=%x\12\0"
+ 691      780A00
+ 692 0153 00       		.text
+ 693              		.globl	_task_c_main
+ 694              		.def	_task_c_main;	.scl	2;	.type	32;	.endef
+ 695              	_task_c_main:
+ 696              	LFB4:
+ 697              		.cfi_startproc
+ 698 08ac 55       		pushl	%ebp
+ 699              		.cfi_def_cfa_offset 8
+ 700              		.cfi_offset 5, -8
+ 701 08ad 89E5     		movl	%esp, %ebp
+ 702              		.cfi_def_cfa_register 5
+ 703 08af 83EC18   		subl	$24, %esp
+ 704              	L39:
+ 705 08b2 0FB60500 		movzbl	_APP_ch, %eax
+ 705      000000
+ 706 08b9 0FB6C0   		movzbl	%al, %eax
+ 707 08bc 89442408 		movl	%eax, 8(%esp)
+ 708 08c0 C7442404 		movl	$LC23, 4(%esp)
+ 708      4C010000 
+ 709 08c8 8B4508   		movl	8(%ebp), %eax
+GAS LISTING gonbe_main_x.s 			page 19
+
+
+ 710 08cb 890424   		movl	%eax, (%esp)
+ 711 08ce E8000000 		call	_ut_printf
+ 711      00
+ 712 08d3 EBDD     		jmp	L39
+ 713              		.cfi_endproc
+ 714              	LFE4:
+ 715              		.ident	"GCC: (GNU) 10.2.0"
+ 716              		.def	_ut_printf;	.scl	2;	.type	32;	.endef
+ 717              		.def	_set_oneshot_timer;	.scl	2;	.type	32;	.endef
+ 718              		.def	_task_init;	.scl	2;	.type	32;	.endef
+ 719              		.def	_task_run;	.scl	2;	.type	32;	.endef
+ 720              		.def	_task_alloc;	.scl	2;	.type	32;	.endef
+ 721              		.def	_memman_alloc;	.scl	2;	.type	32;	.endef
+ 722              		.def	_command_init;	.scl	2;	.type	32;	.endef
+ 723              		.def	_io_out8;	.scl	2;	.type	32;	.endef
+ 724              		.def	_delay_task;	.scl	2;	.type	32;	.endef
+ 725              		.def	_disable_interrupt;	.scl	2;	.type	32;	.endef
+ 726              		.def	_fifo32_status;	.scl	2;	.type	32;	.endef
+ 727              		.def	_enable_interrupt;	.scl	2;	.type	32;	.endef
+ 728              		.def	_gonbe_hlt;	.scl	2;	.type	32;	.endef
+ 729              		.def	_fifo32_get;	.scl	2;	.type	32;	.endef
+ 730              		.def	_select_sub_disp;	.scl	2;	.type	32;	.endef
+ 731              		.def	_select_main_disp;	.scl	2;	.type	32;	.endef
+ 732              		.def	_sheet_updown;	.scl	2;	.type	32;	.endef
+ 733              		.def	_sheet_refresh;	.scl	2;	.type	32;	.endef
+ 734              		.def	_sheet_resize;	.scl	2;	.type	32;	.endef
+ 735              		.def	_bss_clear;	.scl	2;	.type	32;	.endef
+ 736              		.def	_memset;	.scl	2;	.type	32;	.endef
+ 737              		.def	_init_gdtidt;	.scl	2;	.type	32;	.endef
+ 738              		.def	_init_palette;	.scl	2;	.type	32;	.endef
+ 739              		.def	_dispinit;	.scl	2;	.type	32;	.endef
+ 740              		.def	_memcheck;	.scl	2;	.type	32;	.endef
+ 741              		.def	_memman_init;	.scl	2;	.type	32;	.endef
+ 742              		.def	_shtctl_init;	.scl	2;	.type	32;	.endef
+ 743              		.def	_sheet_alloc;	.scl	2;	.type	32;	.endef
+ 744              		.def	_sheet_slide;	.scl	2;	.type	32;	.endef
+ 745              		.def	_fifo32_init;	.scl	2;	.type	32;	.endef
+ 746              		.def	_init_pic;	.scl	2;	.type	32;	.endef
+ 747              		.def	_init_pit;	.scl	2;	.type	32;	.endef
+ 748 08d5 909090   		.def	_task_sleep;	.scl	2;	.type	32;	.endef

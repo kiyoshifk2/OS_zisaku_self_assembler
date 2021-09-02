@@ -1,0 +1,1997 @@
+GAS LISTING sedit_x.s 			page 1
+
+
+   1              		.file	"sedit.c"
+   2              		.text
+   3              		.globl	_sed_buf
+   4              		.bss
+   5              		.align 4
+   6              	_sed_buf:
+   7 0000 00000000 		.space 4
+   8              	.lcomm _no_of_line,4,4
+   9              	.lcomm _buf_len,4,4
+  10              	.lcomm _xpos,4,4
+  11              	.lcomm _ypos,4,4
+  12              	.lcomm _s_xpos,4,4
+  13              	.lcomm _s_ypos,4,4
+  14              		.text
+  15              		.def	_get_line_top;	.scl	3;	.type	32;	.endef
+  16              	_get_line_top:
+  17              	LFB0:
+  18              		.cfi_startproc
+  19 0000 55       		pushl	%ebp
+  20              		.cfi_def_cfa_offset 8
+  21              		.cfi_offset 5, -8
+  22 0001 89E5     		movl	%esp, %ebp
+  23              		.cfi_def_cfa_register 5
+  24 0003 837D0800 		cmpl	$0, 8(%ebp)
+  25 0007 7521     		jne	L4
+  26 0009 B8000000 		movl	$0, %eax
+  26      00
+  27 000e EB29     		jmp	L3
+  28              	L5:
+  29 0010 8B150000 		movl	_sed_buf, %edx
+  29      0000
+  30 0016 8B4508   		movl	8(%ebp), %eax
+  31 0019 01D0     		addl	%edx, %eax
+  32 001b 0FB600   		movzbl	(%eax), %eax
+  33 001e 3C0A     		cmpb	$10, %al
+  34 0020 7508     		jne	L4
+  35 0022 8B4508   		movl	8(%ebp), %eax
+  36 0025 83C001   		addl	$1, %eax
+  37 0028 EB0F     		jmp	L3
+  38              	L4:
+  39 002a 836D0801 		subl	$1, 8(%ebp)
+  40 002e 837D0800 		cmpl	$0, 8(%ebp)
+  41 0032 75DC     		jne	L5
+  42 0034 B8000000 		movl	$0, %eax
+  42      00
+  43              	L3:
+  44 0039 5D       		popl	%ebp
+  45              		.cfi_restore 5
+  46              		.cfi_def_cfa 4, 4
+  47 003a C3       		ret
+  48              		.cfi_endproc
+  49              	LFE0:
+  50              		.def	_disp_cursor;	.scl	3;	.type	32;	.endef
+  51              	_disp_cursor:
+  52              	LFB1:
+  53              		.cfi_startproc
+  54 003b 55       		pushl	%ebp
+GAS LISTING sedit_x.s 			page 2
+
+
+  55              		.cfi_def_cfa_offset 8
+  56              		.cfi_offset 5, -8
+  57 003c 89E5     		movl	%esp, %ebp
+  58              		.cfi_def_cfa_register 5
+  59 003e 83EC28   		subl	$40, %esp
+  60 0041 A10C0000 		movl	_xpos, %eax
+  60      00
+  61 0046 8B0D1400 		movl	_s_xpos, %ecx
+  61      0000
+  62 004c 29C8     		subl	%ecx, %eax
+  63 004e 89C2     		movl	%eax, %edx
+  64 0050 89D0     		movl	%edx, %eax
+  65 0052 01C0     		addl	%eax, %eax
+  66 0054 01D0     		addl	%edx, %eax
+  67 0056 C1E002   		sall	$2, %eax
+  68 0059 8945F0   		movl	%eax, -16(%ebp)
+  69 005c A1100000 		movl	_ypos, %eax
+  69      00
+  70 0061 8B151800 		movl	_s_ypos, %edx
+  70      0000
+  71 0067 29D0     		subl	%edx, %eax
+  72 0069 C1E004   		sall	$4, %eax
+  73 006c 83C00F   		addl	$15, %eax
+  74 006f 8945EC   		movl	%eax, -20(%ebp)
+  75 0072 C745F400 		movl	$0, -12(%ebp)
+  75      000000
+  76 0079 EB2C     		jmp	L7
+  77              	L8:
+  78 007b 8B55F0   		movl	-16(%ebp), %edx
+  79 007e 8B45F4   		movl	-12(%ebp), %eax
+  80 0081 8D0C02   		leal	(%edx,%eax), %ecx
+  81 0084 A1000000 		movl	_cmd_sht, %eax
+  81      00
+  82 0089 8B5508   		movl	8(%ebp), %edx
+  83 008c 8954240C 		movl	%edx, 12(%esp)
+  84 0090 8B55EC   		movl	-20(%ebp), %edx
+  85 0093 89542408 		movl	%edx, 8(%esp)
+  86 0097 894C2404 		movl	%ecx, 4(%esp)
+  87 009b 890424   		movl	%eax, (%esp)
+  88 009e E8000000 		call	_pset
+  88      00
+  89 00a3 8345F401 		addl	$1, -12(%ebp)
+  90              	L7:
+  91 00a7 837DF40B 		cmpl	$11, -12(%ebp)
+  92 00ab 7ECE     		jle	L8
+  93 00ad 90       		nop
+  94 00ae 90       		nop
+  95 00af C9       		leave
+  96              		.cfi_restore 5
+  97              		.cfi_def_cfa 4, 4
+  98 00b0 C3       		ret
+  99              		.cfi_endproc
+ 100              	LFE1:
+ 101              		.def	_search_line;	.scl	3;	.type	32;	.endef
+ 102              	_search_line:
+ 103              	LFB2:
+ 104              		.cfi_startproc
+GAS LISTING sedit_x.s 			page 3
+
+
+ 105 00b1 55       		pushl	%ebp
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 5, -8
+ 108 00b2 89E5     		movl	%esp, %ebp
+ 109              		.cfi_def_cfa_register 5
+ 110 00b4 83EC28   		subl	$40, %esp
+ 111 00b7 C745F400 		movl	$0, -12(%ebp)
+ 111      000000
+ 112 00be C745F000 		movl	$0, -16(%ebp)
+ 112      000000
+ 113 00c5 EB3E     		jmp	L10
+ 114              	L13:
+ 115 00c7 8B150000 		movl	_sed_buf, %edx
+ 115      0000
+ 116 00cd 8B45F4   		movl	-12(%ebp), %eax
+ 117 00d0 01D0     		addl	%edx, %eax
+ 118 00d2 C7442404 		movl	$10, 4(%esp)
+ 118      0A000000 
+ 119 00da 890424   		movl	%eax, (%esp)
+ 120 00dd E8000000 		call	_strchr
+ 120      00
+ 121 00e2 8945EC   		movl	%eax, -20(%ebp)
+ 122 00e5 837DEC00 		cmpl	$0, -20(%ebp)
+ 123 00e9 7505     		jne	L11
+ 124 00eb 8B45F4   		movl	-12(%ebp), %eax
+ 125 00ee EB20     		jmp	L12
+ 126              	L11:
+ 127 00f0 8345F001 		addl	$1, -16(%ebp)
+ 128 00f4 8B150000 		movl	_sed_buf, %edx
+ 128      0000
+ 129 00fa 8B45EC   		movl	-20(%ebp), %eax
+ 130 00fd 29D0     		subl	%edx, %eax
+ 131 00ff 83C001   		addl	$1, %eax
+ 132 0102 8945F4   		movl	%eax, -12(%ebp)
+ 133              	L10:
+ 134 0105 8B45F0   		movl	-16(%ebp), %eax
+ 135 0108 3B4508   		cmpl	8(%ebp), %eax
+ 136 010b 7CBA     		jl	L13
+ 137 010d 8B45F4   		movl	-12(%ebp), %eax
+ 138              	L12:
+ 139 0110 C9       		leave
+ 140              		.cfi_restore 5
+ 141              		.cfi_def_cfa 4, 4
+ 142 0111 C3       		ret
+ 143              		.cfi_endproc
+ 144              	LFE2:
+ 145              		.def	_cursor_to_ptr;	.scl	3;	.type	32;	.endef
+ 146              	_cursor_to_ptr:
+ 147              	LFB3:
+ 148              		.cfi_startproc
+ 149 0112 55       		pushl	%ebp
+ 150              		.cfi_def_cfa_offset 8
+ 151              		.cfi_offset 5, -8
+ 152 0113 89E5     		movl	%esp, %ebp
+ 153              		.cfi_def_cfa_register 5
+ 154 0115 83EC28   		subl	$40, %esp
+ 155 0118 A1100000 		movl	_ypos, %eax
+GAS LISTING sedit_x.s 			page 4
+
+
+ 155      00
+ 156 011d 890424   		movl	%eax, (%esp)
+ 157 0120 E88CFFFF 		call	_search_line
+ 157      FF
+ 158 0125 8945F4   		movl	%eax, -12(%ebp)
+ 159 0128 C745EC00 		movl	$0, -20(%ebp)
+ 159      000000
+ 160 012f EB4A     		jmp	L15
+ 161              	L19:
+ 162 0131 8B150000 		movl	_sed_buf, %edx
+ 162      0000
+ 163 0137 8B45F4   		movl	-12(%ebp), %eax
+ 164 013a 01C2     		addl	%eax, %edx
+ 165 013c A1100000 		movl	_ypos, %eax
+ 165      00
+ 166 0141 89542408 		movl	%edx, 8(%esp)
+ 167 0145 89442404 		movl	%eax, 4(%esp)
+ 168 0149 8D45EC   		leal	-20(%ebp), %eax
+ 169 014c 890424   		movl	%eax, (%esp)
+ 170 014f E81D0100 		call	_sed_disp_1_char
+ 170      00
+ 171 0154 8945F0   		movl	%eax, -16(%ebp)
+ 172 0157 837DF063 		cmpl	$99, -16(%ebp)
+ 173 015b 7F08     		jg	L16
+ 174 015d 8B45F0   		movl	-16(%ebp), %eax
+ 175 0160 0145F4   		addl	%eax, -12(%ebp)
+ 176 0163 EB16     		jmp	L15
+ 177              	L16:
+ 178 0165 837DF064 		cmpl	$100, -16(%ebp)
+ 179 0169 7505     		jne	L17
+ 180 016b 8B45F4   		movl	-12(%ebp), %eax
+ 181 016e EB1A     		jmp	L20
+ 182              	L17:
+ 183 0170 837DF065 		cmpl	$101, -16(%ebp)
+ 184 0174 7505     		jne	L15
+ 185 0176 8B45F4   		movl	-12(%ebp), %eax
+ 186 0179 EB0F     		jmp	L20
+ 187              	L15:
+ 188 017b 8B55EC   		movl	-20(%ebp), %edx
+ 189 017e A10C0000 		movl	_xpos, %eax
+ 189      00
+ 190 0183 39C2     		cmpl	%eax, %edx
+ 191 0185 7CAA     		jl	L19
+ 192 0187 8B45F4   		movl	-12(%ebp), %eax
+ 193              	L20:
+ 194 018a C9       		leave
+ 195              		.cfi_restore 5
+ 196              		.cfi_def_cfa 4, 4
+ 197 018b C3       		ret
+ 198              		.cfi_endproc
+ 199              	LFE3:
+ 200              		.def	_ptr_to_cursor;	.scl	3;	.type	32;	.endef
+ 201              	_ptr_to_cursor:
+ 202              	LFB4:
+ 203              		.cfi_startproc
+ 204 018c 55       		pushl	%ebp
+ 205              		.cfi_def_cfa_offset 8
+GAS LISTING sedit_x.s 			page 5
+
+
+ 206              		.cfi_offset 5, -8
+ 207 018d 89E5     		movl	%esp, %ebp
+ 208              		.cfi_def_cfa_register 5
+ 209 018f 83EC38   		subl	$56, %esp
+ 210 0192 C745F000 		movl	$0, -16(%ebp)
+ 210      000000
+ 211 0199 A1000000 		movl	_sed_buf, %eax
+ 211      00
+ 212 019e 8945F4   		movl	%eax, -12(%ebp)
+ 213 01a1 C7050C00 		movl	$0, _xpos
+ 213      00000000 
+ 213      0000
+ 214 01ab C7051000 		movl	$0, _ypos
+ 214      00000000 
+ 214      0000
+ 215              	L27:
+ 216 01b5 8B4508   		movl	8(%ebp), %eax
+ 217 01b8 3B45F0   		cmpl	-16(%ebp), %eax
+ 218 01bb 0F8EA400 		jle	L34
+ 218      0000
+ 219 01c1 C7442404 		movl	$10, 4(%esp)
+ 219      0A000000 
+ 220 01c9 8B45F4   		movl	-12(%ebp), %eax
+ 221 01cc 890424   		movl	%eax, (%esp)
+ 222 01cf E8000000 		call	_strchr
+ 222      00
+ 223 01d4 8945EC   		movl	%eax, -20(%ebp)
+ 224 01d7 837DEC00 		cmpl	$0, -20(%ebp)
+ 225 01db 742B     		je	L35
+ 226 01dd 8B45EC   		movl	-20(%ebp), %eax
+ 227 01e0 83C001   		addl	$1, %eax
+ 228 01e3 8B150000 		movl	_sed_buf, %edx
+ 228      0000
+ 229 01e9 29D0     		subl	%edx, %eax
+ 230 01eb 394508   		cmpl	%eax, 8(%ebp)
+ 231 01ee 7C1B     		jl	L36
+ 232 01f0 A1100000 		movl	_ypos, %eax
+ 232      00
+ 233 01f5 83C001   		addl	$1, %eax
+ 234 01f8 A3100000 		movl	%eax, _ypos
+ 234      00
+ 235 01fd 8B45EC   		movl	-20(%ebp), %eax
+ 236 0200 83C001   		addl	$1, %eax
+ 237 0203 8945F4   		movl	%eax, -12(%ebp)
+ 238 0206 EBAD     		jmp	L27
+ 239              	L35:
+ 240 0208 90       		nop
+ 241 0209 EB01     		jmp	L25
+ 242              	L36:
+ 243 020b 90       		nop
+ 244              	L25:
+ 245 020c C745E400 		movl	$0, -28(%ebp)
+ 245      000000
+ 246              	L32:
+ 247 0213 8B45E4   		movl	-28(%ebp), %eax
+ 248 0216 A30C0000 		movl	%eax, _xpos
+ 248      00
+GAS LISTING sedit_x.s 			page 6
+
+
+ 249 021b A1100000 		movl	_ypos, %eax
+ 249      00
+ 250 0220 8B55F4   		movl	-12(%ebp), %edx
+ 251 0223 89542408 		movl	%edx, 8(%esp)
+ 252 0227 89442404 		movl	%eax, 4(%esp)
+ 253 022b 8D45E4   		leal	-28(%ebp), %eax
+ 254 022e 890424   		movl	%eax, (%esp)
+ 255 0231 E83B0000 		call	_sed_disp_1_char
+ 255      00
+ 256 0236 8945E8   		movl	%eax, -24(%ebp)
+ 257 0239 837DE863 		cmpl	$99, -24(%ebp)
+ 258 023d 7F08     		jg	L28
+ 259 023f 8B45E8   		movl	-24(%ebp), %eax
+ 260 0242 0145F4   		addl	%eax, -12(%ebp)
+ 261 0245 EB0C     		jmp	L29
+ 262              	L28:
+ 263 0247 837DE864 		cmpl	$100, -24(%ebp)
+ 264 024b 741B     		je	L37
+ 265 024d 837DE865 		cmpl	$101, -24(%ebp)
+ 266 0251 7418     		je	L38
+ 267              	L29:
+ 268 0253 8B150000 		movl	_sed_buf, %edx
+ 268      0000
+ 269 0259 8B45F4   		movl	-12(%ebp), %eax
+ 270 025c 29D0     		subl	%edx, %eax
+ 271 025e 394508   		cmpl	%eax, 8(%ebp)
+ 272 0261 7C0B     		jl	L39
+ 273 0263 EBAE     		jmp	L32
+ 274              	L34:
+ 275 0265 90       		nop
+ 276 0266 EB07     		jmp	L21
+ 277              	L37:
+ 278 0268 90       		nop
+ 279 0269 EB04     		jmp	L21
+ 280              	L38:
+ 281 026b 90       		nop
+ 282 026c EB01     		jmp	L21
+ 283              	L39:
+ 284 026e 90       		nop
+ 285              	L21:
+ 286 026f C9       		leave
+ 287              		.cfi_restore 5
+ 288              		.cfi_def_cfa 4, 4
+ 289 0270 C3       		ret
+ 290              		.cfi_endproc
+ 291              	LFE4:
+ 292              		.data
+ 293              	LC0:
+ 294 0000 81AB00   		.ascii "\201\253\0"
+ 295              		.text
+ 296              		.def	_sed_disp_1_char;	.scl	3;	.type	32;	.endef
+ 297              	_sed_disp_1_char:
+ 298              	LFB5:
+ 299              		.cfi_startproc
+ 300 0271 55       		pushl	%ebp
+ 301              		.cfi_def_cfa_offset 8
+ 302              		.cfi_offset 5, -8
+GAS LISTING sedit_x.s 			page 7
+
+
+ 303 0272 89E5     		movl	%esp, %ebp
+ 304              		.cfi_def_cfa_register 5
+ 305 0274 53       		pushl	%ebx
+ 306 0275 83EC34   		subl	$52, %esp
+ 307              		.cfi_offset 3, -12
+ 308 0278 8B4508   		movl	8(%ebp), %eax
+ 309 027b 8B00     		movl	(%eax), %eax
+ 310 027d 8B0D1400 		movl	_s_xpos, %ecx
+ 310      0000
+ 311 0283 29C8     		subl	%ecx, %eax
+ 312 0285 89C2     		movl	%eax, %edx
+ 313 0287 89D0     		movl	%edx, %eax
+ 314 0289 01C0     		addl	%eax, %eax
+ 315 028b 01D0     		addl	%edx, %eax
+ 316 028d C1E002   		sall	$2, %eax
+ 317 0290 8945F0   		movl	%eax, -16(%ebp)
+ 318 0293 8B151800 		movl	_s_ypos, %edx
+ 318      0000
+ 319 0299 8B450C   		movl	12(%ebp), %eax
+ 320 029c 29D0     		subl	%edx, %eax
+ 321 029e C1E004   		sall	$4, %eax
+ 322 02a1 8945E4   		movl	%eax, -28(%ebp)
+ 323 02a4 8D45DC   		leal	-36(%ebp), %eax
+ 324 02a7 89442404 		movl	%eax, 4(%esp)
+ 325 02ab 8B4510   		movl	16(%ebp), %eax
+ 326 02ae 890424   		movl	%eax, (%esp)
+ 327 02b1 E8000000 		call	_sjis_parse
+ 327      00
+ 328 02b6 8945E0   		movl	%eax, -32(%ebp)
+ 329 02b9 837DE000 		cmpl	$0, -32(%ebp)
+ 330 02bd 750A     		jne	L41
+ 331 02bf B8640000 		movl	$100, %eax
+ 331      00
+ 332 02c4 E99A0100 		jmp	L53
+ 332      00
+ 333              	L41:
+ 334 02c9 8B45DC   		movl	-36(%ebp), %eax
+ 335 02cc 83F801   		cmpl	$1, %eax
+ 336 02cf 0F855A01 		jne	L43
+ 336      0000
+ 337 02d5 C745E800 		movl	$0, -24(%ebp)
+ 337      000000
+ 338 02dc E9930000 		jmp	L44
+ 338      00
+ 339              	L49:
+ 340 02e1 C745EC00 		movl	$0, -20(%ebp)
+ 340      000000
+ 341 02e8 EB7C     		jmp	L45
+ 342              	L48:
+ 343 02ea A1000000 		movl	_cmd_sht, %eax
+ 343      00
+ 344 02ef 8B4070   		movl	112(%eax), %eax
+ 345 02f2 8B00     		movl	(%eax), %eax
+ 346 02f4 85C0     		testl	%eax, %eax
+ 347 02f6 7536     		jne	L46
+ 348 02f8 A1000000 		movl	_cmd_sht, %eax
+ 348      00
+GAS LISTING sedit_x.s 			page 8
+
+
+ 349 02fd 8B406C   		movl	108(%eax), %eax
+ 350 0300 8B10     		movl	(%eax), %edx
+ 351 0302 8B4DE4   		movl	-28(%ebp), %ecx
+ 352 0305 8B45E8   		movl	-24(%ebp), %eax
+ 353 0308 8D1C01   		leal	(%ecx,%eax), %ebx
+ 354 030b 8B4DF0   		movl	-16(%ebp), %ecx
+ 355 030e 8B45EC   		movl	-20(%ebp), %eax
+ 356 0311 01C1     		addl	%eax, %ecx
+ 357 0313 A1000000 		movl	_cmd_sht, %eax
+ 357      00
+ 358 0318 8954240C 		movl	%edx, 12(%esp)
+ 359 031c 895C2408 		movl	%ebx, 8(%esp)
+ 360 0320 894C2404 		movl	%ecx, 4(%esp)
+ 361 0324 890424   		movl	%eax, (%esp)
+ 362 0327 E8000000 		call	_pset
+ 362      00
+ 363 032c EB34     		jmp	L47
+ 364              	L46:
+ 365 032e A1000000 		movl	_cmd_sht, %eax
+ 365      00
+ 366 0333 8B4068   		movl	104(%eax), %eax
+ 367 0336 8B10     		movl	(%eax), %edx
+ 368 0338 8B4DE4   		movl	-28(%ebp), %ecx
+ 369 033b 8B45E8   		movl	-24(%ebp), %eax
+ 370 033e 8D1C01   		leal	(%ecx,%eax), %ebx
+ 371 0341 8B4DF0   		movl	-16(%ebp), %ecx
+ 372 0344 8B45EC   		movl	-20(%ebp), %eax
+ 373 0347 01C1     		addl	%eax, %ecx
+ 374 0349 A1000000 		movl	_cmd_sht, %eax
+ 374      00
+ 375 034e 8954240C 		movl	%edx, 12(%esp)
+ 376 0352 895C2408 		movl	%ebx, 8(%esp)
+ 377 0356 894C2404 		movl	%ecx, 4(%esp)
+ 378 035a 890424   		movl	%eax, (%esp)
+ 379 035d E8000000 		call	_pset
+ 379      00
+ 380              	L47:
+ 381 0362 8345EC01 		addl	$1, -20(%ebp)
+ 382              	L45:
+ 383 0366 837DEC05 		cmpl	$5, -20(%ebp)
+ 384 036a 0F8E7AFF 		jle	L48
+ 384      FFFF
+ 385 0370 8345E801 		addl	$1, -24(%ebp)
+ 386              	L44:
+ 387 0374 837DE80F 		cmpl	$15, -24(%ebp)
+ 388 0378 0F8E63FF 		jle	L49
+ 388      FFFF
+ 389 037e 837DE009 		cmpl	$9, -32(%ebp)
+ 390 0382 7532     		jne	L50
+ 391 0384 C745F400 		movl	$0, -12(%ebp)
+ 391      000000
+ 392              	L51:
+ 393 038b 8345F401 		addl	$1, -12(%ebp)
+ 394 038f 8B4508   		movl	8(%ebp), %eax
+ 395 0392 8B00     		movl	(%eax), %eax
+ 396 0394 8D5001   		leal	1(%eax), %edx
+ 397 0397 8B4508   		movl	8(%ebp), %eax
+GAS LISTING sedit_x.s 			page 9
+
+
+ 398 039a 8910     		movl	%edx, (%eax)
+ 399 039c 8345F00C 		addl	$12, -16(%ebp)
+ 400 03a0 8B4508   		movl	8(%ebp), %eax
+ 401 03a3 8B00     		movl	(%eax), %eax
+ 402 03a5 83E003   		andl	$3, %eax
+ 403 03a8 85C0     		testl	%eax, %eax
+ 404 03aa 75DF     		jne	L51
+ 405 03ac B8010000 		movl	$1, %eax
+ 405      00
+ 406 03b1 E9AD0000 		jmp	L53
+ 406      00
+ 407              	L50:
+ 408 03b6 837DE00A 		cmpl	$10, -32(%ebp)
+ 409 03ba 753A     		jne	L52
+ 410 03bc 8B45E4   		movl	-28(%ebp), %eax
+ 411 03bf 8D5004   		leal	4(%eax), %edx
+ 412 03c2 A1000000 		movl	_cmd_sht, %eax
+ 412      00
+ 413 03c7 C744240C 		movl	$LC0, 12(%esp)
+ 413      00000000 
+ 414 03cf 89542408 		movl	%edx, 8(%esp)
+ 415 03d3 8B55F0   		movl	-16(%ebp), %edx
+ 416 03d6 89542404 		movl	%edx, 4(%esp)
+ 417 03da 890424   		movl	%eax, (%esp)
+ 418 03dd E8000000 		call	_disp_char
+ 418      00
+ 419 03e2 8B4508   		movl	8(%ebp), %eax
+ 420 03e5 8B00     		movl	(%eax), %eax
+ 421 03e7 8D5001   		leal	1(%eax), %edx
+ 422 03ea 8B4508   		movl	8(%ebp), %eax
+ 423 03ed 8910     		movl	%edx, (%eax)
+ 424 03ef B8650000 		movl	$101, %eax
+ 424      00
+ 425 03f4 EB6D     		jmp	L53
+ 426              	L52:
+ 427 03f6 8B45E4   		movl	-28(%ebp), %eax
+ 428 03f9 8D4804   		leal	4(%eax), %ecx
+ 429 03fc A1000000 		movl	_cmd_sht, %eax
+ 429      00
+ 430 0401 8B5510   		movl	16(%ebp), %edx
+ 431 0404 8954240C 		movl	%edx, 12(%esp)
+ 432 0408 894C2408 		movl	%ecx, 8(%esp)
+ 433 040c 8B55F0   		movl	-16(%ebp), %edx
+ 434 040f 89542404 		movl	%edx, 4(%esp)
+ 435 0413 890424   		movl	%eax, (%esp)
+ 436 0416 E8000000 		call	_disp_char
+ 436      00
+ 437 041b 8B4508   		movl	8(%ebp), %eax
+ 438 041e 8B00     		movl	(%eax), %eax
+ 439 0420 8D5001   		leal	1(%eax), %edx
+ 440 0423 8B4508   		movl	8(%ebp), %eax
+ 441 0426 8910     		movl	%edx, (%eax)
+ 442 0428 B8010000 		movl	$1, %eax
+ 442      00
+ 443 042d EB34     		jmp	L53
+ 444              	L43:
+ 445 042f A1000000 		movl	_cmd_sht, %eax
+GAS LISTING sedit_x.s 			page 10
+
+
+ 445      00
+ 446 0434 8B5510   		movl	16(%ebp), %edx
+ 447 0437 8954240C 		movl	%edx, 12(%esp)
+ 448 043b 8B55E4   		movl	-28(%ebp), %edx
+ 449 043e 89542408 		movl	%edx, 8(%esp)
+ 450 0442 8B55F0   		movl	-16(%ebp), %edx
+ 451 0445 89542404 		movl	%edx, 4(%esp)
+ 452 0449 890424   		movl	%eax, (%esp)
+ 453 044c E8000000 		call	_disp_char
+ 453      00
+ 454 0451 8B4508   		movl	8(%ebp), %eax
+ 455 0454 8B00     		movl	(%eax), %eax
+ 456 0456 8D5002   		leal	2(%eax), %edx
+ 457 0459 8B4508   		movl	8(%ebp), %eax
+ 458 045c 8910     		movl	%edx, (%eax)
+ 459 045e B8020000 		movl	$2, %eax
+ 459      00
+ 460              	L53:
+ 461 0463 8B5DFC   		movl	-4(%ebp), %ebx
+ 462 0466 C9       		leave
+ 463              		.cfi_restore 5
+ 464              		.cfi_restore 3
+ 465              		.cfi_def_cfa 4, 4
+ 466 0467 C3       		ret
+ 467              		.cfi_endproc
+ 468              	LFE5:
+ 469              		.def	_sed_disp_1_line;	.scl	3;	.type	32;	.endef
+ 470              	_sed_disp_1_line:
+ 471              	LFB6:
+ 472              		.cfi_startproc
+ 473 0468 55       		pushl	%ebp
+ 474              		.cfi_def_cfa_offset 8
+ 475              		.cfi_offset 5, -8
+ 476 0469 89E5     		movl	%esp, %ebp
+ 477              		.cfi_def_cfa_register 5
+ 478 046b 83EC28   		subl	$40, %esp
+ 479 046e C745F000 		movl	$0, -16(%ebp)
+ 479      000000
+ 480              	L58:
+ 481 0475 8B450C   		movl	12(%ebp), %eax
+ 482 0478 89442408 		movl	%eax, 8(%esp)
+ 483 047c 8B4508   		movl	8(%ebp), %eax
+ 484 047f 89442404 		movl	%eax, 4(%esp)
+ 485 0483 8D45F0   		leal	-16(%ebp), %eax
+ 486 0486 890424   		movl	%eax, (%esp)
+ 487 0489 E8E3FDFF 		call	_sed_disp_1_char
+ 487      FF
+ 488 048e 8945F4   		movl	%eax, -12(%ebp)
+ 489 0491 837DF463 		cmpl	$99, -12(%ebp)
+ 490 0495 7F08     		jg	L59
+ 491 0497 8B45F4   		movl	-12(%ebp), %eax
+ 492 049a 01450C   		addl	%eax, 12(%ebp)
+ 493 049d EBD6     		jmp	L58
+ 494              	L59:
+ 495 049f 90       		nop
+ 496 04a0 C9       		leave
+ 497              		.cfi_restore 5
+GAS LISTING sedit_x.s 			page 11
+
+
+ 498              		.cfi_def_cfa 4, 4
+ 499 04a1 C3       		ret
+ 500              		.cfi_endproc
+ 501              	LFE6:
+ 502              		.def	_sed_display;	.scl	3;	.type	32;	.endef
+ 503              	_sed_display:
+ 504              	LFB7:
+ 505              		.cfi_startproc
+ 506 04a2 55       		pushl	%ebp
+ 507              		.cfi_def_cfa_offset 8
+ 508              		.cfi_offset 5, -8
+ 509 04a3 89E5     		movl	%esp, %ebp
+ 510              		.cfi_def_cfa_register 5
+ 511 04a5 83EC28   		subl	$40, %esp
+ 512 04a8 A1000000 		movl	_cmd_sht, %eax
+ 512      00
+ 513 04ad C7442404 		movl	$7, 4(%esp)
+ 513      07000000 
+ 514 04b5 890424   		movl	%eax, (%esp)
+ 515 04b8 E8000000 		call	_clear_screen
+ 515      00
+ 516 04bd A1180000 		movl	_s_ypos, %eax
+ 516      00
+ 517 04c2 890424   		movl	%eax, (%esp)
+ 518 04c5 E8E7FBFF 		call	_search_line
+ 518      FF
+ 519 04ca 8945EC   		movl	%eax, -20(%ebp)
+ 520 04cd 837DEC00 		cmpl	$0, -20(%ebp)
+ 521 04d1 785D     		js	L66
+ 522 04d3 8B150000 		movl	_sed_buf, %edx
+ 522      0000
+ 523 04d9 8B45EC   		movl	-20(%ebp), %eax
+ 524 04dc 01D0     		addl	%edx, %eax
+ 525 04de 8945F0   		movl	%eax, -16(%ebp)
+ 526 04e1 C745F400 		movl	$0, -12(%ebp)
+ 526      000000
+ 527 04e8 EB3E     		jmp	L63
+ 528              	L65:
+ 529 04ea 8B151800 		movl	_s_ypos, %edx
+ 529      0000
+ 530 04f0 8B45F4   		movl	-12(%ebp), %eax
+ 531 04f3 01C2     		addl	%eax, %edx
+ 532 04f5 8B45F0   		movl	-16(%ebp), %eax
+ 533 04f8 89442404 		movl	%eax, 4(%esp)
+ 534 04fc 891424   		movl	%edx, (%esp)
+ 535 04ff E864FFFF 		call	_sed_disp_1_line
+ 535      FF
+ 536 0504 C7442404 		movl	$10, 4(%esp)
+ 536      0A000000 
+ 537 050c 8B45F0   		movl	-16(%ebp), %eax
+ 538 050f 890424   		movl	%eax, (%esp)
+ 539 0512 E8000000 		call	_strchr
+ 539      00
+ 540 0517 8945F0   		movl	%eax, -16(%ebp)
+ 541 051a 837DF000 		cmpl	$0, -16(%ebp)
+ 542 051e 7413     		je	L67
+ 543 0520 8345F001 		addl	$1, -16(%ebp)
+GAS LISTING sedit_x.s 			page 12
+
+
+ 544 0524 8345F401 		addl	$1, -12(%ebp)
+ 545              	L63:
+ 546 0528 837DF413 		cmpl	$19, -12(%ebp)
+ 547 052c 7EBC     		jle	L65
+ 548 052e EB04     		jmp	L60
+ 549              	L66:
+ 550 0530 90       		nop
+ 551 0531 EB01     		jmp	L60
+ 552              	L67:
+ 553 0533 90       		nop
+ 554              	L60:
+ 555 0534 C9       		leave
+ 556              		.cfi_restore 5
+ 557              		.cfi_def_cfa 4, 4
+ 558 0535 C3       		ret
+ 559              		.cfi_endproc
+ 560              	LFE7:
+ 561              		.def	_redraw;	.scl	3;	.type	32;	.endef
+ 562              	_redraw:
+ 563              	LFB8:
+ 564              		.cfi_startproc
+ 565 0536 55       		pushl	%ebp
+ 566              		.cfi_def_cfa_offset 8
+ 567              		.cfi_offset 5, -8
+ 568 0537 89E5     		movl	%esp, %ebp
+ 569              		.cfi_def_cfa_register 5
+ 570 0539 83EC28   		subl	$40, %esp
+ 571 053c A1100000 		movl	_ypos, %eax
+ 571      00
+ 572 0541 8B151800 		movl	_s_ypos, %edx
+ 572      0000
+ 573 0547 29D0     		subl	%edx, %eax
+ 574 0549 8945EC   		movl	%eax, -20(%ebp)
+ 575 054c 837DEC00 		cmpl	$0, -20(%ebp)
+ 576 0550 0F889400 		js	L76
+ 576      0000
+ 577 0556 837DEC13 		cmpl	$19, -20(%ebp)
+ 578 055a 0F8F8A00 		jg	L76
+ 578      0000
+ 579 0560 C745F400 		movl	$0, -12(%ebp)
+ 579      000000
+ 580 0567 EB4D     		jmp	L72
+ 581              	L75:
+ 582 0569 C745F000 		movl	$0, -16(%ebp)
+ 582      000000
+ 583 0570 EB31     		jmp	L73
+ 584              	L74:
+ 585 0572 8B45EC   		movl	-20(%ebp), %eax
+ 586 0575 C1E004   		sall	$4, %eax
+ 587 0578 89C2     		movl	%eax, %edx
+ 588 057a 8B45F4   		movl	-12(%ebp), %eax
+ 589 057d 01C2     		addl	%eax, %edx
+ 590 057f A1000000 		movl	_cmd_sht, %eax
+ 590      00
+ 591 0584 C744240C 		movl	$7, 12(%esp)
+ 591      07000000 
+ 592 058c 89542408 		movl	%edx, 8(%esp)
+GAS LISTING sedit_x.s 			page 13
+
+
+ 593 0590 8B55F0   		movl	-16(%ebp), %edx
+ 594 0593 89542404 		movl	%edx, 4(%esp)
+ 595 0597 890424   		movl	%eax, (%esp)
+ 596 059a E8000000 		call	_pset
+ 596      00
+ 597 059f 8345F001 		addl	$1, -16(%ebp)
+ 598              	L73:
+ 599 05a3 A1000000 		movl	_binfo, %eax
+ 599      00
+ 600 05a8 0FB74004 		movzwl	4(%eax), %eax
+ 601 05ac 98       		cwtl
+ 602 05ad 3945F0   		cmpl	%eax, -16(%ebp)
+ 603 05b0 7CC0     		jl	L74
+ 604 05b2 8345F401 		addl	$1, -12(%ebp)
+ 605              	L72:
+ 606 05b6 837DF40F 		cmpl	$15, -12(%ebp)
+ 607 05ba 7EAD     		jle	L75
+ 608 05bc E851FBFF 		call	_cursor_to_ptr
+ 608      FF
+ 609 05c1 890424   		movl	%eax, (%esp)
+ 610 05c4 E837FAFF 		call	_get_line_top
+ 610      FF
+ 611 05c9 8945E8   		movl	%eax, -24(%ebp)
+ 612 05cc 8B150000 		movl	_sed_buf, %edx
+ 612      0000
+ 613 05d2 8B45E8   		movl	-24(%ebp), %eax
+ 614 05d5 01C2     		addl	%eax, %edx
+ 615 05d7 A1100000 		movl	_ypos, %eax
+ 615      00
+ 616 05dc 89542404 		movl	%edx, 4(%esp)
+ 617 05e0 890424   		movl	%eax, (%esp)
+ 618 05e3 E880FEFF 		call	_sed_disp_1_line
+ 618      FF
+ 619 05e8 EB01     		jmp	L68
+ 620              	L76:
+ 621 05ea 90       		nop
+ 622              	L68:
+ 623 05eb C9       		leave
+ 624              		.cfi_restore 5
+ 625              		.cfi_def_cfa 4, 4
+ 626 05ec C3       		ret
+ 627              		.cfi_endproc
+ 628              	LFE8:
+ 629              		.def	_sed_init;	.scl	3;	.type	32;	.endef
+ 630              	_sed_init:
+ 631              	LFB9:
+ 632              		.cfi_startproc
+ 633 05ed 55       		pushl	%ebp
+ 634              		.cfi_def_cfa_offset 8
+ 635              		.cfi_offset 5, -8
+ 636 05ee 89E5     		movl	%esp, %ebp
+ 637              		.cfi_def_cfa_register 5
+ 638 05f0 83EC18   		subl	$24, %esp
+ 639 05f3 A1000000 		movl	_sed_buf, %eax
+ 639      00
+ 640 05f8 C7442408 		movl	$1048576, 8(%esp)
+ 640      00001000 
+GAS LISTING sedit_x.s 			page 14
+
+
+ 641 0600 C7442404 		movl	$0, 4(%esp)
+ 641      00000000 
+ 642 0608 890424   		movl	%eax, (%esp)
+ 643 060b E8000000 		call	_memset
+ 643      00
+ 644 0610 C7050400 		movl	$0, _no_of_line
+ 644      00000000 
+ 644      0000
+ 645 061a C7050800 		movl	$0, _buf_len
+ 645      00000000 
+ 645      0000
+ 646 0624 C7050C00 		movl	$0, _xpos
+ 646      00000000 
+ 646      0000
+ 647 062e C7051000 		movl	$0, _ypos
+ 647      00000000 
+ 647      0000
+ 648 0638 C7051400 		movl	$0, _s_xpos
+ 648      00000000 
+ 648      0000
+ 649 0642 C7051800 		movl	$0, _s_ypos
+ 649      00000000 
+ 649      0000
+ 650 064c 90       		nop
+ 651 064d C9       		leave
+ 652              		.cfi_restore 5
+ 653              		.cfi_def_cfa 4, 4
+ 654 064e C3       		ret
+ 655              		.cfi_endproc
+ 656              	LFE9:
+ 657              		.data
+ 658              	LC1:
+ 659 0003 0A00     		.ascii "\12\0"
+ 660 0005 000000   		.align 4
+ 661              	LC2:
+ 662 0008 46312020 		.ascii "F1        ... \203w\203\213\203v\203\201\203b\203Z\201[\203W\12\0"
+ 662      20202020 
+ 662      20202E2E 
+ 662      2E208377 
+ 662      838B8376 
+ 663              	LC3:
+ 664 0028 46322020 		.ascii "F2        ... \214\273\215\335\215s\215\355\217\234\12\0"
+ 664      20202020 
+ 664      20202E2E 
+ 664      2E208CBB 
+ 664      8DDD8D73 
+ 665              	LC4:
+ 666 0042 46352020 		.ascii "F5        ... \203v\203\215\203O\203\211\203\200\217I\227\271\12\0"
+ 666      20202020 
+ 666      20202E2E 
+ 666      2E208376 
+ 666      838D834F 
+ 667              		.align 4
+ 668              	LC5:
+ 669 0060 46362020 		.ascii "F6        ... \216w\222\350\215s\224\324\215\206\202\326\224\362\202\324\12\0"
+ 669      20202020 
+ 669      20202E2E 
+GAS LISTING sedit_x.s 			page 15
+
+
+ 669      2E208E77 
+ 669      92E88D73 
+ 670              	LC6:
+ 671 0080 2D2D2D20 		.ascii "---   push any key   ---\0"
+ 671      20207075 
+ 671      73682061 
+ 671      6E79206B 
+ 671      65792020 
+ 672              		.text
+ 673              		.def	_sed_help;	.scl	3;	.type	32;	.endef
+ 674              	_sed_help:
+ 675              	LFB10:
+ 676              		.cfi_startproc
+ 677 064f 55       		pushl	%ebp
+ 678              		.cfi_def_cfa_offset 8
+ 679              		.cfi_offset 5, -8
+ 680 0650 89E5     		movl	%esp, %ebp
+ 681              		.cfi_def_cfa_register 5
+ 682 0652 83EC18   		subl	$24, %esp
+ 683 0655 A1000000 		movl	_cmd_sht, %eax
+ 683      00
+ 684 065a C7442404 		movl	$LC1, 4(%esp)
+ 684      03000000 
+ 685 0662 890424   		movl	%eax, (%esp)
+ 686 0665 E8000000 		call	_ut_printf
+ 686      00
+ 687 066a A1000000 		movl	_cmd_sht, %eax
+ 687      00
+ 688 066f C7442404 		movl	$LC2, 4(%esp)
+ 688      08000000 
+ 689 0677 890424   		movl	%eax, (%esp)
+ 690 067a E8000000 		call	_ut_printf
+ 690      00
+ 691 067f A1000000 		movl	_cmd_sht, %eax
+ 691      00
+ 692 0684 C7442404 		movl	$LC3, 4(%esp)
+ 692      28000000 
+ 693 068c 890424   		movl	%eax, (%esp)
+ 694 068f E8000000 		call	_ut_printf
+ 694      00
+ 695 0694 A1000000 		movl	_cmd_sht, %eax
+ 695      00
+ 696 0699 C7442404 		movl	$LC4, 4(%esp)
+ 696      42000000 
+ 697 06a1 890424   		movl	%eax, (%esp)
+ 698 06a4 E8000000 		call	_ut_printf
+ 698      00
+ 699 06a9 A1000000 		movl	_cmd_sht, %eax
+ 699      00
+ 700 06ae C7442404 		movl	$LC5, 4(%esp)
+ 700      60000000 
+ 701 06b6 890424   		movl	%eax, (%esp)
+ 702 06b9 E8000000 		call	_ut_printf
+ 702      00
+ 703 06be A1000000 		movl	_cmd_sht, %eax
+ 703      00
+ 704 06c3 C7442404 		movl	$LC1, 4(%esp)
+GAS LISTING sedit_x.s 			page 16
+
+
+ 704      03000000 
+ 705 06cb 890424   		movl	%eax, (%esp)
+ 706 06ce E8000000 		call	_ut_printf
+ 706      00
+ 707 06d3 A1000000 		movl	_cmd_sht, %eax
+ 707      00
+ 708 06d8 C7442404 		movl	$LC6, 4(%esp)
+ 708      80000000 
+ 709 06e0 890424   		movl	%eax, (%esp)
+ 710 06e3 E8000000 		call	_ut_printf
+ 710      00
+ 711 06e8 A1000000 		movl	_cmd_sht, %eax
+ 711      00
+ 712 06ed 890424   		movl	%eax, (%esp)
+ 713 06f0 E8000000 		call	_ut_getcA
+ 713      00
+ 714 06f5 A1000000 		movl	_cmd_sht, %eax
+ 714      00
+ 715 06fa C7442404 		movl	$LC1, 4(%esp)
+ 715      03000000 
+ 716 0702 890424   		movl	%eax, (%esp)
+ 717 0705 E8000000 		call	_ut_printf
+ 717      00
+ 718 070a 90       		nop
+ 719 070b C9       		leave
+ 720              		.cfi_restore 5
+ 721              		.cfi_def_cfa 4, 4
+ 722 070c C3       		ret
+ 723              		.cfi_endproc
+ 724              	LFE10:
+ 725              		.data
+ 726              	LC7:
+ 727 0099 0A8F4997 		.ascii "\12\217I\227\271\202\265\202\334\202\267\202\251(y/n) ? \0"
+ 727      B982B582 
+ 727      DC82B782 
+ 727      A928792F 
+ 727      6E29203F 
+ 728              		.text
+ 729              		.def	_sed_exit;	.scl	3;	.type	32;	.endef
+ 730              	_sed_exit:
+ 731              	LFB11:
+ 732              		.cfi_startproc
+ 733 070d 55       		pushl	%ebp
+ 734              		.cfi_def_cfa_offset 8
+ 735              		.cfi_offset 5, -8
+ 736 070e 89E5     		movl	%esp, %ebp
+ 737              		.cfi_def_cfa_register 5
+ 738 0710 83EC28   		subl	$40, %esp
+ 739 0713 A1000000 		movl	_cmd_sht, %eax
+ 739      00
+ 740 0718 C7442404 		movl	$7, 4(%esp)
+ 740      07000000 
+ 741 0720 890424   		movl	%eax, (%esp)
+ 742 0723 E8000000 		call	_clear_screen
+ 742      00
+ 743 0728 A1000000 		movl	_cmd_sht, %eax
+ 743      00
+GAS LISTING sedit_x.s 			page 17
+
+
+ 744 072d C7442404 		movl	$LC7, 4(%esp)
+ 744      99000000 
+ 745 0735 890424   		movl	%eax, (%esp)
+ 746 0738 E8000000 		call	_ut_printf
+ 746      00
+ 747 073d A1000000 		movl	_cmd_sht, %eax
+ 747      00
+ 748 0742 890424   		movl	%eax, (%esp)
+ 749 0745 E8000000 		call	_ut_getc
+ 749      00
+ 750 074a 8945F4   		movl	%eax, -12(%ebp)
+ 751 074d 837DF479 		cmpl	$121, -12(%ebp)
+ 752 0751 7406     		je	L80
+ 753 0753 837DF459 		cmpl	$89, -12(%ebp)
+ 754 0757 751C     		jne	L81
+ 755              	L80:
+ 756 0759 A1000000 		movl	_cmd_sht, %eax
+ 756      00
+ 757 075e C7442404 		movl	$LC1, 4(%esp)
+ 757      03000000 
+ 758 0766 890424   		movl	%eax, (%esp)
+ 759 0769 E8000000 		call	_ut_printf
+ 759      00
+ 760 076e B8000000 		movl	$0, %eax
+ 760      00
+ 761 0773 EB0A     		jmp	L82
+ 762              	L81:
+ 763 0775 E828FDFF 		call	_sed_display
+ 763      FF
+ 764 077a B8010000 		movl	$1, %eax
+ 764      00
+ 765              	L82:
+ 766 077f C9       		leave
+ 767              		.cfi_restore 5
+ 768              		.cfi_def_cfa 4, 4
+ 769 0780 C3       		ret
+ 770              		.cfi_endproc
+ 771              	LFE11:
+ 772              		.data
+ 773              	LC8:
+ 774 00af 0A8D7394 		.ascii "\12\215s\224\324\215\206\201F\0"
+ 774      D48D8681 
+ 774      4600
+ 775              		.text
+ 776              		.globl	_sed_jump
+ 777              		.def	_sed_jump;	.scl	2;	.type	32;	.endef
+ 778              	_sed_jump:
+ 779              	LFB12:
+ 780              		.cfi_startproc
+ 781 0781 55       		pushl	%ebp
+ 782              		.cfi_def_cfa_offset 8
+ 783              		.cfi_offset 5, -8
+ 784 0782 89E5     		movl	%esp, %ebp
+ 785              		.cfi_def_cfa_register 5
+ 786 0784 83EC58   		subl	$88, %esp
+ 787 0787 A1000000 		movl	_cmd_sht, %eax
+ 787      00
+GAS LISTING sedit_x.s 			page 18
+
+
+ 788 078c C7442404 		movl	$7, 4(%esp)
+ 788      07000000 
+ 789 0794 890424   		movl	%eax, (%esp)
+ 790 0797 E8000000 		call	_clear_screen
+ 790      00
+ 791 079c A1000000 		movl	_cmd_sht, %eax
+ 791      00
+ 792 07a1 C7442404 		movl	$LC8, 4(%esp)
+ 792      AF000000 
+ 793 07a9 890424   		movl	%eax, (%esp)
+ 794 07ac E8000000 		call	_ut_printf
+ 794      00
+ 795 07b1 A1000000 		movl	_cmd_sht, %eax
+ 795      00
+ 796 07b6 C7442408 		movl	$64, 8(%esp)
+ 796      40000000 
+ 797 07be 8D55B8   		leal	-72(%ebp), %edx
+ 798 07c1 89542404 		movl	%edx, 4(%esp)
+ 799 07c5 890424   		movl	%eax, (%esp)
+ 800 07c8 E8000000 		call	_ut_gets
+ 800      00
+ 801 07cd 8D45B8   		leal	-72(%ebp), %eax
+ 802 07d0 890424   		movl	%eax, (%esp)
+ 803 07d3 E8000000 		call	_atoi
+ 803      00
+ 804 07d8 83E801   		subl	$1, %eax
+ 805 07db A3100000 		movl	%eax, _ypos
+ 805      00
+ 806 07e0 C7050C00 		movl	$0, _xpos
+ 806      00000000 
+ 806      0000
+ 807 07ea A1100000 		movl	_ypos, %eax
+ 807      00
+ 808 07ef 85C0     		testl	%eax, %eax
+ 809 07f1 790C     		jns	L84
+ 810 07f3 C7051000 		movl	$0, _ypos
+ 810      00000000 
+ 810      0000
+ 811 07fd EB19     		jmp	L85
+ 812              	L84:
+ 813 07ff 8B151000 		movl	_ypos, %edx
+ 813      0000
+ 814 0805 A1040000 		movl	_no_of_line, %eax
+ 814      00
+ 815 080a 39C2     		cmpl	%eax, %edx
+ 816 080c 7E0A     		jle	L85
+ 817 080e A1040000 		movl	_no_of_line, %eax
+ 817      00
+ 818 0813 A3100000 		movl	%eax, _ypos
+ 818      00
+ 819              	L85:
+ 820 0818 C7051400 		movl	$0, _s_xpos
+ 820      00000000 
+ 820      0000
+ 821 0822 A1100000 		movl	_ypos, %eax
+ 821      00
+ 822 0827 83E80A   		subl	$10, %eax
+GAS LISTING sedit_x.s 			page 19
+
+
+ 823 082a A3180000 		movl	%eax, _s_ypos
+ 823      00
+ 824 082f A1040000 		movl	_no_of_line, %eax
+ 824      00
+ 825 0834 8D50FF   		leal	-1(%eax), %edx
+ 826 0837 A1180000 		movl	_s_ypos, %eax
+ 826      00
+ 827 083c 39C2     		cmpl	%eax, %edx
+ 828 083e 7F0D     		jg	L86
+ 829 0840 A1040000 		movl	_no_of_line, %eax
+ 829      00
+ 830 0845 83E801   		subl	$1, %eax
+ 831 0848 A3180000 		movl	%eax, _s_ypos
+ 831      00
+ 832              	L86:
+ 833 084d A1180000 		movl	_s_ypos, %eax
+ 833      00
+ 834 0852 85C0     		testl	%eax, %eax
+ 835 0854 790A     		jns	L87
+ 836 0856 C7051800 		movl	$0, _s_ypos
+ 836      00000000 
+ 836      0000
+ 837              	L87:
+ 838 0860 E83DFCFF 		call	_sed_display
+ 838      FF
+ 839 0865 90       		nop
+ 840 0866 C9       		leave
+ 841              		.cfi_restore 5
+ 842              		.cfi_def_cfa 4, 4
+ 843 0867 C3       		ret
+ 844              		.cfi_endproc
+ 845              	LFE12:
+ 846              		.def	_sed_UP;	.scl	3;	.type	32;	.endef
+ 847              	_sed_UP:
+ 848              	LFB13:
+ 849              		.cfi_startproc
+ 850 0868 55       		pushl	%ebp
+ 851              		.cfi_def_cfa_offset 8
+ 852              		.cfi_offset 5, -8
+ 853 0869 89E5     		movl	%esp, %ebp
+ 854              		.cfi_def_cfa_register 5
+ 855 086b 83EC08   		subl	$8, %esp
+ 856 086e A1100000 		movl	_ypos, %eax
+ 856      00
+ 857 0873 85C0     		testl	%eax, %eax
+ 858 0875 743C     		je	L92
+ 859 0877 8B151000 		movl	_ypos, %edx
+ 859      0000
+ 860 087d A1180000 		movl	_s_ypos, %eax
+ 860      00
+ 861 0882 39C2     		cmpl	%eax, %edx
+ 862 0884 7F1E     		jg	L91
+ 863 0886 A1100000 		movl	_ypos, %eax
+ 863      00
+ 864 088b 83E801   		subl	$1, %eax
+ 865 088e A3100000 		movl	%eax, _ypos
+ 865      00
+GAS LISTING sedit_x.s 			page 20
+
+
+ 866 0893 A1100000 		movl	_ypos, %eax
+ 866      00
+ 867 0898 A3180000 		movl	%eax, _s_ypos
+ 867      00
+ 868 089d E800FCFF 		call	_sed_display
+ 868      FF
+ 869 08a2 EB10     		jmp	L88
+ 870              	L91:
+ 871 08a4 A1100000 		movl	_ypos, %eax
+ 871      00
+ 872 08a9 83E801   		subl	$1, %eax
+ 873 08ac A3100000 		movl	%eax, _ypos
+ 873      00
+ 874 08b1 EB01     		jmp	L88
+ 875              	L92:
+ 876 08b3 90       		nop
+ 877              	L88:
+ 878 08b4 C9       		leave
+ 879              		.cfi_restore 5
+ 880              		.cfi_def_cfa 4, 4
+ 881 08b5 C3       		ret
+ 882              		.cfi_endproc
+ 883              	LFE13:
+ 884              		.def	_sed_DOWN;	.scl	3;	.type	32;	.endef
+ 885              	_sed_DOWN:
+ 886              	LFB14:
+ 887              		.cfi_startproc
+ 888 08b6 55       		pushl	%ebp
+ 889              		.cfi_def_cfa_offset 8
+ 890              		.cfi_offset 5, -8
+ 891 08b7 89E5     		movl	%esp, %ebp
+ 892              		.cfi_def_cfa_register 5
+ 893 08b9 83EC08   		subl	$8, %esp
+ 894 08bc 8B151000 		movl	_ypos, %edx
+ 894      0000
+ 895 08c2 A1040000 		movl	_no_of_line, %eax
+ 895      00
+ 896 08c7 39C2     		cmpl	%eax, %edx
+ 897 08c9 7D41     		jge	L97
+ 898 08cb A1180000 		movl	_s_ypos, %eax
+ 898      00
+ 899 08d0 8D5012   		leal	18(%eax), %edx
+ 900 08d3 A1100000 		movl	_ypos, %eax
+ 900      00
+ 901 08d8 39C2     		cmpl	%eax, %edx
+ 902 08da 7D21     		jge	L96
+ 903 08dc A1100000 		movl	_ypos, %eax
+ 903      00
+ 904 08e1 83C001   		addl	$1, %eax
+ 905 08e4 A3100000 		movl	%eax, _ypos
+ 905      00
+ 906 08e9 A1180000 		movl	_s_ypos, %eax
+ 906      00
+ 907 08ee 83C001   		addl	$1, %eax
+ 908 08f1 A3180000 		movl	%eax, _s_ypos
+ 908      00
+ 909 08f6 E8A7FBFF 		call	_sed_display
+GAS LISTING sedit_x.s 			page 21
+
+
+ 909      FF
+ 910 08fb EB10     		jmp	L93
+ 911              	L96:
+ 912 08fd A1100000 		movl	_ypos, %eax
+ 912      00
+ 913 0902 83C001   		addl	$1, %eax
+ 914 0905 A3100000 		movl	%eax, _ypos
+ 914      00
+ 915 090a EB01     		jmp	L93
+ 916              	L97:
+ 917 090c 90       		nop
+ 918              	L93:
+ 919 090d C9       		leave
+ 920              		.cfi_restore 5
+ 921              		.cfi_def_cfa 4, 4
+ 922 090e C3       		ret
+ 923              		.cfi_endproc
+ 924              	LFE14:
+ 925              		.def	_sed_RIGHT;	.scl	3;	.type	32;	.endef
+ 926              	_sed_RIGHT:
+ 927              	LFB15:
+ 928              		.cfi_startproc
+ 929 090f 55       		pushl	%ebp
+ 930              		.cfi_def_cfa_offset 8
+ 931              		.cfi_offset 5, -8
+ 932 0910 89E5     		movl	%esp, %ebp
+ 933              		.cfi_def_cfa_register 5
+ 934 0912 83EC28   		subl	$40, %esp
+ 935 0915 C745F400 		movl	$0, -12(%ebp)
+ 935      000000
+ 936 091c E8F1F7FF 		call	_cursor_to_ptr
+ 936      FF
+ 937 0921 8945F0   		movl	%eax, -16(%ebp)
+ 938 0924 A1080000 		movl	_buf_len, %eax
+ 938      00
+ 939 0929 3945F0   		cmpl	%eax, -16(%ebp)
+ 940 092c 0F8DA400 		jge	L105
+ 940      0000
+ 941 0932 8B150000 		movl	_sed_buf, %edx
+ 941      0000
+ 942 0938 8B45F0   		movl	-16(%ebp), %eax
+ 943 093b 01C2     		addl	%eax, %edx
+ 944 093d 8D45EC   		leal	-20(%ebp), %eax
+ 945 0940 89442404 		movl	%eax, 4(%esp)
+ 946 0944 891424   		movl	%edx, (%esp)
+ 947 0947 E8000000 		call	_sjis_parse
+ 947      00
+ 948 094c 8B45EC   		movl	-20(%ebp), %eax
+ 949 094f 0145F0   		addl	%eax, -16(%ebp)
+ 950 0952 8B45F0   		movl	-16(%ebp), %eax
+ 951 0955 890424   		movl	%eax, (%esp)
+ 952 0958 E82FF8FF 		call	_ptr_to_cursor
+ 952      FF
+ 953 095d A1180000 		movl	_s_ypos, %eax
+ 953      00
+ 954 0962 8D5013   		leal	19(%eax), %edx
+ 955 0965 A1100000 		movl	_ypos, %eax
+GAS LISTING sedit_x.s 			page 22
+
+
+ 955      00
+ 956 096a 39C2     		cmpl	%eax, %edx
+ 957 096c 7D14     		jge	L101
+ 958 096e A1180000 		movl	_s_ypos, %eax
+ 958      00
+ 959 0973 83C001   		addl	$1, %eax
+ 960 0976 A3180000 		movl	%eax, _s_ypos
+ 960      00
+ 961 097b C745F401 		movl	$1, -12(%ebp)
+ 961      000000
+ 962              	L101:
+ 963 0982 8B151400 		movl	_s_xpos, %edx
+ 963      0000
+ 964 0988 A10C0000 		movl	_xpos, %eax
+ 964      00
+ 965 098d 39C2     		cmpl	%eax, %edx
+ 966 098f 7E13     		jle	L102
+ 967 0991 A10C0000 		movl	_xpos, %eax
+ 967      00
+ 968 0996 A3140000 		movl	%eax, _s_xpos
+ 968      00
+ 969 099b C745F401 		movl	$1, -12(%ebp)
+ 969      000000
+ 970 09a2 EB25     		jmp	L103
+ 971              	L102:
+ 972 09a4 A1140000 		movl	_s_xpos, %eax
+ 972      00
+ 973 09a9 8D5049   		leal	73(%eax), %edx
+ 974 09ac A10C0000 		movl	_xpos, %eax
+ 974      00
+ 975 09b1 39C2     		cmpl	%eax, %edx
+ 976 09b3 7D14     		jge	L103
+ 977 09b5 A10C0000 		movl	_xpos, %eax
+ 977      00
+ 978 09ba 83E849   		subl	$73, %eax
+ 979 09bd A3140000 		movl	%eax, _s_xpos
+ 979      00
+ 980 09c2 C745F401 		movl	$1, -12(%ebp)
+ 980      000000
+ 981              	L103:
+ 982 09c9 837DF400 		cmpl	$0, -12(%ebp)
+ 983 09cd 7408     		je	L98
+ 984 09cf E8CEFAFF 		call	_sed_display
+ 984      FF
+ 985 09d4 EB01     		jmp	L98
+ 986              	L105:
+ 987 09d6 90       		nop
+ 988              	L98:
+ 989 09d7 C9       		leave
+ 990              		.cfi_restore 5
+ 991              		.cfi_def_cfa 4, 4
+ 992 09d8 C3       		ret
+ 993              		.cfi_endproc
+ 994              	LFE15:
+ 995              		.def	_sed_LEFT;	.scl	3;	.type	32;	.endef
+ 996              	_sed_LEFT:
+ 997              	LFB16:
+GAS LISTING sedit_x.s 			page 23
+
+
+ 998              		.cfi_startproc
+ 999 09d9 55       		pushl	%ebp
+ 1000              		.cfi_def_cfa_offset 8
+ 1001              		.cfi_offset 5, -8
+ 1002 09da 89E5     		movl	%esp, %ebp
+ 1003              		.cfi_def_cfa_register 5
+ 1004 09dc 83EC28   		subl	$40, %esp
+ 1005 09df C745F000 		movl	$0, -16(%ebp)
+ 1005      000000
+ 1006 09e6 E827F7FF 		call	_cursor_to_ptr
+ 1006      FF
+ 1007 09eb 8945F4   		movl	%eax, -12(%ebp)
+ 1008 09ee 837DF400 		cmpl	$0, -12(%ebp)
+ 1009 09f2 0F84B100 		je	L115
+ 1009      0000
+ 1010 09f8 837DF401 		cmpl	$1, -12(%ebp)
+ 1011 09fc 7509     		jne	L109
+ 1012 09fe C745F400 		movl	$0, -12(%ebp)
+ 1012      000000
+ 1013 0a05 EB23     		jmp	L110
+ 1014              	L109:
+ 1015 0a07 8B150000 		movl	_sed_buf, %edx
+ 1015      0000
+ 1016 0a0d 8B45F4   		movl	-12(%ebp), %eax
+ 1017 0a10 83E802   		subl	$2, %eax
+ 1018 0a13 01C2     		addl	%eax, %edx
+ 1019 0a15 8D45EC   		leal	-20(%ebp), %eax
+ 1020 0a18 89442404 		movl	%eax, 4(%esp)
+ 1021 0a1c 891424   		movl	%edx, (%esp)
+ 1022 0a1f E8000000 		call	_sjis_parse
+ 1022      00
+ 1023 0a24 8B45EC   		movl	-20(%ebp), %eax
+ 1024 0a27 2945F4   		subl	%eax, -12(%ebp)
+ 1025              	L110:
+ 1026 0a2a 8B45F4   		movl	-12(%ebp), %eax
+ 1027 0a2d 890424   		movl	%eax, (%esp)
+ 1028 0a30 E857F7FF 		call	_ptr_to_cursor
+ 1028      FF
+ 1029 0a35 8B151800 		movl	_s_ypos, %edx
+ 1029      0000
+ 1030 0a3b A1100000 		movl	_ypos, %eax
+ 1030      00
+ 1031 0a40 39C2     		cmpl	%eax, %edx
+ 1032 0a42 7E11     		jle	L111
+ 1033 0a44 A1100000 		movl	_ypos, %eax
+ 1033      00
+ 1034 0a49 A3180000 		movl	%eax, _s_ypos
+ 1034      00
+ 1035 0a4e C745F001 		movl	$1, -16(%ebp)
+ 1035      000000
+ 1036              	L111:
+ 1037 0a55 8B151400 		movl	_s_xpos, %edx
+ 1037      0000
+ 1038 0a5b A10C0000 		movl	_xpos, %eax
+ 1038      00
+ 1039 0a60 39C2     		cmpl	%eax, %edx
+ 1040 0a62 7E13     		jle	L112
+GAS LISTING sedit_x.s 			page 24
+
+
+ 1041 0a64 A10C0000 		movl	_xpos, %eax
+ 1041      00
+ 1042 0a69 A3140000 		movl	%eax, _s_xpos
+ 1042      00
+ 1043 0a6e C745F001 		movl	$1, -16(%ebp)
+ 1043      000000
+ 1044 0a75 EB25     		jmp	L113
+ 1045              	L112:
+ 1046 0a77 A1140000 		movl	_s_xpos, %eax
+ 1046      00
+ 1047 0a7c 8D5049   		leal	73(%eax), %edx
+ 1048 0a7f A10C0000 		movl	_xpos, %eax
+ 1048      00
+ 1049 0a84 39C2     		cmpl	%eax, %edx
+ 1050 0a86 7D14     		jge	L113
+ 1051 0a88 A10C0000 		movl	_xpos, %eax
+ 1051      00
+ 1052 0a8d 83E849   		subl	$73, %eax
+ 1053 0a90 A3140000 		movl	%eax, _s_xpos
+ 1053      00
+ 1054 0a95 C745F001 		movl	$1, -16(%ebp)
+ 1054      000000
+ 1055              	L113:
+ 1056 0a9c 837DF000 		cmpl	$0, -16(%ebp)
+ 1057 0aa0 7408     		je	L106
+ 1058 0aa2 E8FBF9FF 		call	_sed_display
+ 1058      FF
+ 1059 0aa7 EB01     		jmp	L106
+ 1060              	L115:
+ 1061 0aa9 90       		nop
+ 1062              	L106:
+ 1063 0aaa C9       		leave
+ 1064              		.cfi_restore 5
+ 1065              		.cfi_def_cfa 4, 4
+ 1066 0aab C3       		ret
+ 1067              		.cfi_endproc
+ 1068              	LFE16:
+ 1069              		.def	_sed_linedel;	.scl	3;	.type	32;	.endef
+ 1070              	_sed_linedel:
+ 1071              	LFB17:
+ 1072              		.cfi_startproc
+ 1073 0aac 55       		pushl	%ebp
+ 1074              		.cfi_def_cfa_offset 8
+ 1075              		.cfi_offset 5, -8
+ 1076 0aad 89E5     		movl	%esp, %ebp
+ 1077              		.cfi_def_cfa_register 5
+ 1078 0aaf 53       		pushl	%ebx
+ 1079 0ab0 83EC24   		subl	$36, %esp
+ 1080              		.cfi_offset 3, -12
+ 1081 0ab3 E85AF6FF 		call	_cursor_to_ptr
+ 1081      FF
+ 1082 0ab8 890424   		movl	%eax, (%esp)
+ 1083 0abb E840F5FF 		call	_get_line_top
+ 1083      FF
+ 1084 0ac0 8945F0   		movl	%eax, -16(%ebp)
+ 1085 0ac3 8B150000 		movl	_sed_buf, %edx
+ 1085      0000
+GAS LISTING sedit_x.s 			page 25
+
+
+ 1086 0ac9 8B45F0   		movl	-16(%ebp), %eax
+ 1087 0acc 01D0     		addl	%edx, %eax
+ 1088 0ace C7442404 		movl	$10, 4(%esp)
+ 1088      0A000000 
+ 1089 0ad6 890424   		movl	%eax, (%esp)
+ 1090 0ad9 E8000000 		call	_strchr
+ 1090      00
+ 1091 0ade 8945EC   		movl	%eax, -20(%ebp)
+ 1092 0ae1 837DEC00 		cmpl	$0, -20(%ebp)
+ 1093 0ae5 750A     		jne	L117
+ 1094 0ae7 A1080000 		movl	_buf_len, %eax
+ 1094      00
+ 1095 0aec 8945F4   		movl	%eax, -12(%ebp)
+ 1096 0aef EB1E     		jmp	L118
+ 1097              	L117:
+ 1098 0af1 8B150000 		movl	_sed_buf, %edx
+ 1098      0000
+ 1099 0af7 8B45EC   		movl	-20(%ebp), %eax
+ 1100 0afa 29D0     		subl	%edx, %eax
+ 1101 0afc 83C001   		addl	$1, %eax
+ 1102 0aff 8945F4   		movl	%eax, -12(%ebp)
+ 1103 0b02 A1040000 		movl	_no_of_line, %eax
+ 1103      00
+ 1104 0b07 83E801   		subl	$1, %eax
+ 1105 0b0a A3040000 		movl	%eax, _no_of_line
+ 1105      00
+ 1106              	L118:
+ 1107 0b0f A1080000 		movl	_buf_len, %eax
+ 1107      00
+ 1108 0b14 2B45F4   		subl	-12(%ebp), %eax
+ 1109 0b17 83C001   		addl	$1, %eax
+ 1110 0b1a 89C1     		movl	%eax, %ecx
+ 1111 0b1c 8B150000 		movl	_sed_buf, %edx
+ 1111      0000
+ 1112 0b22 8B45F4   		movl	-12(%ebp), %eax
+ 1113 0b25 01C2     		addl	%eax, %edx
+ 1114 0b27 8B1D0000 		movl	_sed_buf, %ebx
+ 1114      0000
+ 1115 0b2d 8B45F0   		movl	-16(%ebp), %eax
+ 1116 0b30 01D8     		addl	%ebx, %eax
+ 1117 0b32 894C2408 		movl	%ecx, 8(%esp)
+ 1118 0b36 89542404 		movl	%edx, 4(%esp)
+ 1119 0b3a 890424   		movl	%eax, (%esp)
+ 1120 0b3d E8000000 		call	_memmove
+ 1120      00
+ 1121 0b42 8B150800 		movl	_buf_len, %edx
+ 1121      0000
+ 1122 0b48 8B45F4   		movl	-12(%ebp), %eax
+ 1123 0b4b 2B45F0   		subl	-16(%ebp), %eax
+ 1124 0b4e 89C1     		movl	%eax, %ecx
+ 1125 0b50 89D0     		movl	%edx, %eax
+ 1126 0b52 29C8     		subl	%ecx, %eax
+ 1127 0b54 A3080000 		movl	%eax, _buf_len
+ 1127      00
+ 1128 0b59 C7050C00 		movl	$0, _xpos
+ 1128      00000000 
+ 1128      0000
+GAS LISTING sedit_x.s 			page 26
+
+
+ 1129 0b63 E83AF9FF 		call	_sed_display
+ 1129      FF
+ 1130 0b68 90       		nop
+ 1131 0b69 8B5DFC   		movl	-4(%ebp), %ebx
+ 1132 0b6c C9       		leave
+ 1133              		.cfi_restore 5
+ 1134              		.cfi_restore 3
+ 1135              		.cfi_def_cfa 4, 4
+ 1136 0b6d C3       		ret
+ 1137              		.cfi_endproc
+ 1138              	LFE17:
+ 1139              		.def	_sed_BS;	.scl	3;	.type	32;	.endef
+ 1140              	_sed_BS:
+ 1141              	LFB18:
+ 1142              		.cfi_startproc
+ 1143 0b6e 55       		pushl	%ebp
+ 1144              		.cfi_def_cfa_offset 8
+ 1145              		.cfi_offset 5, -8
+ 1146 0b6f 89E5     		movl	%esp, %ebp
+ 1147              		.cfi_def_cfa_register 5
+ 1148 0b71 56       		pushl	%esi
+ 1149 0b72 53       		pushl	%ebx
+ 1150 0b73 83EC20   		subl	$32, %esp
+ 1151              		.cfi_offset 6, -12
+ 1152              		.cfi_offset 3, -16
+ 1153 0b76 E897F5FF 		call	_cursor_to_ptr
+ 1153      FF
+ 1154 0b7b 8945F4   		movl	%eax, -12(%ebp)
+ 1155 0b7e 837DF400 		cmpl	$0, -12(%ebp)
+ 1156 0b82 0F840401 		je	L126
+ 1156      0000
+ 1157 0b88 837DF401 		cmpl	$1, -12(%ebp)
+ 1158 0b8c 7509     		jne	L122
+ 1159 0b8e C745F001 		movl	$1, -16(%ebp)
+ 1159      000000
+ 1160 0b95 EB1D     		jmp	L123
+ 1161              	L122:
+ 1162 0b97 8B150000 		movl	_sed_buf, %edx
+ 1162      0000
+ 1163 0b9d 8B45F4   		movl	-12(%ebp), %eax
+ 1164 0ba0 83E802   		subl	$2, %eax
+ 1165 0ba3 01C2     		addl	%eax, %edx
+ 1166 0ba5 8D45F0   		leal	-16(%ebp), %eax
+ 1167 0ba8 89442404 		movl	%eax, 4(%esp)
+ 1168 0bac 891424   		movl	%edx, (%esp)
+ 1169 0baf E8000000 		call	_sjis_parse
+ 1169      00
+ 1170              	L123:
+ 1171 0bb4 8B150000 		movl	_sed_buf, %edx
+ 1171      0000
+ 1172 0bba 8B45F4   		movl	-12(%ebp), %eax
+ 1173 0bbd 83E801   		subl	$1, %eax
+ 1174 0bc0 01D0     		addl	%edx, %eax
+ 1175 0bc2 0FB600   		movzbl	(%eax), %eax
+ 1176 0bc5 3C0A     		cmpb	$10, %al
+ 1177 0bc7 7567     		jne	L124
+ 1178 0bc9 E80BFEFF 		call	_sed_LEFT
+GAS LISTING sedit_x.s 			page 27
+
+
+ 1178      FF
+ 1179 0bce 8B150000 		movl	_sed_buf, %edx
+ 1179      0000
+ 1180 0bd4 8B45F4   		movl	-12(%ebp), %eax
+ 1181 0bd7 01D0     		addl	%edx, %eax
+ 1182 0bd9 890424   		movl	%eax, (%esp)
+ 1183 0bdc E8000000 		call	_strlen
+ 1183      00
+ 1184 0be1 83C001   		addl	$1, %eax
+ 1185 0be4 89C1     		movl	%eax, %ecx
+ 1186 0be6 8B150000 		movl	_sed_buf, %edx
+ 1186      0000
+ 1187 0bec 8B45F4   		movl	-12(%ebp), %eax
+ 1188 0bef 01C2     		addl	%eax, %edx
+ 1189 0bf1 8B1D0000 		movl	_sed_buf, %ebx
+ 1189      0000
+ 1190 0bf7 8B45F4   		movl	-12(%ebp), %eax
+ 1191 0bfa 83E801   		subl	$1, %eax
+ 1192 0bfd 01D8     		addl	%ebx, %eax
+ 1193 0bff 894C2408 		movl	%ecx, 8(%esp)
+ 1194 0c03 89542404 		movl	%edx, 4(%esp)
+ 1195 0c07 890424   		movl	%eax, (%esp)
+ 1196 0c0a E8000000 		call	_memmove
+ 1196      00
+ 1197 0c0f A1080000 		movl	_buf_len, %eax
+ 1197      00
+ 1198 0c14 83E801   		subl	$1, %eax
+ 1199 0c17 A3080000 		movl	%eax, _buf_len
+ 1199      00
+ 1200 0c1c A1040000 		movl	_no_of_line, %eax
+ 1200      00
+ 1201 0c21 83E801   		subl	$1, %eax
+ 1202 0c24 A3040000 		movl	%eax, _no_of_line
+ 1202      00
+ 1203 0c29 E874F8FF 		call	_sed_display
+ 1203      FF
+ 1204 0c2e EB5D     		jmp	L119
+ 1205              	L124:
+ 1206 0c30 8B150000 		movl	_sed_buf, %edx
+ 1206      0000
+ 1207 0c36 8B45F4   		movl	-12(%ebp), %eax
+ 1208 0c39 01D0     		addl	%edx, %eax
+ 1209 0c3b 890424   		movl	%eax, (%esp)
+ 1210 0c3e E8000000 		call	_strlen
+ 1210      00
+ 1211 0c43 83C001   		addl	$1, %eax
+ 1212 0c46 89C1     		movl	%eax, %ecx
+ 1213 0c48 8B150000 		movl	_sed_buf, %edx
+ 1213      0000
+ 1214 0c4e 8B45F4   		movl	-12(%ebp), %eax
+ 1215 0c51 01C2     		addl	%eax, %edx
+ 1216 0c53 8B1D0000 		movl	_sed_buf, %ebx
+ 1216      0000
+ 1217 0c59 8B75F0   		movl	-16(%ebp), %esi
+ 1218 0c5c 8B45F4   		movl	-12(%ebp), %eax
+ 1219 0c5f 29F0     		subl	%esi, %eax
+ 1220 0c61 01D8     		addl	%ebx, %eax
+GAS LISTING sedit_x.s 			page 28
+
+
+ 1221 0c63 894C2408 		movl	%ecx, 8(%esp)
+ 1222 0c67 89542404 		movl	%edx, 4(%esp)
+ 1223 0c6b 890424   		movl	%eax, (%esp)
+ 1224 0c6e E8000000 		call	_memmove
+ 1224      00
+ 1225 0c73 A1080000 		movl	_buf_len, %eax
+ 1225      00
+ 1226 0c78 83E801   		subl	$1, %eax
+ 1227 0c7b A3080000 		movl	%eax, _buf_len
+ 1227      00
+ 1228 0c80 E8B1F8FF 		call	_redraw
+ 1228      FF
+ 1229 0c85 E84FFDFF 		call	_sed_LEFT
+ 1229      FF
+ 1230 0c8a EB01     		jmp	L119
+ 1231              	L126:
+ 1232 0c8c 90       		nop
+ 1233              	L119:
+ 1234 0c8d 83C420   		addl	$32, %esp
+ 1235 0c90 5B       		popl	%ebx
+ 1236              		.cfi_restore 3
+ 1237 0c91 5E       		popl	%esi
+ 1238              		.cfi_restore 6
+ 1239 0c92 5D       		popl	%ebp
+ 1240              		.cfi_restore 5
+ 1241              		.cfi_def_cfa 4, 4
+ 1242 0c93 C3       		ret
+ 1243              		.cfi_endproc
+ 1244              	LFE18:
+ 1245              		.data
+ 1246              	LC9:
+ 1247 00b9 0A2A2A2A 		.ascii "\12*** out of memory\12\0"
+ 1247      206F7574 
+ 1247      206F6620 
+ 1247      6D656D6F 
+ 1247      72790A00 
+ 1248              	LC10:
+ 1249 00cd 2D2D2D20 		.ascii "---   push any key   ---\12\0"
+ 1249      20207075 
+ 1249      73682061 
+ 1249      6E79206B 
+ 1249      65792020 
+ 1250              		.text
+ 1251              		.def	_sed_txt;	.scl	3;	.type	32;	.endef
+ 1252              	_sed_txt:
+ 1253              	LFB19:
+ 1254              		.cfi_startproc
+ 1255 0c94 55       		pushl	%ebp
+ 1256              		.cfi_def_cfa_offset 8
+ 1257              		.cfi_offset 5, -8
+ 1258 0c95 89E5     		movl	%esp, %ebp
+ 1259              		.cfi_def_cfa_register 5
+ 1260 0c97 53       		pushl	%ebx
+ 1261 0c98 83EC24   		subl	$36, %esp
+ 1262              		.cfi_offset 3, -12
+ 1263 0c9b 837D0809 		cmpl	$9, 8(%ebp)
+ 1264 0c9f 741D     		je	L128
+GAS LISTING sedit_x.s 			page 29
+
+
+ 1265 0ca1 837D080A 		cmpl	$10, 8(%ebp)
+ 1266 0ca5 7417     		je	L128
+ 1267 0ca7 837D081F 		cmpl	$31, 8(%ebp)
+ 1268 0cab 0F8EEB00 		jle	L127
+ 1268      0000
+ 1269 0cb1 817D08FF 		cmpl	$255, 8(%ebp)
+ 1269      000000
+ 1270 0cb8 0F8FDE00 		jg	L127
+ 1270      0000
+ 1271              	L128:
+ 1272 0cbe E84FF4FF 		call	_cursor_to_ptr
+ 1272      FF
+ 1273 0cc3 8945F4   		movl	%eax, -12(%ebp)
+ 1274 0cc6 A1080000 		movl	_buf_len, %eax
+ 1274      00
+ 1275 0ccb 3DFEFF0F 		cmpl	$1048574, %eax
+ 1275      00
+ 1276 0cd0 7E53     		jle	L130
+ 1277 0cd2 A1000000 		movl	_cmd_sht, %eax
+ 1277      00
+ 1278 0cd7 C7442404 		movl	$7, 4(%esp)
+ 1278      07000000 
+ 1279 0cdf 890424   		movl	%eax, (%esp)
+ 1280 0ce2 E8000000 		call	_clear_screen
+ 1280      00
+ 1281 0ce7 A1000000 		movl	_cmd_sht, %eax
+ 1281      00
+ 1282 0cec C7442404 		movl	$LC9, 4(%esp)
+ 1282      B9000000 
+ 1283 0cf4 890424   		movl	%eax, (%esp)
+ 1284 0cf7 E8000000 		call	_ut_printf
+ 1284      00
+ 1285 0cfc A1000000 		movl	_cmd_sht, %eax
+ 1285      00
+ 1286 0d01 C7442404 		movl	$LC10, 4(%esp)
+ 1286      CD000000 
+ 1287 0d09 890424   		movl	%eax, (%esp)
+ 1288 0d0c E8000000 		call	_ut_printf
+ 1288      00
+ 1289 0d11 A1000000 		movl	_cmd_sht, %eax
+ 1289      00
+ 1290 0d16 890424   		movl	%eax, (%esp)
+ 1291 0d19 E8000000 		call	_ut_getcA
+ 1291      00
+ 1292 0d1e E87FF7FF 		call	_sed_display
+ 1292      FF
+ 1293 0d23 EB77     		jmp	L127
+ 1294              	L130:
+ 1295 0d25 A1080000 		movl	_buf_len, %eax
+ 1295      00
+ 1296 0d2a 2B45F4   		subl	-12(%ebp), %eax
+ 1297 0d2d 83C001   		addl	$1, %eax
+ 1298 0d30 89C1     		movl	%eax, %ecx
+ 1299 0d32 8B150000 		movl	_sed_buf, %edx
+ 1299      0000
+ 1300 0d38 8B45F4   		movl	-12(%ebp), %eax
+ 1301 0d3b 01C2     		addl	%eax, %edx
+GAS LISTING sedit_x.s 			page 30
+
+
+ 1302 0d3d 8B1D0000 		movl	_sed_buf, %ebx
+ 1302      0000
+ 1303 0d43 8B45F4   		movl	-12(%ebp), %eax
+ 1304 0d46 83C001   		addl	$1, %eax
+ 1305 0d49 01D8     		addl	%ebx, %eax
+ 1306 0d4b 894C2408 		movl	%ecx, 8(%esp)
+ 1307 0d4f 89542404 		movl	%edx, 4(%esp)
+ 1308 0d53 890424   		movl	%eax, (%esp)
+ 1309 0d56 E8000000 		call	_memmove
+ 1309      00
+ 1310 0d5b 8B150000 		movl	_sed_buf, %edx
+ 1310      0000
+ 1311 0d61 8B45F4   		movl	-12(%ebp), %eax
+ 1312 0d64 01D0     		addl	%edx, %eax
+ 1313 0d66 8B5508   		movl	8(%ebp), %edx
+ 1314 0d69 8810     		movb	%dl, (%eax)
+ 1315 0d6b A1080000 		movl	_buf_len, %eax
+ 1315      00
+ 1316 0d70 83C001   		addl	$1, %eax
+ 1317 0d73 A3080000 		movl	%eax, _buf_len
+ 1317      00
+ 1318 0d78 837D080A 		cmpl	$10, 8(%ebp)
+ 1319 0d7c 7514     		jne	L131
+ 1320 0d7e A1040000 		movl	_no_of_line, %eax
+ 1320      00
+ 1321 0d83 83C001   		addl	$1, %eax
+ 1322 0d86 A3040000 		movl	%eax, _no_of_line
+ 1322      00
+ 1323 0d8b E812F7FF 		call	_sed_display
+ 1323      FF
+ 1324 0d90 EB05     		jmp	L132
+ 1325              	L131:
+ 1326 0d92 E89FF7FF 		call	_redraw
+ 1326      FF
+ 1327              	L132:
+ 1328 0d97 E873FBFF 		call	_sed_RIGHT
+ 1328      FF
+ 1329              	L127:
+ 1330 0d9c 8B5DFC   		movl	-4(%ebp), %ebx
+ 1331 0d9f C9       		leave
+ 1332              		.cfi_restore 5
+ 1333              		.cfi_restore 3
+ 1334              		.cfi_def_cfa 4, 4
+ 1335 0da0 C3       		ret
+ 1336              		.cfi_endproc
+ 1337              	LFE19:
+ 1338              		.globl	_sedit_main
+ 1339              		.def	_sedit_main;	.scl	2;	.type	32;	.endef
+ 1340              	_sedit_main:
+ 1341              	LFB20:
+ 1342              		.cfi_startproc
+ 1343 0da1 55       		pushl	%ebp
+ 1344              		.cfi_def_cfa_offset 8
+ 1345              		.cfi_offset 5, -8
+ 1346 0da2 89E5     		movl	%esp, %ebp
+ 1347              		.cfi_def_cfa_register 5
+ 1348 0da4 83EC28   		subl	$40, %esp
+GAS LISTING sedit_x.s 			page 31
+
+
+ 1349 0da7 A1000000 		movl	_sed_buf, %eax
+ 1349      00
+ 1350 0dac 85C0     		testl	%eax, %eax
+ 1351 0dae 7516     		jne	L134
+ 1352 0db0 C7042400 		movl	$1048576, (%esp)
+ 1352      001000
+ 1353 0db7 E8000000 		call	_memman_alloc
+ 1353      00
+ 1354 0dbc A3000000 		movl	%eax, _sed_buf
+ 1354      00
+ 1355 0dc1 E827F8FF 		call	_sed_init
+ 1355      FF
+ 1356              	L134:
+ 1357 0dc6 E884F8FF 		call	_sed_help
+ 1357      FF
+ 1358 0dcb E8D2F6FF 		call	_sed_display
+ 1358      FF
+ 1359              	L150:
+ 1360 0dd0 C7042400 		movl	$0, (%esp)
+ 1360      000000
+ 1361 0dd7 E85FF2FF 		call	_disp_cursor
+ 1361      FF
+ 1362 0ddc A1000000 		movl	_cmd_sht, %eax
+ 1362      00
+ 1363 0de1 890424   		movl	%eax, (%esp)
+ 1364 0de4 E8000000 		call	_ut_getcA
+ 1364      00
+ 1365 0de9 8945F4   		movl	%eax, -12(%ebp)
+ 1366 0dec C7042407 		movl	$7, (%esp)
+ 1366      000000
+ 1367 0df3 E843F2FF 		call	_disp_cursor
+ 1367      FF
+ 1368 0df8 837DF408 		cmpl	$8, -12(%ebp)
+ 1369 0dfc 746A     		je	L135
+ 1370 0dfe 837DF408 		cmpl	$8, -12(%ebp)
+ 1371 0e02 0F8C8300 		jl	L136
+ 1371      0000
+ 1372 0e08 817DF4AC 		cmpl	$172, -12(%ebp)
+ 1372      000000
+ 1373 0e0f 7F7A     		jg	L136
+ 1374 0e11 817DF480 		cmpl	$128, -12(%ebp)
+ 1374      000000
+ 1375 0e18 7C71     		jl	L136
+ 1376 0e1a 8B45F4   		movl	-12(%ebp), %eax
+ 1377 0e1d 83C080   		addl	$-128, %eax
+ 1378 0e20 83F82C   		cmpl	$44, %eax
+ 1379 0e23 7766     		ja	L136
+ 1380 0e25 8B0485E8 		movl	L138(,%eax,4), %eax
+ 1380      000000
+ 1381 0e2c FFE0     		jmp	*%eax
+ 1382              		.data
+ 1383 00e7 00       		.align 4
+ 1384              	L138:
+ 1385 00e8 2E0E0000 		.long	L145
+ 1386 00ec 4F0E0000 		.long	L144
+ 1387 00f0 8B0E0000 		.long	L136
+ 1388 00f4 8B0E0000 		.long	L136
+GAS LISTING sedit_x.s 			page 32
+
+
+ 1389 00f8 560E0000 		.long	L143
+ 1390 00fc 610E0000 		.long	L142
+ 1391 0100 8B0E0000 		.long	L136
+ 1392 0104 8B0E0000 		.long	L136
+ 1393 0108 8B0E0000 		.long	L136
+ 1394 010c 8B0E0000 		.long	L136
+ 1395 0110 8B0E0000 		.long	L136
+ 1396 0114 8B0E0000 		.long	L136
+ 1397 0118 8B0E0000 		.long	L136
+ 1398 011c 8B0E0000 		.long	L136
+ 1399 0120 8B0E0000 		.long	L136
+ 1400 0124 8B0E0000 		.long	L136
+ 1401 0128 8B0E0000 		.long	L136
+ 1402 012c 8B0E0000 		.long	L136
+ 1403 0130 8B0E0000 		.long	L136
+ 1404 0134 8B0E0000 		.long	L136
+ 1405 0138 8B0E0000 		.long	L136
+ 1406 013c 8B0E0000 		.long	L136
+ 1407 0140 8B0E0000 		.long	L136
+ 1408 0144 8B0E0000 		.long	L136
+ 1409 0148 8B0E0000 		.long	L136
+ 1410 014c 8B0E0000 		.long	L136
+ 1411 0150 8B0E0000 		.long	L136
+ 1412 0154 8B0E0000 		.long	L136
+ 1413 0158 8B0E0000 		.long	L136
+ 1414 015c 8B0E0000 		.long	L136
+ 1415 0160 8B0E0000 		.long	L136
+ 1416 0164 8B0E0000 		.long	L136
+ 1417 0168 8B0E0000 		.long	L136
+ 1418 016c 8B0E0000 		.long	L136
+ 1419 0170 8B0E0000 		.long	L136
+ 1420 0174 8B0E0000 		.long	L136
+ 1421 0178 8B0E0000 		.long	L136
+ 1422 017c 8B0E0000 		.long	L136
+ 1423 0180 8B0E0000 		.long	L136
+ 1424 0184 8B0E0000 		.long	L136
+ 1425 0188 8B0E0000 		.long	L136
+ 1426 018c 6F0E0000 		.long	L141
+ 1427 0190 760E0000 		.long	L140
+ 1428 0194 840E0000 		.long	L139
+ 1429 0198 7D0E0000 		.long	L137
+ 1430              		.text
+ 1431              	L145:
+ 1432 0e2e A1000000 		movl	_cmd_sht, %eax
+ 1432      00
+ 1433 0e33 C7442404 		movl	$7, 4(%esp)
+ 1433      07000000 
+ 1434 0e3b 890424   		movl	%eax, (%esp)
+ 1435 0e3e E8000000 		call	_clear_screen
+ 1435      00
+ 1436 0e43 E807F8FF 		call	_sed_help
+ 1436      FF
+ 1437 0e48 E855F6FF 		call	_sed_display
+ 1437      FF
+ 1438 0e4d EB56     		jmp	L146
+ 1439              	L144:
+ 1440 0e4f E858FCFF 		call	_sed_linedel
+GAS LISTING sedit_x.s 			page 33
+
+
+ 1440      FF
+ 1441 0e54 EB4F     		jmp	L146
+ 1442              	L143:
+ 1443 0e56 E8B2F8FF 		call	_sed_exit
+ 1443      FF
+ 1444 0e5b 85C0     		testl	%eax, %eax
+ 1445 0e5d 753F     		jne	L152
+ 1446 0e5f EB49     		jmp	L151
+ 1447              	L142:
+ 1448 0e61 E81BF9FF 		call	_sed_jump
+ 1448      FF
+ 1449 0e66 EB3D     		jmp	L146
+ 1450              	L135:
+ 1451 0e68 E801FDFF 		call	_sed_BS
+ 1451      FF
+ 1452 0e6d EB36     		jmp	L146
+ 1453              	L141:
+ 1454 0e6f E8F4F9FF 		call	_sed_UP
+ 1454      FF
+ 1455 0e74 EB2F     		jmp	L146
+ 1456              	L140:
+ 1457 0e76 E83BFAFF 		call	_sed_DOWN
+ 1457      FF
+ 1458 0e7b EB28     		jmp	L146
+ 1459              	L137:
+ 1460 0e7d E88DFAFF 		call	_sed_RIGHT
+ 1460      FF
+ 1461 0e82 EB21     		jmp	L146
+ 1462              	L139:
+ 1463 0e84 E850FBFF 		call	_sed_LEFT
+ 1463      FF
+ 1464 0e89 EB1A     		jmp	L146
+ 1465              	L136:
+ 1466 0e8b 837DF47F 		cmpl	$127, -12(%ebp)
+ 1467 0e8f 7F13     		jg	L153
+ 1468 0e91 8B45F4   		movl	-12(%ebp), %eax
+ 1469 0e94 890424   		movl	%eax, (%esp)
+ 1470 0e97 E8F8FDFF 		call	_sed_txt
+ 1470      FF
+ 1471 0e9c EB06     		jmp	L153
+ 1472              	L152:
+ 1473 0e9e 90       		nop
+ 1474 0e9f E92CFFFF 		jmp	L150
+ 1474      FF
+ 1475              	L153:
+ 1476 0ea4 90       		nop
+ 1477              	L146:
+ 1478 0ea5 E926FFFF 		jmp	L150
+ 1478      FF
+ 1479              	L151:
+ 1480 0eaa C9       		leave
+ 1481              		.cfi_restore 5
+ 1482              		.cfi_def_cfa 4, 4
+ 1483 0eab C3       		ret
+ 1484              		.cfi_endproc
+ 1485              	LFE20:
+ 1486              		.ident	"GCC: (GNU) 10.2.0"
+GAS LISTING sedit_x.s 			page 34
+
+
+ 1487              		.def	_pset;	.scl	2;	.type	32;	.endef
+ 1488              		.def	_strchr;	.scl	2;	.type	32;	.endef
+ 1489              		.def	_sjis_parse;	.scl	2;	.type	32;	.endef
+ 1490              		.def	_disp_char;	.scl	2;	.type	32;	.endef
+ 1491              		.def	_clear_screen;	.scl	2;	.type	32;	.endef
+ 1492              		.def	_memset;	.scl	2;	.type	32;	.endef
+ 1493              		.def	_ut_printf;	.scl	2;	.type	32;	.endef
+ 1494              		.def	_ut_getcA;	.scl	2;	.type	32;	.endef
+ 1495              		.def	_ut_getc;	.scl	2;	.type	32;	.endef
+ 1496              		.def	_ut_gets;	.scl	2;	.type	32;	.endef
+ 1497              		.def	_atoi;	.scl	2;	.type	32;	.endef
+ 1498              		.def	_memmove;	.scl	2;	.type	32;	.endef
+ 1499              		.def	_strlen;	.scl	2;	.type	32;	.endef
+ 1500              		.def	_memman_alloc;	.scl	2;	.type	32;	.endef

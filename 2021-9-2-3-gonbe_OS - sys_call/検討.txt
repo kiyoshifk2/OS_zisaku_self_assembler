@@ -1,0 +1,314 @@
+検討
+
+386以降でプロテクトモードからリアルモードに移行するには、セグメントレジスタをリアルモードの値にし、A20 線をディセーブルし、CR0レジスタのPEビットをクリアすればよく、286で必要だった初期設定が不要になった。
+
+far jmp で有効になると思う
+
+リアルモードプログラムは　boot_loader 後半の 0x7e00 に置くこのエリアは boot_loader でロードされる
+ここに jmp したことを確認するために画面モードを 320x200 に固定する
+
+		CALL	waitkbdout
+		MOV		AL,0xd1
+		OUT		0x64,AL
+		CALL	waitkbdout
+		MOV		AL,0xdf			; enable A20
+;;;		mov		al,0xdd			; disable A20
+		OUT		0x60,AL
+		CALL	waitkbdout
+
+CR0 の bit0 をクリアしてセグメントレジスタを０クリアして jmp dword 0:0x7e00 を実行し
+0x7e00 番地に 32bit コードで画面上部クリアを入れたらクリアされた
+つまり far jmp しても 32bit のままだった
+...........................................................................
+
+GDT 4番エントリーとして 16bit 0番地 start のセグメントを用意する
+
+まず 32bit セグメントで Real mode で 0x7e00 へ飛ぶ  できた
+
+32bit セグメントで　単に　4番セグメントに飛ぶ　OK
+...........................................................................
+
+32bit で飛んで 32bit で復帰
+
+boot_loader の後半に key_input を置いたが別ファイルにする必要あり（シンボルがリンク出来ないから）
+
+key_mouse.nasm 作成、boot_loader.nasm 修正、linker.ld 修正、build.sh 修正
+srec_to_img.cpp を名前を変更して修正
+..............................................................................................
+
+key_mouse.nasm にて dword jmp 2*8:key_input_return-0x00280000
+
+
+
+
+
+16bit にするには（プロテクトモードで） 16bit セグメントへ飛ぶ、その後 real mode で　jmp 0:0x7e00
+
+32bit セグメントから 16bit セグメントに飛ぶ前に LGDT 命令がいるかと思ったが、いらないという事で進めてみよう
+そしてすぐに何もせずに 32bit セグメントに飛ぶ　4番セグメントを 16bit にするだけ、key_mouse で何もせずに far jmp で帰る
+上手くいった  os_start - No35.nasm   key_mouse - No3.nasm
+
+次に 16bit セグメント(key_mouse.nasm)にて Real mode にして  jmp dword 0:key_input_real  実行
+key_input_real にて Protect mode にして jmp dword 2*8:key_input_return-0x00280000  実行して  main へ戻る
+
+key bios int 0x16 ah=0 get keystorch は NG ah=0x10 も NG
+
+ah=0x21 int 0x16  でキー入力できるようだただしキーが押されている時は al の bit7 がクリアされており
+キーから手を離すと al の bit7 がセットされる、これを利用してキーが押されたタイミングを見てキー入力とする
+
+マウスの int xxh を探す,一覧表の int 00h～int 20h 位を探してみるのも良い
+
+key_input() は下位８ビットにコードが入ってすぐに帰ってくる
+ビット７が１の状態から０になった時のコードを 128エントリーのテーブルで ascii コードに変換して返す関数を
+ut_getc(); として作成する
+...........................................................................................
+
+os_start.nasm の先頭の jmp scrn320 をコメントアウトして高解像度モードにする
+
+...........................................................................................
+
+キー入力で　矢印キー入力が出来るかどうか調べる事
+
+ut_getc() で取り込んだ後でそのコードをヘキサ表示して調べる事
+
+..........................................................................................
+
+FAT12 をセットしたがブート途中で止まってしまった
+
+次にパーティションテーブルのみ０クリアでテスト  NG
+
+パーティションテーブルをキチンとセットしたら動いた
+
+.........................................................................................
+
+clip_init() を作成  pset() をクリッピング処理を入れて修正 test_mado() を修正したが表示しなかった
+
+clip_init() は test_mado() で呼んでいるが gonbe_main() で呼ぶ様にした方が良いと思う
+
+sheet や clip の変数値を表示するために pset は元に戻そう
+
+sheet_refresh() を呼び忘れていたので呼んだが動かなかった
+
+タイマー割り込みとキー入力が両立しなかった　どちらも単独なら動くことは確認済み
+
+ut_getc() の中で key_input() を呼び出すがこの時割り込み禁止許可をしているが
+
+割り込み禁止のままで　IDT テーブルはセットして動くかどうか調べる事   動かない
+
+IDT をセットする前に 旧IDT を保存して key_input() の前に回復しておき
+key_input() から戻ったら IDT を OS 用にセットする　　　　　　　　　　　動かない
+
+sti と enable_interrupt() は潰した
+
+int 16h  から戻ったら 割り込み禁止にする   動かない
+
+IDT テーブルの　read/write  を全て削除してみる  暴走しない
+
+次に read_idt() と write_idt() を生かす   暴走しなかった
+
+次に write_idt() のみ生かす(0データを書き込むことになる)   暴走しない　おかしい
+
+次に read_idt() も生かし　read したデータを表示する   all 0 だった  バグのせい
+
+次に read_idt() を殺し　　データを表示する   1  2  3  と正しく表示された
+
+次に read_idt() を生かし　readr したデータを表示する　 limit=0000 03ff  addr=00000000
+
+write_idt() のみ生かし _idt_save: dw 0x1234,0x5678,0x9abc  でテストする　暴走しなかった
+
+これを write_idt() してエリアをクリアしてから read_idt() して表示する　　1234 5678 9abc と出た
+
+............................................................................................
+
+GDT/IDT の設定は生かしておいて　割り込み禁止で　キー入力テストをする　　うまくいった
+
+次は割り込みを生かしてタイマーとキー入力を同時に行う（disable/enable int はやっている）キー入力OK  タイマーNG
+
+次は ut_getc() を呼ばずにタイマー値を表示する
+
+............................................................................................
+
+fifo アクセス時に割り込み禁止にしてアクセスしてから許可に戻す
+
+これを関数に入れてしまうと　割り込み処理ルーチンから呼び出すと割り込みルーチン内で割り込み許可になる　どうなるか試そう　止めよう
+
+------------------------------------------------------------------------------------------
+
+原因不明のハングアップが起きている、int 0x16 の前後に　sti/cli を入れよう
+
+リソース使い果たしで ut_printf() を何とか入れよう
+
+new timer をやろう、timer[500], CMD_TIMER0～500個, timer に fifo を入れる
+
+-------------------------------------------------------------------------------------------
+
+test_speed() が割り込み禁止で走っているように思える（マルチタスクでも 20M 18M だった）
+調べる事
+
+リンクを 0x00280000 番地を start address にしておきながら 0番地 start で動かしているのはおかしい
+
+build.sh 内でリンクした時に .data の先頭アドレス等のシンボルをリンク後のプログラムから使用できるかどうか調べる事
+
+-------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------
+
+test_speed() が割り込み禁止で走っているように思える（マルチタスクでも 20M 18M だった）
+調べる事
+
+リンクを 0x00280000 番地を start address にしておきながら 0番地 start で動かしているのはおかしい
+
+build.sh 内でリンクした時に .data の先頭アドレス等のシンボルをリンク後のプログラムから使用できるかどうか調べる事
+
+key_mouse.nasm は elf32 で OS と一緒にリンクしていたが bin で出して単独のバイナリにする　start address=0x7e00
+
+os_start.nasm は elf32 で OS と一緒にリンクしていたが bin で出して単独のバイナリにする　start address=0x8000
+
+リンカスクリプト修正　.text を 0番地からにする　.data は .text の終わりから +0x00280000番地からにする
+
+sre_to_img.exe にために _text_end, _data_start, _bss_start, _data_end をリンカスクリプトでセットしてマップファイルから読み込む
+
+リンクは success になったが変数エリアが all 0 になっていた
+
+..............................................................................................
+
+task_add() でメインタスクを level 0 で登録しているのを止める
+//TASK_GDT0  を  4+1  にする
+timer 割り込みを許可するのを遅らせる
+　　その手前で farjmp() で task_b に飛ぶこと （TASK_GDT0+1: level=1 だから）
+
+窓は出たが全く動かない　　task_b の頭で fatal(); で止める　　止まった
+task_b が動くはず　　fatal()  を取って ut_printf() でトレースしよう　やっと timer が動き動作がかなり良くなった
+task の level を全て 2 にして実行する うまくいった
+先生の本では farjmp() で　最初に task_b の飛ぶ処理が無いのは　最初の task_switch()　では main_task ではなくて task_b からになっていると思う
+
+main task の level を 1 にして main task に sleep を入れて task_b が動くかどうか調べよう
+全部のタスクを sleep させて inhibit_task_switch をしなければ暴走するかどうか調べよう
+
+全部 sleep させたら暴走する事を確認しよう  普通に sleep したら暴走してしまった→おかしい
+main task の level を　１にする（task_init）,task->flags を 1 にした（task_init: 旧=2）  元に戻し task_add() も入れた
+
+inhibit_task_switch を殺した、task_now() にチェックを入れた　デバッグの為 fatal_a() を入れた
+
+復元ポイントに戻る
+初めに task_swichisub() で変数の初期化をやる必要あり　この位置は main で task_run() の後ろにしたい
+この為に task_init() で　flags=1, task_swtchsub() 削除  初めの task_run() の後に task_swtichsub()　を呼び出す
+
+//タスクスイッチもこの後に有効にする必要あり、inhibit_task_swtch を初めは 1 にしておけばよい
+//inhibit_task_swtch　は task_switch() の先頭でテストし１なら直ぐに return する事
+
+復元ポイントに戻る　　動いた
+初めの task_run() の後に task_switchsub() を呼び出す　　暴走した
+task_init() で task_add() を呼び出そう  暴走した
+task_add() の時の level を 2 にしよう   暴走した
+
+復元ポイントに戻る
+初めの task_run() の後に task_switchsub() を呼び出して暴走しないようにしよう
+
+main() の farjmp() を取り払って task_switch() の farjmp() で初回の farjmp() を行うようにする
+struct TASK *switch_task_a; が 0以外なら初回の　task_switch() であるから、これ以外のタスクに　farjmp() する事  OK
+
+main() にて task_sleep(task_b[0]); を入れる  sleep した　OK
+更に task_sleep(task_a); を入れる  main_fifo.task = task_a;  を潰してテストする  sleep した　OK
+全部 sleep してみよう  当然暴走する
+task_remove() で動作中タスクが無くなったら　hlt してから また動作中タスクを探すこと　　止まった  OK
+main_fifo.task = task_a; を生かして動かす　fifo32_put() 中で task_run() するのは　switch_task_a==0 である事
+直ぐには暴走しないが全部 sleep してから fifo32_put() で起こされるときに暴走する様だ
+
+main_fifo.task = task_a; を殺して復元ポイントにする 2021-8-3-4
+
+fifo32_put() で起こされるところに変数をセットする、その後 farjmp() で fatel_a() 変数表示
+main_fifo.task = task_a;　　を生かすこと
+
+sleep で task_remove() で　hlt する　抜けるのは fifo32_put() で task_run() が呼び出されてからである　task_switch() で farjmp() する
+fifo32_put() は　10msec 割り込み内で呼ばれる
+
+inhibit_task_switch=1 の場合は task_switch() の頭で return するようにする　この理由は　task_switch() 内で inhibit_task_switch=0 にしているから
+fifo32_put() で呼ばれる task_run() にて　inhibit_task_switch が　０になるから　元の値を保存して置いて回復させる事　　暴走した
+task_sleep() 中の farjmp() 前に fatal_a() を入れよう　やはりここに来ていた　ここで farjmp() すると自分自身に farjmp() して暴走する
+この場合は farjmp() しないようにする事
+
+この場合とは　同じ task_sleep() 内の task_remove() で hlt になりそこから抜けた場合  うまくいった
+
+multi level のテストをやる　task_a の level=1 とする sleep は 10sec 後に task_a のみにする　　task_a が動かずに task_b が動いている  NG
+
+初回 farjmp() 直前に　taskctl->lv_change = 1;　を実行して　最上位タスクに実行を移すこと　　うまくいった
+
+..................................................................................
+
+タスクへの引数に自タスクポインタを追加する
+
+サブタスクを sleep させなければ正常　sleep させて hoge1 導入・fifo32_put() で wakeup で 1にする
+
+task を全部 sleep させたら　main timer fire で task_b がディスパッチされたと思う
+
+全部 sleep させると最後に sleep させたタスクが wakeup で走ってしまう、走るべきは wakeup されられるタスクである
+
+wakeup したのが sleep タスクと同じならば farjmp() しないで抜ける
+
+違うならば wakeup タスクに farjmp() する事
+
+自分自身へのディスパッチ禁止　で良いと思う　うまくいった
+
+次に task_b も wakeup させよう
+
+;--------------------------------------------------------------------------------
+
+delay_task() のテスト中　NG
+
+task_sleep() を main_task のループ前に入れたら暴走した
+
+---------------------------------------------------------------------------------
+
+main_task でキー入力処理をやる
+
+ALT-RIGHT 等を　main_sheet の sub disp エリアに表示する
+
+--------------------------------------------------------------------------------
+
+システムコールプラン
+
+ファイル: sys_call.c
+
+#define SYS_SEL		****	// システムコールの selector
+
+引数/return 値エリア
+struct BOOTINFO{
+	****
+	****
+	int sys_call_numb;
+	int sys_call_arg1;
+	int sys_call_arg2;
+	int sys_call_arg3;
+};
+
+システムコールの手順
+disable_interrupt();
+binfo->sys_call_numb = **;
+binfo->sys_call_arg1 = **;
+farjmp(0, SYS_SEL);
+ret = binfo->sys_call_arg2;
+enable_interrutpt();
+return ret;
+
+...................................................................................
+
+asm80386  exit() は使えないから return -1; にする
+a_getsym() まで return -1; にした
+
+data seg: 1*8, code seg: 2*8, esp 設定, eip = (int)a_binfile-0x00280000　にて実行する
+
+data seg: 1*8, code seg: i2*8, esp 設定, eip = 0; にて実行する　動作した
+
+data seg: i1*8, code seg: i2*8, esp 非設定, eip = 0; にて実行する　NG
+
+data seg: i1*8, ss: 1*8, code seg: i2*8, esp 設定, eip=0; にて実行する　OK
+
+data seg: i1*8, code seg: i2*8, esp 非設定, eip = 0; にて実行する
+
+................................................................................
+
+キー入力が int 0x40 ではいらないようだ
+
+ut_getc(); を　int 0x40 call に変更してテストする  やはりダメ
+多分 int 0x40 のなかで　eax を不用意に壊しているのが原因だ

@@ -1,0 +1,649 @@
+GAS LISTING command_x.s 			page 1
+
+
+   1              		.file	"command.c"
+   2              		.text
+   3              		.globl	_cmd_sht
+   4              		.bss
+   5              		.align 4
+   6              	_cmd_sht:
+   7 0000 00000000 		.space 4
+   8              		.globl	_cmd_task
+   9              		.align 4
+  10              	_cmd_task:
+  11 0004 00000000 		.space 4
+  12              		.globl	_run_task
+  13              		.align 4
+  14              	_run_task:
+  15 0008 00000000 		.space 4
+  16              		.text
+  17              		.globl	_command_init
+  18              		.def	_command_init;	.scl	2;	.type	32;	.endef
+  19              	_command_init:
+  20              	LFB0:
+  21              		.cfi_startproc
+  22 0000 55       		pushl	%ebp
+  23              		.cfi_def_cfa_offset 8
+  24              		.cfi_offset 5, -8
+  25 0001 89E5     		movl	%esp, %ebp
+  26              		.cfi_def_cfa_register 5
+  27 0003 83EC28   		subl	$40, %esp
+  28 0006 B8800200 		movl	$_command, %eax
+  28      00
+  29 000b C7442418 		movl	$3, 24(%esp)
+  29      03000000 
+  30 0013 89442414 		movl	%eax, 20(%esp)
+  31 0017 C7442410 		movl	$65536, 16(%esp)
+  31      00000100 
+  32 001f C744240C 		movl	$400, 12(%esp)
+  32      90010000 
+  33 0027 C7442408 		movl	$500, 8(%esp)
+  33      F4010000 
+  34 002f C7442404 		movl	$_cmd_sht, 4(%esp)
+  34      00000000 
+  35 0037 C7042404 		movl	$_cmd_task, (%esp)
+  35      000000
+  36 003e E8000000 		call	_make_sheet_and_thread
+  36      00
+  37 0043 90       		nop
+  38 0044 C9       		leave
+  39              		.cfi_restore 5
+  40              		.cfi_def_cfa 4, 4
+  41 0045 C3       		ret
+  42              		.cfi_endproc
+  43              	LFE0:
+  44              		.data
+  45              	LC0:
+  46 0000 2A2A2A20 		.ascii "*** GDT table overflow\12\0"
+  46      47445420 
+  46      7461626C 
+  46      65206F76 
+GAS LISTING command_x.s 			page 2
+
+
+  46      6572666C 
+  47              		.text
+  48              		.globl	_command_make_task
+  49              		.def	_command_make_task;	.scl	2;	.type	32;	.endef
+  50              	_command_make_task:
+  51              	LFB1:
+  52              		.cfi_startproc
+  53 0046 55       		pushl	%ebp
+  54              		.cfi_def_cfa_offset 8
+  55              		.cfi_offset 5, -8
+  56 0047 89E5     		movl	%esp, %ebp
+  57              		.cfi_def_cfa_register 5
+  58 0049 83EC38   		subl	$56, %esp
+  59 004c C745E800 		movl	$2555904, -24(%ebp)
+  59      002700
+  60 0053 C7442408 		movl	$8, 8(%esp)
+  60      08000000 
+  61 005b C7442404 		movl	$0, 4(%esp)
+  61      00000000 
+  62 0063 8D45E0   		leal	-32(%ebp), %eax
+  63 0066 890424   		movl	%eax, (%esp)
+  64 0069 E8000000 		call	_memset
+  64      00
+  65 006e C745EC00 		movl	$0, -20(%ebp)
+  65      000000
+  66 0075 8B45EC   		movl	-20(%ebp), %eax
+  67 0078 8945F0   		movl	%eax, -16(%ebp)
+  68 007b C745F404 		movl	$4, -12(%ebp)
+  68      000000
+  69 0082 EB44     		jmp	L3
+  70              	L7:
+  71 0084 8B45F4   		movl	-12(%ebp), %eax
+  72 0087 8D14C500 		leal	0(,%eax,8), %edx
+  72      000000
+  73 008e 8B45E8   		movl	-24(%ebp), %eax
+  74 0091 01D0     		addl	%edx, %eax
+  75 0093 C7442408 		movl	$8, 8(%esp)
+  75      08000000 
+  76 009b 89442404 		movl	%eax, 4(%esp)
+  77 009f 8D45E0   		leal	-32(%ebp), %eax
+  78 00a2 890424   		movl	%eax, (%esp)
+  79 00a5 E8000000 		call	_memcmp
+  79      00
+  80 00aa 85C0     		testl	%eax, %eax
+  81 00ac 7516     		jne	L4
+  82 00ae 837DF000 		cmpl	$0, -16(%ebp)
+  83 00b2 7508     		jne	L5
+  84 00b4 8B45F4   		movl	-12(%ebp), %eax
+  85 00b7 8945F0   		movl	%eax, -16(%ebp)
+  86 00ba EB08     		jmp	L4
+  87              	L5:
+  88 00bc 8B45F4   		movl	-12(%ebp), %eax
+  89 00bf 8945EC   		movl	%eax, -20(%ebp)
+  90 00c2 EB0D     		jmp	L6
+  91              	L4:
+  92 00c4 8345F401 		addl	$1, -12(%ebp)
+  93              	L3:
+GAS LISTING command_x.s 			page 3
+
+
+  94 00c8 817DF4FE 		cmpl	$8190, -12(%ebp)
+  94      1F0000
+  95 00cf 7EB3     		jle	L7
+  96              	L6:
+  97 00d1 817DF4FF 		cmpl	$8191, -12(%ebp)
+  97      1F0000
+  98 00d8 750C     		jne	L8
+  99 00da C7042400 		movl	$LC0, (%esp)
+  99      000000
+ 100 00e1 E8000000 		call	_fatal_a
+ 100      00
+ 101              	L8:
+ 102 00e6 A1000000 		movl	_a_binfile, %eax
+ 102      00
+ 103 00eb 89C2     		movl	%eax, %edx
+ 104 00ed 8B45EC   		movl	-20(%ebp), %eax
+ 105 00f0 8D0CC500 		leal	0(,%eax,8), %ecx
+ 105      000000
+ 106 00f7 8B45E8   		movl	-24(%ebp), %eax
+ 107 00fa 01C8     		addl	%ecx, %eax
+ 108 00fc C744240C 		movl	$16538, 12(%esp)
+ 108      9A400000 
+ 109 0104 89542408 		movl	%edx, 8(%esp)
+ 110 0108 C7442404 		movl	$1048575, 4(%esp)
+ 110      FFFF0F00 
+ 111 0110 890424   		movl	%eax, (%esp)
+ 112 0113 E8000000 		call	_set_segmdesc
+ 112      00
+ 113 0118 A1000000 		movl	_a_binfile, %eax
+ 113      00
+ 114 011d 89C2     		movl	%eax, %edx
+ 115 011f 8B45F0   		movl	-16(%ebp), %eax
+ 116 0122 8D0CC500 		leal	0(,%eax,8), %ecx
+ 116      000000
+ 117 0129 8B45E8   		movl	-24(%ebp), %eax
+ 118 012c 01C8     		addl	%ecx, %eax
+ 119 012e C744240C 		movl	$16530, 12(%esp)
+ 119      92400000 
+ 120 0136 89542408 		movl	%edx, 8(%esp)
+ 121 013a C7442404 		movl	$1048575, 4(%esp)
+ 121      FFFF0F00 
+ 122 0142 890424   		movl	%eax, (%esp)
+ 123 0145 E8000000 		call	_set_segmdesc
+ 123      00
+ 124 014a E8000000 		call	_task_alloc
+ 124      00
+ 125 014f A3080000 		movl	%eax, _run_task
+ 125      00
+ 126 0154 C7042400 		movl	$65536, (%esp)
+ 126      000100
+ 127 015b E8000000 		call	_memman_alloc
+ 127      00
+ 128 0160 8D90F4FF 		leal	65524(%eax), %edx
+ 128      0000
+ 129 0166 A1080000 		movl	_run_task, %eax
+ 129      00
+ 130 016b 895044   		movl	%edx, 68(%eax)
+GAS LISTING command_x.s 			page 4
+
+
+ 131 016e A1080000 		movl	_run_task, %eax
+ 131      00
+ 132 0173 C7402C00 		movl	$0, 44(%eax)
+ 132      000000
+ 133 017a A1080000 		movl	_run_task, %eax
+ 133      00
+ 134 017f 8B55F0   		movl	-16(%ebp), %edx
+ 135 0182 C1E203   		sall	$3, %edx
+ 136 0185 895054   		movl	%edx, 84(%eax)
+ 137 0188 A1080000 		movl	_run_task, %eax
+ 137      00
+ 138 018d 8B55EC   		movl	-20(%ebp), %edx
+ 139 0190 C1E203   		sall	$3, %edx
+ 140 0193 895058   		movl	%edx, 88(%eax)
+ 141 0196 A1080000 		movl	_run_task, %eax
+ 141      00
+ 142 019b C7405C08 		movl	$8, 92(%eax)
+ 142      000000
+ 143 01a2 A1080000 		movl	_run_task, %eax
+ 143      00
+ 144 01a7 8B55F0   		movl	-16(%ebp), %edx
+ 145 01aa C1E203   		sall	$3, %edx
+ 146 01ad 895060   		movl	%edx, 96(%eax)
+ 147 01b0 A1080000 		movl	_run_task, %eax
+ 147      00
+ 148 01b5 8B55F0   		movl	-16(%ebp), %edx
+ 149 01b8 C1E203   		sall	$3, %edx
+ 150 01bb 895064   		movl	%edx, 100(%eax)
+ 151 01be A1080000 		movl	_run_task, %eax
+ 151      00
+ 152 01c3 8B55F0   		movl	-16(%ebp), %edx
+ 153 01c6 C1E203   		sall	$3, %edx
+ 154 01c9 895068   		movl	%edx, 104(%eax)
+ 155 01cc 8B150000 		movl	_cmd_sht, %edx
+ 155      0000
+ 156 01d2 A1080000 		movl	_run_task, %eax
+ 156      00
+ 157 01d7 895038   		movl	%edx, 56(%eax)
+ 158 01da A1080000 		movl	_run_task, %eax
+ 158      00
+ 159 01df C7442404 		movl	$5, 4(%esp)
+ 159      05000000 
+ 160 01e7 890424   		movl	%eax, (%esp)
+ 161 01ea E8000000 		call	_task_run
+ 161      00
+ 162 01ef 90       		nop
+ 163 01f0 C9       		leave
+ 164              		.cfi_restore 5
+ 165              		.cfi_def_cfa 4, 4
+ 166 01f1 C3       		ret
+ 167              		.cfi_endproc
+ 168              	LFE1:
+ 169              		.data
+ 170              	LC1:
+ 171 0018 0A00     		.ascii "\12\0"
+ 172 001a 0000     		.align 4
+ 173              	LC2:
+GAS LISTING command_x.s 			page 5
+
+
+ 174 001c 3E206865 		.ascii "> help         ... this message\12\0"
+ 174      6C702020 
+ 174      20202020 
+ 174      2020202E 
+ 174      2E2E2074 
+ 175 003d 000000   		.align 4
+ 176              	LC3:
+ 177 0040 3E20636C 		.ascii "> cls          ... clear screen\12\0"
+ 177      73202020 
+ 177      20202020 
+ 177      2020202E 
+ 177      2E2E2063 
+ 178 0061 000000   		.align 4
+ 179              	LC4:
+ 180 0064 3E207365 		.ascii "> sedit        ... screen editor\12\0"
+ 180      64697420 
+ 180      20202020 
+ 180      2020202E 
+ 180      2E2E2073 
+ 181              	LC5:
+ 182 0086 3E206173 		.ascii "> asm80386     ... assemble\12\0"
+ 182      6D383033 
+ 182      38362020 
+ 182      2020202E 
+ 182      2E2E2061 
+ 183 00a3 00       		.align 4
+ 184              	LC6:
+ 185 00a4 3E207275 		.ascii "> run          ... program run\12\0"
+ 185      6E202020 
+ 185      20202020 
+ 185      2020202E 
+ 185      2E2E2070 
+ 186              		.text
+ 187              		.globl	_cmd_help
+ 188              		.def	_cmd_help;	.scl	2;	.type	32;	.endef
+ 189              	_cmd_help:
+ 190              	LFB2:
+ 191              		.cfi_startproc
+ 192 01f2 55       		pushl	%ebp
+ 193              		.cfi_def_cfa_offset 8
+ 194              		.cfi_offset 5, -8
+ 195 01f3 89E5     		movl	%esp, %ebp
+ 196              		.cfi_def_cfa_register 5
+ 197 01f5 83EC18   		subl	$24, %esp
+ 198 01f8 C7442404 		movl	$LC1, 4(%esp)
+ 198      18000000 
+ 199 0200 8B4508   		movl	8(%ebp), %eax
+ 200 0203 890424   		movl	%eax, (%esp)
+ 201 0206 E8000000 		call	_ut_printf
+ 201      00
+ 202 020b C7442404 		movl	$LC2, 4(%esp)
+ 202      1C000000 
+ 203 0213 8B4508   		movl	8(%ebp), %eax
+ 204 0216 890424   		movl	%eax, (%esp)
+ 205 0219 E8000000 		call	_ut_printf
+ 205      00
+ 206 021e C7442404 		movl	$LC3, 4(%esp)
+GAS LISTING command_x.s 			page 6
+
+
+ 206      40000000 
+ 207 0226 8B4508   		movl	8(%ebp), %eax
+ 208 0229 890424   		movl	%eax, (%esp)
+ 209 022c E8000000 		call	_ut_printf
+ 209      00
+ 210 0231 C7442404 		movl	$LC4, 4(%esp)
+ 210      64000000 
+ 211 0239 8B4508   		movl	8(%ebp), %eax
+ 212 023c 890424   		movl	%eax, (%esp)
+ 213 023f E8000000 		call	_ut_printf
+ 213      00
+ 214 0244 C7442404 		movl	$LC5, 4(%esp)
+ 214      86000000 
+ 215 024c 8B4508   		movl	8(%ebp), %eax
+ 216 024f 890424   		movl	%eax, (%esp)
+ 217 0252 E8000000 		call	_ut_printf
+ 217      00
+ 218 0257 C7442404 		movl	$LC6, 4(%esp)
+ 218      A4000000 
+ 219 025f 8B4508   		movl	8(%ebp), %eax
+ 220 0262 890424   		movl	%eax, (%esp)
+ 221 0265 E8000000 		call	_ut_printf
+ 221      00
+ 222 026a C7442404 		movl	$LC1, 4(%esp)
+ 222      18000000 
+ 223 0272 8B4508   		movl	8(%ebp), %eax
+ 224 0275 890424   		movl	%eax, (%esp)
+ 225 0278 E8000000 		call	_ut_printf
+ 225      00
+ 226 027d 90       		nop
+ 227 027e C9       		leave
+ 228              		.cfi_restore 5
+ 229              		.cfi_def_cfa 4, 4
+ 230 027f C3       		ret
+ 231              		.cfi_endproc
+ 232              	LFE2:
+ 233              		.data
+ 234              	LC7:
+ 235 00c4 48656C70 		.ascii "Help message is \"help\"\12\0"
+ 235      206D6573 
+ 235      73616765 
+ 235      20697320 
+ 235      2268656C 
+ 236              	LC8:
+ 237 00dc 3E2000   		.ascii "> \0"
+ 238              	LC9:
+ 239 00df 256300   		.ascii "%c\0"
+ 240              	LC10:
+ 241 00e2 68656C70 		.ascii "help\0"
+ 241      00
+ 242              	LC11:
+ 243 00e7 636C7300 		.ascii "cls\0"
+ 244              	LC12:
+ 245 00eb 73656469 		.ascii "sedit\0"
+ 245      7400
+ 246              	LC13:
+ 247 00f1 61736D38 		.ascii "asm80386\0"
+GAS LISTING command_x.s 			page 7
+
+
+ 247      30333836 
+ 247      00
+ 248              	LC14:
+ 249 00fa 72756E00 		.ascii "run\0"
+ 250              	LC15:
+ 251 00fe 696E7434 		.ascii "int40\0"
+ 251      3000
+ 252              	LC16:
+ 253 0104 2A2A2A20 		.ascii "*** error\12\0"
+ 253      6572726F 
+ 253      720A00
+ 254 010f 00       		.text
+ 255              		.globl	_command
+ 256              		.def	_command;	.scl	2;	.type	32;	.endef
+ 257              	_command:
+ 258              	LFB3:
+ 259              		.cfi_startproc
+ 260 0280 55       		pushl	%ebp
+ 261              		.cfi_def_cfa_offset 8
+ 262              		.cfi_offset 5, -8
+ 263 0281 89E5     		movl	%esp, %ebp
+ 264              		.cfi_def_cfa_register 5
+ 265 0283 81ECA800 		subl	$168, %esp
+ 265      0000
+ 266 0289 C7442404 		movl	$LC7, 4(%esp)
+ 266      C4000000 
+ 267 0291 8B4508   		movl	8(%ebp), %eax
+ 268 0294 890424   		movl	%eax, (%esp)
+ 269 0297 E8000000 		call	_ut_printf
+ 269      00
+ 270              	L29:
+ 271 029c C7442404 		movl	$LC8, 4(%esp)
+ 271      DC000000 
+ 272 02a4 8B4508   		movl	8(%ebp), %eax
+ 273 02a7 890424   		movl	%eax, (%esp)
+ 274 02aa E8000000 		call	_ut_printf
+ 274      00
+ 275 02af C745F400 		movl	$0, -12(%ebp)
+ 275      000000
+ 276 02b6 EB79     		jmp	L11
+ 277              	L16:
+ 278 02b8 8B4508   		movl	8(%ebp), %eax
+ 279 02bb 890424   		movl	%eax, (%esp)
+ 280 02be E8000000 		call	_ut_getcA
+ 280      00
+ 281 02c3 8945F0   		movl	%eax, -16(%ebp)
+ 282 02c6 837DF00A 		cmpl	$10, -16(%ebp)
+ 283 02ca 7523     		jne	L12
+ 284 02cc C7442404 		movl	$LC1, 4(%esp)
+ 284      18000000 
+ 285 02d4 8B4508   		movl	8(%ebp), %eax
+ 286 02d7 890424   		movl	%eax, (%esp)
+ 287 02da E8000000 		call	_ut_printf
+ 287      00
+ 288 02df 8D9570FF 		leal	-144(%ebp), %edx
+ 288      FFFF
+ 289 02e5 8B45F4   		movl	-12(%ebp), %eax
+GAS LISTING command_x.s 			page 8
+
+
+ 290 02e8 01D0     		addl	%edx, %eax
+ 291 02ea C60000   		movb	$0, (%eax)
+ 292 02ed EB4E     		jmp	L13
+ 293              	L12:
+ 294 02ef 837DF000 		cmpl	$0, -16(%ebp)
+ 295 02f3 7E34     		jle	L14
+ 296 02f5 837DF07F 		cmpl	$127, -16(%ebp)
+ 297 02f9 7F2E     		jg	L14
+ 298 02fb 8B45F0   		movl	-16(%ebp), %eax
+ 299 02fe 89442408 		movl	%eax, 8(%esp)
+ 300 0302 C7442404 		movl	$LC9, 4(%esp)
+ 300      DF000000 
+ 301 030a 8B4508   		movl	8(%ebp), %eax
+ 302 030d 890424   		movl	%eax, (%esp)
+ 303 0310 E8000000 		call	_ut_printf
+ 303      00
+ 304 0315 8B45F0   		movl	-16(%ebp), %eax
+ 305 0318 89C2     		movl	%eax, %edx
+ 306 031a 8D8D70FF 		leal	-144(%ebp), %ecx
+ 306      FFFF
+ 307 0320 8B45F4   		movl	-12(%ebp), %eax
+ 308 0323 01C8     		addl	%ecx, %eax
+ 309 0325 8810     		movb	%dl, (%eax)
+ 310 0327 EB04     		jmp	L15
+ 311              	L14:
+ 312 0329 836DF401 		subl	$1, -12(%ebp)
+ 313              	L15:
+ 314 032d 8345F401 		addl	$1, -12(%ebp)
+ 315              	L11:
+ 316 0331 8B45F4   		movl	-12(%ebp), %eax
+ 317 0334 83F87F   		cmpl	$127, %eax
+ 318 0337 0F867BFF 		jbe	L16
+ 318      FFFF
+ 319              	L13:
+ 320 033d 817DF480 		cmpl	$128, -12(%ebp)
+ 320      000000
+ 321 0344 750E     		jne	L17
+ 322 0346 8B45F4   		movl	-12(%ebp), %eax
+ 323 0349 83E801   		subl	$1, %eax
+ 324 034c C6840570 		movb	$0, -144(%ebp,%eax)
+ 324      FFFFFF00 
+ 325              	L17:
+ 326 0354 C7442404 		movl	$LC10, 4(%esp)
+ 326      E2000000 
+ 327 035c 8D8570FF 		leal	-144(%ebp), %eax
+ 327      FFFF
+ 328 0362 890424   		movl	%eax, (%esp)
+ 329 0365 E8000000 		call	_strcmp
+ 329      00
+ 330 036a 85C0     		testl	%eax, %eax
+ 331 036c 7510     		jne	L18
+ 332 036e 8B4508   		movl	8(%ebp), %eax
+ 333 0371 890424   		movl	%eax, (%esp)
+ 334 0374 E879FEFF 		call	_cmd_help
+ 334      FF
+ 335 0379 E91EFFFF 		jmp	L29
+ 335      FF
+GAS LISTING command_x.s 			page 9
+
+
+ 336              	L18:
+ 337 037e C7442404 		movl	$LC11, 4(%esp)
+ 337      E7000000 
+ 338 0386 8D8570FF 		leal	-144(%ebp), %eax
+ 338      FFFF
+ 339 038c 890424   		movl	%eax, (%esp)
+ 340 038f E8000000 		call	_strcmp
+ 340      00
+ 341 0394 85C0     		testl	%eax, %eax
+ 342 0396 752B     		jne	L20
+ 343 0398 8B4508   		movl	8(%ebp), %eax
+ 344 039b 8B406C   		movl	108(%eax), %eax
+ 345 039e 8B00     		movl	(%eax), %eax
+ 346 03a0 0FBEC0   		movsbl	%al, %eax
+ 347 03a3 89442404 		movl	%eax, 4(%esp)
+ 348 03a7 8B4508   		movl	8(%ebp), %eax
+ 349 03aa 890424   		movl	%eax, (%esp)
+ 350 03ad E8000000 		call	_clear_screen
+ 350      00
+ 351 03b2 8B4508   		movl	8(%ebp), %eax
+ 352 03b5 8B4060   		movl	96(%eax), %eax
+ 353 03b8 C7000000 		movl	$0, (%eax)
+ 353      0000
+ 354 03be E9D9FEFF 		jmp	L29
+ 354      FF
+ 355              	L20:
+ 356 03c3 C7442404 		movl	$LC12, 4(%esp)
+ 356      EB000000 
+ 357 03cb 8D8570FF 		leal	-144(%ebp), %eax
+ 357      FFFF
+ 358 03d1 890424   		movl	%eax, (%esp)
+ 359 03d4 E8000000 		call	_strcmp
+ 359      00
+ 360 03d9 85C0     		testl	%eax, %eax
+ 361 03db 750A     		jne	L21
+ 362 03dd E8000000 		call	_sedit_main
+ 362      00
+ 363 03e2 E9B5FEFF 		jmp	L29
+ 363      FF
+ 364              	L21:
+ 365 03e7 C7442404 		movl	$LC13, 4(%esp)
+ 365      F1000000 
+ 366 03ef 8D8570FF 		leal	-144(%ebp), %eax
+ 366      FFFF
+ 367 03f5 890424   		movl	%eax, (%esp)
+ 368 03f8 E8000000 		call	_strcmp
+ 368      00
+ 369 03fd 85C0     		testl	%eax, %eax
+ 370 03ff 750A     		jne	L22
+ 371 0401 E8000000 		call	_asm_main
+ 371      00
+ 372 0406 E991FEFF 		jmp	L29
+ 372      FF
+ 373              	L22:
+ 374 040b C7442404 		movl	$LC14, 4(%esp)
+ 374      FA000000 
+ 375 0413 8D8570FF 		leal	-144(%ebp), %eax
+GAS LISTING command_x.s 			page 10
+
+
+ 375      FFFF
+ 376 0419 890424   		movl	%eax, (%esp)
+ 377 041c E8000000 		call	_strcmp
+ 377      00
+ 378 0421 85C0     		testl	%eax, %eax
+ 379 0423 7579     		jne	L23
+ 380 0425 E81CFCFF 		call	_command_make_task
+ 380      FF
+ 381 042a EB60     		jmp	L24
+ 382              	L27:
+ 383 042c 8B4508   		movl	8(%ebp), %eax
+ 384 042f C7442408 		movl	$0, 8(%esp)
+ 384      00000000 
+ 385 0437 89442404 		movl	%eax, 4(%esp)
+ 386 043b C7042401 		movl	$1, (%esp)
+ 386      000000
+ 387 0442 E8000000 		call	_asm_int_0x40
+ 387      00
+ 388 0447 8945F0   		movl	%eax, -16(%ebp)
+ 389 044a 817DF0B9 		cmpl	$185, -16(%ebp)
+ 389      000000
+ 390 0451 752D     		jne	L25
+ 391 0453 E8000000 		call	_disable_interrupt
+ 391      00
+ 392 0458 A1080000 		movl	_run_task, %eax
+ 392      00
+ 393 045d C7442404 		movl	$0, 4(%esp)
+ 393      00000000 
+ 394 0465 890424   		movl	%eax, (%esp)
+ 395 0468 E8000000 		call	_task_remove
+ 395      00
+ 396 046d E8000000 		call	_enable_interrupt
+ 396      00
+ 397 0472 A1080000 		movl	_run_task, %eax
+ 397      00
+ 398 0477 C7400400 		movl	$0, 4(%eax)
+ 398      000000
+ 399 047e EB6B     		jmp	L19
+ 400              	L25:
+ 401 0480 C7042464 		movl	$100, (%esp)
+ 401      000000
+ 402 0487 E8000000 		call	_delay_task
+ 402      00
+ 403              	L24:
+ 404 048c A1080000 		movl	_run_task, %eax
+ 404      00
+ 405 0491 8B4004   		movl	4(%eax), %eax
+ 406 0494 83F802   		cmpl	$2, %eax
+ 407 0497 7493     		je	L27
+ 408 0499 E9FEFDFF 		jmp	L29
+ 408      FF
+ 409              	L23:
+ 410 049e C7442404 		movl	$LC15, 4(%esp)
+ 410      FE000000 
+ 411 04a6 8D8570FF 		leal	-144(%ebp), %eax
+ 411      FFFF
+ 412 04ac 890424   		movl	%eax, (%esp)
+GAS LISTING command_x.s 			page 11
+
+
+ 413 04af E8000000 		call	_strcmp
+ 413      00
+ 414 04b4 85C0     		testl	%eax, %eax
+ 415 04b6 7520     		jne	L28
+ 416 04b8 8B4508   		movl	8(%ebp), %eax
+ 417 04bb C7442408 		movl	$4660, 8(%esp)
+ 417      34120000 
+ 418 04c3 89442404 		movl	%eax, 4(%esp)
+ 419 04c7 C7042405 		movl	$5, (%esp)
+ 419      000000
+ 420 04ce E8000000 		call	_asm_int_0x40
+ 420      00
+ 421 04d3 E9C4FDFF 		jmp	L29
+ 421      FF
+ 422              	L28:
+ 423 04d8 C7442404 		movl	$LC16, 4(%esp)
+ 423      04010000 
+ 424 04e0 8B4508   		movl	8(%ebp), %eax
+ 425 04e3 890424   		movl	%eax, (%esp)
+ 426 04e6 E8000000 		call	_ut_printf
+ 426      00
+ 427              	L19:
+ 428 04eb E9ACFDFF 		jmp	L29
+ 428      FF
+ 429              		.cfi_endproc
+ 430              	LFE3:
+ 431              		.ident	"GCC: (GNU) 10.2.0"
+ 432              		.def	_make_sheet_and_thread;	.scl	2;	.type	32;	.endef
+ 433              		.def	_memset;	.scl	2;	.type	32;	.endef
+ 434              		.def	_memcmp;	.scl	2;	.type	32;	.endef
+ 435              		.def	_fatal_a;	.scl	2;	.type	32;	.endef
+ 436              		.def	_set_segmdesc;	.scl	2;	.type	32;	.endef
+ 437              		.def	_task_alloc;	.scl	2;	.type	32;	.endef
+ 438              		.def	_memman_alloc;	.scl	2;	.type	32;	.endef
+ 439              		.def	_task_run;	.scl	2;	.type	32;	.endef
+ 440              		.def	_ut_printf;	.scl	2;	.type	32;	.endef
+ 441              		.def	_ut_getcA;	.scl	2;	.type	32;	.endef
+ 442              		.def	_strcmp;	.scl	2;	.type	32;	.endef
+ 443              		.def	_clear_screen;	.scl	2;	.type	32;	.endef
+ 444              		.def	_sedit_main;	.scl	2;	.type	32;	.endef
+ 445              		.def	_asm_main;	.scl	2;	.type	32;	.endef
+ 446              		.def	_asm_int_0x40;	.scl	2;	.type	32;	.endef
+ 447              		.def	_disable_interrupt;	.scl	2;	.type	32;	.endef
+ 448              		.def	_task_remove;	.scl	2;	.type	32;	.endef
+ 449              		.def	_enable_interrupt;	.scl	2;	.type	32;	.endef
+ 450              		.def	_delay_task;	.scl	2;	.type	32;	.endef

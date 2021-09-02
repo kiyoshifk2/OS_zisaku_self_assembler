@@ -1,0 +1,442 @@
+GAS LISTING lib_x.s 			page 1
+
+
+   1              		.file	"lib.c"
+   2              		.text
+   3              		.globl	_memcheck_sub
+   4              		.def	_memcheck_sub;	.scl	2;	.type	32;	.endef
+   5              	_memcheck_sub:
+   6              	LFB0:
+   7              		.cfi_startproc
+   8 0000 55       		pushl	%ebp
+   9              		.cfi_def_cfa_offset 8
+  10              		.cfi_offset 5, -8
+  11 0001 89E5     		movl	%esp, %ebp
+  12              		.cfi_def_cfa_register 5
+  13 0003 83EC10   		subl	$16, %esp
+  14 0006 8B4508   		movl	8(%ebp), %eax
+  15 0009 0DFFFF00 		orl	$65535, %eax
+  15      00
+  16 000e 8945FC   		movl	%eax, -4(%ebp)
+  17 0011 EB49     		jmp	L2
+  18              	L5:
+  19 0013 8B45FC   		movl	-4(%ebp), %eax
+  20 0016 8945F8   		movl	%eax, -8(%ebp)
+  21 0019 8B55FC   		movl	-4(%ebp), %edx
+  22 001c 8B45F8   		movl	-8(%ebp), %eax
+  23 001f 8910     		movl	%edx, (%eax)
+  24 0021 8B45F8   		movl	-8(%ebp), %eax
+  25 0024 8B00     		movl	(%eax), %eax
+  26 0026 8945F4   		movl	%eax, -12(%ebp)
+  27 0029 8B45FC   		movl	-4(%ebp), %eax
+  28 002c F7D0     		notl	%eax
+  29 002e 89C2     		movl	%eax, %edx
+  30 0030 8B45F8   		movl	-8(%ebp), %eax
+  31 0033 8910     		movl	%edx, (%eax)
+  32 0035 8B45F8   		movl	-8(%ebp), %eax
+  33 0038 8B00     		movl	(%eax), %eax
+  34 003a 8945F0   		movl	%eax, -16(%ebp)
+  35 003d 8B45F0   		movl	-16(%ebp), %eax
+  36 0040 F7D0     		notl	%eax
+  37 0042 89C2     		movl	%eax, %edx
+  38 0044 8B45F4   		movl	-12(%ebp), %eax
+  39 0047 39C2     		cmpl	%eax, %edx
+  40 0049 740A     		je	L3
+  41 004b 8B45FC   		movl	-4(%ebp), %eax
+  42 004e 2D000001 		subl	$65536, %eax
+  42      00
+  43 0053 EB17     		jmp	L4
+  44              	L3:
+  45 0055 8145FC00 		addl	$65536, -4(%ebp)
+  45      000100
+  46              	L2:
+  47 005c 8B45FC   		movl	-4(%ebp), %eax
+  48 005f 3B450C   		cmpl	12(%ebp), %eax
+  49 0062 76AF     		jbe	L5
+  50 0064 8B45FC   		movl	-4(%ebp), %eax
+  51 0067 2D000001 		subl	$65536, %eax
+  51      00
+  52              	L4:
+  53 006c C9       		leave
+GAS LISTING lib_x.s 			page 2
+
+
+  54              		.cfi_restore 5
+  55              		.cfi_def_cfa 4, 4
+  56 006d C3       		ret
+  57              		.cfi_endproc
+  58              	LFE0:
+  59              		.globl	_memcheck
+  60              		.def	_memcheck;	.scl	2;	.type	32;	.endef
+  61              	_memcheck:
+  62              	LFB1:
+  63              		.cfi_startproc
+  64 006e 55       		pushl	%ebp
+  65              		.cfi_def_cfa_offset 8
+  66              		.cfi_offset 5, -8
+  67 006f 89E5     		movl	%esp, %ebp
+  68              		.cfi_def_cfa_register 5
+  69 0071 57       		pushl	%edi
+  70 0072 56       		pushl	%esi
+  71 0073 53       		pushl	%ebx
+  72 0074 83EC4C   		subl	$76, %esp
+  73              		.cfi_offset 7, -12
+  74              		.cfi_offset 6, -16
+  75              		.cfi_offset 3, -20
+  76 0077 C645E700 		movb	$0, -25(%ebp)
+  77 007b E8000000 		call	_io_load_eflags
+  77      00
+  78 0080 8945E0   		movl	%eax, -32(%ebp)
+  79 0083 814DE000 		orl	$262144, -32(%ebp)
+  79      000400
+  80 008a 8B45E0   		movl	-32(%ebp), %eax
+  81 008d 890424   		movl	%eax, (%esp)
+  82 0090 E8000000 		call	_io_store_eflags
+  82      00
+  83 0095 E8000000 		call	_io_load_eflags
+  83      00
+  84 009a 8945E0   		movl	%eax, -32(%ebp)
+  85 009d 8B45E0   		movl	-32(%ebp), %eax
+  86 00a0 25000004 		andl	$262144, %eax
+  86      00
+  87 00a5 85C0     		testl	%eax, %eax
+  88 00a7 7404     		je	L7
+  89 00a9 C645E701 		movb	$1, -25(%ebp)
+  90              	L7:
+  91 00ad 8165E0FF 		andl	$-262145, -32(%ebp)
+  91      FFFBFF
+  92 00b4 8B45E0   		movl	-32(%ebp), %eax
+  93 00b7 890424   		movl	%eax, (%esp)
+  94 00ba E8000000 		call	_io_store_eflags
+  94      00
+  95 00bf 807DE700 		cmpb	$0, -25(%ebp)
+  96 00c3 741A     		je	L8
+  97 00c5 E8000000 		call	_load_cr0
+  97      00
+  98 00ca 8945DC   		movl	%eax, -36(%ebp)
+  99 00cd 814DDC00 		orl	$1610612736, -36(%ebp)
+  99      000060
+ 100 00d4 8B45DC   		movl	-36(%ebp), %eax
+ 101 00d7 890424   		movl	%eax, (%esp)
+GAS LISTING lib_x.s 			page 3
+
+
+ 102 00da E8000000 		call	_store_cr0
+ 102      00
+ 103              	L8:
+ 104 00df 8B450C   		movl	12(%ebp), %eax
+ 105 00e2 89442404 		movl	%eax, 4(%esp)
+ 106 00e6 8B4508   		movl	8(%ebp), %eax
+ 107 00e9 890424   		movl	%eax, (%esp)
+ 108 00ec E80FFFFF 		call	_memcheck_sub
+ 108      FF
+ 109 00f1 8945D8   		movl	%eax, -40(%ebp)
+ 110 00f4 807DE700 		cmpb	$0, -25(%ebp)
+ 111 00f8 741A     		je	L9
+ 112 00fa E8000000 		call	_load_cr0
+ 112      00
+ 113 00ff 8945DC   		movl	%eax, -36(%ebp)
+ 114 0102 8165DCFF 		andl	$-1610612737, -36(%ebp)
+ 114      FFFF9F
+ 115 0109 8B45DC   		movl	-36(%ebp), %eax
+ 116 010c 890424   		movl	%eax, (%esp)
+ 117 010f E8000000 		call	_store_cr0
+ 117      00
+ 118              	L9:
+ 119 0114 8B45D8   		movl	-40(%ebp), %eax
+ 120 0117 BA000000 		movl	$0, %edx
+ 120      00
+ 121 011c 83C001   		addl	$1, %eax
+ 122 011f 83D200   		adcl	$0, %edx
+ 123 0122 8945C0   		movl	%eax, -64(%ebp)
+ 124 0125 8955C4   		movl	%edx, -60(%ebp)
+ 125 0128 8B45C4   		movl	-60(%ebp), %eax
+ 126 012b C1F81F   		sarl	$31, %eax
+ 127 012e 99       		cltd
+ 128 012f 89C3     		movl	%eax, %ebx
+ 129 0131 81E3FFFF 		andl	$1048575, %ebx
+ 129      0F00
+ 130 0137 89DE     		movl	%ebx, %esi
+ 131 0139 89D0     		movl	%edx, %eax
+ 132 013b 83E000   		andl	$0, %eax
+ 133 013e 89C7     		movl	%eax, %edi
+ 134 0140 89F0     		movl	%esi, %eax
+ 135 0142 89FA     		movl	%edi, %edx
+ 136 0144 0345C0   		addl	-64(%ebp), %eax
+ 137 0147 1355C4   		adcl	-60(%ebp), %edx
+ 138 014a 0FACD014 		shrdl	$20, %edx, %eax
+ 139 014e C1FA14   		sarl	$20, %edx
+ 140 0151 8945D4   		movl	%eax, -44(%ebp)
+ 141 0154 8B45D4   		movl	-44(%ebp), %eax
+ 142 0157 83C44C   		addl	$76, %esp
+ 143 015a 5B       		popl	%ebx
+ 144              		.cfi_restore 3
+ 145 015b 5E       		popl	%esi
+ 146              		.cfi_restore 6
+ 147 015c 5F       		popl	%edi
+ 148              		.cfi_restore 7
+ 149 015d 5D       		popl	%ebp
+ 150              		.cfi_restore 5
+ 151              		.cfi_def_cfa 4, 4
+GAS LISTING lib_x.s 			page 4
+
+
+ 152 015e C3       		ret
+ 153              		.cfi_endproc
+ 154              	LFE1:
+ 155              		.data
+ 156              	LC0:
+ 157 0000 636E743D 		.ascii "cnt=%dM\12\0"
+ 157      25644D0A 
+ 157      00
+ 158 0009 000000   		.text
+ 159              		.globl	_test_speed
+ 160              		.def	_test_speed;	.scl	2;	.type	32;	.endef
+ 161              	_test_speed:
+ 162              	LFB2:
+ 163              		.cfi_startproc
+ 164 015f 55       		pushl	%ebp
+ 165              		.cfi_def_cfa_offset 8
+ 166              		.cfi_offset 5, -8
+ 167 0160 89E5     		movl	%esp, %ebp
+ 168              		.cfi_def_cfa_register 5
+ 169 0162 83EC28   		subl	$40, %esp
+ 170 0165 E8000000 		call	_GetTickCount
+ 170      00
+ 171 016a 8945F0   		movl	%eax, -16(%ebp)
+ 172 016d 90       		nop
+ 173              	L12:
+ 174 016e E8000000 		call	_GetTickCount
+ 174      00
+ 175 0173 3945F0   		cmpl	%eax, -16(%ebp)
+ 176 0176 74F6     		je	L12
+ 177 0178 E8000000 		call	_GetTickCount
+ 177      00
+ 178 017d 8945F0   		movl	%eax, -16(%ebp)
+ 179 0180 C745F400 		movl	$0, -12(%ebp)
+ 179      000000
+ 180              	L15:
+ 181 0187 8345F401 		addl	$1, -12(%ebp)
+ 182 018b E8000000 		call	_GetTickCount
+ 182      00
+ 183 0190 2B45F0   		subl	-16(%ebp), %eax
+ 184 0193 3DE70300 		cmpl	$999, %eax
+ 184      00
+ 185 0198 7702     		ja	L17
+ 186 019a EBEB     		jmp	L15
+ 187              	L17:
+ 188 019c 90       		nop
+ 189 019d 8B45F4   		movl	-12(%ebp), %eax
+ 190 01a0 BA83DE1B 		movl	$1125899907, %edx
+ 190      43
+ 191 01a5 F7E2     		mull	%edx
+ 192 01a7 89D0     		movl	%edx, %eax
+ 193 01a9 C1E812   		shrl	$18, %eax
+ 194 01ac 89442408 		movl	%eax, 8(%esp)
+ 195 01b0 C7442404 		movl	$LC0, 4(%esp)
+ 195      00000000 
+ 196 01b8 8B4508   		movl	8(%ebp), %eax
+ 197 01bb 890424   		movl	%eax, (%esp)
+ 198 01be E8000000 		call	_ut_printf
+GAS LISTING lib_x.s 			page 5
+
+
+ 198      00
+ 199 01c3 90       		nop
+ 200 01c4 C9       		leave
+ 201              		.cfi_restore 5
+ 202              		.cfi_def_cfa 4, 4
+ 203 01c5 C3       		ret
+ 204              		.cfi_endproc
+ 205              	LFE2:
+ 206              		.globl	_bss_clear
+ 207              		.def	_bss_clear;	.scl	2;	.type	32;	.endef
+ 208              	_bss_clear:
+ 209              	LFB3:
+ 210              		.cfi_startproc
+ 211 01c6 55       		pushl	%ebp
+ 212              		.cfi_def_cfa_offset 8
+ 213              		.cfi_offset 5, -8
+ 214 01c7 89E5     		movl	%esp, %ebp
+ 215              		.cfi_def_cfa_register 5
+ 216 01c9 83EC10   		subl	$16, %esp
+ 217 01cc B8000028 		movl	$2621440, %eax
+ 217      00
+ 218 01d1 8B00     		movl	(%eax), %eax
+ 219 01d3 8945FC   		movl	%eax, -4(%ebp)
+ 220 01d6 EB0A     		jmp	L19
+ 221              	L20:
+ 222 01d8 8B45FC   		movl	-4(%ebp), %eax
+ 223 01db C60000   		movb	$0, (%eax)
+ 224 01de 8345FC01 		addl	$1, -4(%ebp)
+ 225              	L19:
+ 226 01e2 B8040028 		movl	$2621444, %eax
+ 226      00
+ 227 01e7 8B00     		movl	(%eax), %eax
+ 228 01e9 3945FC   		cmpl	%eax, -4(%ebp)
+ 229 01ec 72EA     		jb	L20
+ 230 01ee 90       		nop
+ 231 01ef 90       		nop
+ 232 01f0 C9       		leave
+ 233              		.cfi_restore 5
+ 234              		.cfi_def_cfa 4, 4
+ 235 01f1 C3       		ret
+ 236              		.cfi_endproc
+ 237              	LFE3:
+ 238              		.globl	_ut_getcA
+ 239              		.def	_ut_getcA;	.scl	2;	.type	32;	.endef
+ 240              	_ut_getcA:
+ 241              	LFB4:
+ 242              		.cfi_startproc
+ 243 01f2 55       		pushl	%ebp
+ 244              		.cfi_def_cfa_offset 8
+ 245              		.cfi_offset 5, -8
+ 246 01f3 89E5     		movl	%esp, %ebp
+ 247              		.cfi_def_cfa_register 5
+ 248 01f5 83EC28   		subl	$40, %esp
+ 249 01f8 E8000000 		call	_io_load_eflags
+ 249      00
+ 250 01fd 8945F4   		movl	%eax, -12(%ebp)
+ 251 0200 EB1F     		jmp	L22
+GAS LISTING lib_x.s 			page 6
+
+
+ 252              	L24:
+ 253 0202 8B45F4   		movl	-12(%ebp), %eax
+ 254 0205 25000200 		andl	$512, %eax
+ 254      00
+ 255 020a 85C0     		testl	%eax, %eax
+ 256 020c 7507     		jne	L23
+ 257 020e E8000000 		call	_gonbe_hlt
+ 257      00
+ 258 0213 EB0C     		jmp	L22
+ 259              	L23:
+ 260 0215 C704240A 		movl	$10, (%esp)
+ 260      000000
+ 261 021c E8000000 		call	_delay_task
+ 261      00
+ 262              	L22:
+ 263 0221 8B4508   		movl	8(%ebp), %eax
+ 264 0224 C7442408 		movl	$0, 8(%esp)
+ 264      00000000 
+ 265 022c 89442404 		movl	%eax, 4(%esp)
+ 266 0230 C7042401 		movl	$1, (%esp)
+ 266      000000
+ 267 0237 E8000000 		call	_asm_int_0x40
+ 267      00
+ 268 023c 8945F0   		movl	%eax, -16(%ebp)
+ 269 023f 837DF000 		cmpl	$0, -16(%ebp)
+ 270 0243 74BD     		je	L24
+ 271 0245 8B45F0   		movl	-16(%ebp), %eax
+ 272 0248 C9       		leave
+ 273              		.cfi_restore 5
+ 274              		.cfi_def_cfa 4, 4
+ 275 0249 C3       		ret
+ 276              		.cfi_endproc
+ 277              	LFE4:
+ 278              		.globl	_ut_getc
+ 279              		.def	_ut_getc;	.scl	2;	.type	32;	.endef
+ 280              	_ut_getc:
+ 281              	LFB5:
+ 282              		.cfi_startproc
+ 283 024a 55       		pushl	%ebp
+ 284              		.cfi_def_cfa_offset 8
+ 285              		.cfi_offset 5, -8
+ 286 024b 89E5     		movl	%esp, %ebp
+ 287              		.cfi_def_cfa_register 5
+ 288 024d 83EC28   		subl	$40, %esp
+ 289              	L29:
+ 290 0250 8B4508   		movl	8(%ebp), %eax
+ 291 0253 890424   		movl	%eax, (%esp)
+ 292 0256 E897FFFF 		call	_ut_getcA
+ 292      FF
+ 293 025b 8945F4   		movl	%eax, -12(%ebp)
+ 294 025e 837DF400 		cmpl	$0, -12(%ebp)
+ 295 0262 7EEC     		jle	L29
+ 296 0264 837DF47F 		cmpl	$127, -12(%ebp)
+ 297 0268 7FE6     		jg	L29
+ 298 026a 8B45F4   		movl	-12(%ebp), %eax
+ 299 026d C9       		leave
+ 300              		.cfi_restore 5
+GAS LISTING lib_x.s 			page 7
+
+
+ 301              		.cfi_def_cfa 4, 4
+ 302 026e C3       		ret
+ 303              		.cfi_endproc
+ 304              	LFE5:
+ 305              		.globl	_ut_gets
+ 306              		.def	_ut_gets;	.scl	2;	.type	32;	.endef
+ 307              	_ut_gets:
+ 308              	LFB6:
+ 309              		.cfi_startproc
+ 310 026f 55       		pushl	%ebp
+ 311              		.cfi_def_cfa_offset 8
+ 312              		.cfi_offset 5, -8
+ 313 0270 89E5     		movl	%esp, %ebp
+ 314              		.cfi_def_cfa_register 5
+ 315 0272 83EC28   		subl	$40, %esp
+ 316 0275 C745F400 		movl	$0, -12(%ebp)
+ 316      000000
+ 317 027c EB3A     		jmp	L32
+ 318              	L35:
+ 319 027e 8B4508   		movl	8(%ebp), %eax
+ 320 0281 890424   		movl	%eax, (%esp)
+ 321 0284 E8C1FFFF 		call	_ut_getc
+ 321      FF
+ 322 0289 89C2     		movl	%eax, %edx
+ 323 028b 8B4DF4   		movl	-12(%ebp), %ecx
+ 324 028e 8B450C   		movl	12(%ebp), %eax
+ 325 0291 01C8     		addl	%ecx, %eax
+ 326 0293 8810     		movb	%dl, (%eax)
+ 327 0295 8B55F4   		movl	-12(%ebp), %edx
+ 328 0298 8B450C   		movl	12(%ebp), %eax
+ 329 029b 01D0     		addl	%edx, %eax
+ 330 029d 0FB600   		movzbl	(%eax), %eax
+ 331 02a0 3C0A     		cmpb	$10, %al
+ 332 02a2 7510     		jne	L33
+ 333 02a4 8B45F4   		movl	-12(%ebp), %eax
+ 334 02a7 8D5001   		leal	1(%eax), %edx
+ 335 02aa 8B450C   		movl	12(%ebp), %eax
+ 336 02ad 01D0     		addl	%edx, %eax
+ 337 02af C60000   		movb	$0, (%eax)
+ 338 02b2 EB2B     		jmp	L31
+ 339              	L33:
+ 340 02b4 8345F401 		addl	$1, -12(%ebp)
+ 341              	L32:
+ 342 02b8 8B4510   		movl	16(%ebp), %eax
+ 343 02bb 83E801   		subl	$1, %eax
+ 344 02be 3945F4   		cmpl	%eax, -12(%ebp)
+ 345 02c1 7CBB     		jl	L35
+ 346 02c3 8B55F4   		movl	-12(%ebp), %edx
+ 347 02c6 8B450C   		movl	12(%ebp), %eax
+ 348 02c9 01D0     		addl	%edx, %eax
+ 349 02cb C60000   		movb	$0, (%eax)
+ 350 02ce 90       		nop
+ 351              	L36:
+ 352 02cf 8B4508   		movl	8(%ebp), %eax
+ 353 02d2 890424   		movl	%eax, (%esp)
+ 354 02d5 E870FFFF 		call	_ut_getc
+ 354      FF
+GAS LISTING lib_x.s 			page 8
+
+
+ 355 02da 83F80A   		cmpl	$10, %eax
+ 356 02dd 75F0     		jne	L36
+ 357              	L31:
+ 358 02df C9       		leave
+ 359              		.cfi_restore 5
+ 360              		.cfi_def_cfa 4, 4
+ 361 02e0 C3       		ret
+ 362              		.cfi_endproc
+ 363              	LFE6:
+ 364              		.ident	"GCC: (GNU) 10.2.0"
+ 365              		.def	_io_load_eflags;	.scl	2;	.type	32;	.endef
+ 366              		.def	_io_store_eflags;	.scl	2;	.type	32;	.endef
+ 367              		.def	_load_cr0;	.scl	2;	.type	32;	.endef
+ 368              		.def	_store_cr0;	.scl	2;	.type	32;	.endef
+ 369              		.def	_GetTickCount;	.scl	2;	.type	32;	.endef
+ 370              		.def	_ut_printf;	.scl	2;	.type	32;	.endef
+ 371              		.def	_gonbe_hlt;	.scl	2;	.type	32;	.endef
+ 372              		.def	_delay_task;	.scl	2;	.type	32;	.endef
+ 373 02e1 909090   		.def	_asm_int_0x40;	.scl	2;	.type	32;	.endef

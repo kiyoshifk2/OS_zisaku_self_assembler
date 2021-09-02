@@ -1,0 +1,340 @@
+GAS LISTING graphic_x.s 			page 1
+
+
+   1              		.file	"graphic.c"
+   2              		.text
+   3              		.globl	_init_palette
+   4              		.def	_init_palette;	.scl	2;	.type	32;	.endef
+   5              	_init_palette:
+   6              	LFB0:
+   7              		.cfi_startproc
+   8 0000 55       		pushl	%ebp
+   9              		.cfi_def_cfa_offset 8
+  10              		.cfi_offset 5, -8
+  11 0001 89E5     		movl	%esp, %ebp
+  12              		.cfi_def_cfa_register 5
+  13 0003 83EC18   		subl	$24, %esp
+  14 0006 C7442408 		movl	$_table_rgb.0, 8(%esp)
+  14      00000000 
+  15 000e C7442404 		movl	$23, 4(%esp)
+  15      17000000 
+  16 0016 C7042400 		movl	$0, (%esp)
+  16      000000
+  17 001d E8030000 		call	_set_palette
+  17      00
+  18 0022 90       		nop
+  19 0023 C9       		leave
+  20              		.cfi_restore 5
+  21              		.cfi_def_cfa 4, 4
+  22 0024 C3       		ret
+  23              		.cfi_endproc
+  24              	LFE0:
+  25              		.globl	_set_palette
+  26              		.def	_set_palette;	.scl	2;	.type	32;	.endef
+  27              	_set_palette:
+  28              	LFB1:
+  29              		.cfi_startproc
+  30 0025 55       		pushl	%ebp
+  31              		.cfi_def_cfa_offset 8
+  32              		.cfi_offset 5, -8
+  33 0026 89E5     		movl	%esp, %ebp
+  34              		.cfi_def_cfa_register 5
+  35 0028 83EC28   		subl	$40, %esp
+  36 002b E8000000 		call	_io_load_eflags
+  36      00
+  37 0030 8945F0   		movl	%eax, -16(%ebp)
+  38 0033 E8000000 		call	_disable_interrupt
+  38      00
+  39 0038 8B4508   		movl	8(%ebp), %eax
+  40 003b 89442404 		movl	%eax, 4(%esp)
+  41 003f C70424C8 		movl	$968, (%esp)
+  41      030000
+  42 0046 E8000000 		call	_io_out8
+  42      00
+  43 004b 8B4508   		movl	8(%ebp), %eax
+  44 004e 8945F4   		movl	%eax, -12(%ebp)
+  45 0051 EB62     		jmp	L4
+  46              	L5:
+  47 0053 8B4510   		movl	16(%ebp), %eax
+  48 0056 0FB600   		movzbl	(%eax), %eax
+  49 0059 C0E802   		shrb	$2, %al
+GAS LISTING graphic_x.s 			page 2
+
+
+  50 005c 0FB6C0   		movzbl	%al, %eax
+  51 005f 89442404 		movl	%eax, 4(%esp)
+  52 0063 C70424C9 		movl	$969, (%esp)
+  52      030000
+  53 006a E8000000 		call	_io_out8
+  53      00
+  54 006f 8B4510   		movl	16(%ebp), %eax
+  55 0072 83C001   		addl	$1, %eax
+  56 0075 0FB600   		movzbl	(%eax), %eax
+  57 0078 C0E802   		shrb	$2, %al
+  58 007b 0FB6C0   		movzbl	%al, %eax
+  59 007e 89442404 		movl	%eax, 4(%esp)
+  60 0082 C70424C9 		movl	$969, (%esp)
+  60      030000
+  61 0089 E8000000 		call	_io_out8
+  61      00
+  62 008e 8B4510   		movl	16(%ebp), %eax
+  63 0091 83C002   		addl	$2, %eax
+  64 0094 0FB600   		movzbl	(%eax), %eax
+  65 0097 C0E802   		shrb	$2, %al
+  66 009a 0FB6C0   		movzbl	%al, %eax
+  67 009d 89442404 		movl	%eax, 4(%esp)
+  68 00a1 C70424C9 		movl	$969, (%esp)
+  68      030000
+  69 00a8 E8000000 		call	_io_out8
+  69      00
+  70 00ad 83451003 		addl	$3, 16(%ebp)
+  71 00b1 8345F401 		addl	$1, -12(%ebp)
+  72              	L4:
+  73 00b5 8B45F4   		movl	-12(%ebp), %eax
+  74 00b8 3B450C   		cmpl	12(%ebp), %eax
+  75 00bb 7E96     		jle	L5
+  76 00bd 8B45F0   		movl	-16(%ebp), %eax
+  77 00c0 890424   		movl	%eax, (%esp)
+  78 00c3 E8000000 		call	_io_store_eflags
+  78      00
+  79 00c8 90       		nop
+  80 00c9 C9       		leave
+  81              		.cfi_restore 5
+  82              		.cfi_def_cfa 4, 4
+  83 00ca C3       		ret
+  84              		.cfi_endproc
+  85              	LFE1:
+  86              		.globl	_boxfill8
+  87              		.def	_boxfill8;	.scl	2;	.type	32;	.endef
+  88              	_boxfill8:
+  89              	LFB2:
+  90              		.cfi_startproc
+  91 00cb 55       		pushl	%ebp
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 5, -8
+  94 00cc 89E5     		movl	%esp, %ebp
+  95              		.cfi_def_cfa_register 5
+  96 00ce 83EC14   		subl	$20, %esp
+  97 00d1 8B4510   		movl	16(%ebp), %eax
+  98 00d4 8845EC   		movb	%al, -20(%ebp)
+  99 00d7 8B4518   		movl	24(%ebp), %eax
+GAS LISTING graphic_x.s 			page 3
+
+
+ 100 00da 8945F8   		movl	%eax, -8(%ebp)
+ 101 00dd EB33     		jmp	L8
+ 102              	L11:
+ 103 00df 8B4514   		movl	20(%ebp), %eax
+ 104 00e2 8945FC   		movl	%eax, -4(%ebp)
+ 105 00e5 EB1F     		jmp	L9
+ 106              	L10:
+ 107 00e7 8B45F8   		movl	-8(%ebp), %eax
+ 108 00ea 0FAF450C 		imull	12(%ebp), %eax
+ 109 00ee 89C2     		movl	%eax, %edx
+ 110 00f0 8B45FC   		movl	-4(%ebp), %eax
+ 111 00f3 01D0     		addl	%edx, %eax
+ 112 00f5 89C2     		movl	%eax, %edx
+ 113 00f7 8B4508   		movl	8(%ebp), %eax
+ 114 00fa 01C2     		addl	%eax, %edx
+ 115 00fc 0FB645EC 		movzbl	-20(%ebp), %eax
+ 116 0100 8802     		movb	%al, (%edx)
+ 117 0102 8345FC01 		addl	$1, -4(%ebp)
+ 118              	L9:
+ 119 0106 8B45FC   		movl	-4(%ebp), %eax
+ 120 0109 3B451C   		cmpl	28(%ebp), %eax
+ 121 010c 7ED9     		jle	L10
+ 122 010e 8345F801 		addl	$1, -8(%ebp)
+ 123              	L8:
+ 124 0112 8B45F8   		movl	-8(%ebp), %eax
+ 125 0115 3B4520   		cmpl	32(%ebp), %eax
+ 126 0118 7EC5     		jle	L11
+ 127 011a 90       		nop
+ 128 011b C9       		leave
+ 129              		.cfi_restore 5
+ 130              		.cfi_def_cfa 4, 4
+ 131 011c C3       		ret
+ 132              		.cfi_endproc
+ 133              	LFE2:
+ 134              		.globl	_init_screen8
+ 135              		.def	_init_screen8;	.scl	2;	.type	32;	.endef
+ 136              	_init_screen8:
+ 137              	LFB3:
+ 138              		.cfi_startproc
+ 139 011d 55       		pushl	%ebp
+ 140              		.cfi_def_cfa_offset 8
+ 141              		.cfi_offset 5, -8
+ 142 011e 89E5     		movl	%esp, %ebp
+ 143              		.cfi_def_cfa_register 5
+ 144 0120 53       		pushl	%ebx
+ 145 0121 83EC1C   		subl	$28, %esp
+ 146              		.cfi_offset 3, -12
+ 147 0124 8B4510   		movl	16(%ebp), %eax
+ 148 0127 8D48FF   		leal	-1(%eax), %ecx
+ 149 012a 8B450C   		movl	12(%ebp), %eax
+ 150 012d 8D50FF   		leal	-1(%eax), %edx
+ 151 0130 8B4518   		movl	24(%ebp), %eax
+ 152 0133 0FB6C0   		movzbl	%al, %eax
+ 153 0136 894C2418 		movl	%ecx, 24(%esp)
+ 154 013a 89542414 		movl	%edx, 20(%esp)
+ 155 013e C7442410 		movl	$0, 16(%esp)
+ 155      00000000 
+GAS LISTING graphic_x.s 			page 4
+
+
+ 156 0146 C744240C 		movl	$0, 12(%esp)
+ 156      00000000 
+ 157 014e 89442408 		movl	%eax, 8(%esp)
+ 158 0152 8B450C   		movl	12(%ebp), %eax
+ 159 0155 89442404 		movl	%eax, 4(%esp)
+ 160 0159 8B4508   		movl	8(%ebp), %eax
+ 161 015c 890424   		movl	%eax, (%esp)
+ 162 015f E867FFFF 		call	_boxfill8
+ 162      FF
+ 163 0164 8B4510   		movl	16(%ebp), %eax
+ 164 0167 8D58FF   		leal	-1(%eax), %ebx
+ 165 016a 8B450C   		movl	12(%ebp), %eax
+ 166 016d 8D48FF   		leal	-1(%eax), %ecx
+ 167 0170 8B4510   		movl	16(%ebp), %eax
+ 168 0173 8D50EA   		leal	-22(%eax), %edx
+ 169 0176 8B451C   		movl	28(%ebp), %eax
+ 170 0179 0FB6C0   		movzbl	%al, %eax
+ 171 017c 895C2418 		movl	%ebx, 24(%esp)
+ 172 0180 894C2414 		movl	%ecx, 20(%esp)
+ 173 0184 89542410 		movl	%edx, 16(%esp)
+ 174 0188 C744240C 		movl	$0, 12(%esp)
+ 174      00000000 
+ 175 0190 89442408 		movl	%eax, 8(%esp)
+ 176 0194 8B450C   		movl	12(%ebp), %eax
+ 177 0197 89442404 		movl	%eax, 4(%esp)
+ 178 019b 8B4508   		movl	8(%ebp), %eax
+ 179 019e 890424   		movl	%eax, (%esp)
+ 180 01a1 E825FFFF 		call	_boxfill8
+ 180      FF
+ 181 01a6 8B4510   		movl	16(%ebp), %eax
+ 182 01a9 8D58EA   		leal	-22(%eax), %ebx
+ 183 01ac 8B450C   		movl	12(%ebp), %eax
+ 184 01af 8D48FF   		leal	-1(%eax), %ecx
+ 185 01b2 8B4510   		movl	16(%ebp), %eax
+ 186 01b5 8D50EA   		leal	-22(%eax), %edx
+ 187 01b8 8B4514   		movl	20(%ebp), %eax
+ 188 01bb 0FB6C0   		movzbl	%al, %eax
+ 189 01be 895C2418 		movl	%ebx, 24(%esp)
+ 190 01c2 894C2414 		movl	%ecx, 20(%esp)
+ 191 01c6 89542410 		movl	%edx, 16(%esp)
+ 192 01ca C744240C 		movl	$0, 12(%esp)
+ 192      00000000 
+ 193 01d2 89442408 		movl	%eax, 8(%esp)
+ 194 01d6 8B450C   		movl	12(%ebp), %eax
+ 195 01d9 89442404 		movl	%eax, 4(%esp)
+ 196 01dd 8B4508   		movl	8(%ebp), %eax
+ 197 01e0 890424   		movl	%eax, (%esp)
+ 198 01e3 E8E3FEFF 		call	_boxfill8
+ 198      FF
+ 199 01e8 8B450C   		movl	12(%ebp), %eax
+ 200 01eb 8D50FF   		leal	-1(%eax), %edx
+ 201 01ee 8B4514   		movl	20(%ebp), %eax
+ 202 01f1 0FB6C0   		movzbl	%al, %eax
+ 203 01f4 C7442418 		movl	$0, 24(%esp)
+ 203      00000000 
+ 204 01fc 89542414 		movl	%edx, 20(%esp)
+ 205 0200 C7442410 		movl	$0, 16(%esp)
+GAS LISTING graphic_x.s 			page 5
+
+
+ 205      00000000 
+ 206 0208 C744240C 		movl	$0, 12(%esp)
+ 206      00000000 
+ 207 0210 89442408 		movl	%eax, 8(%esp)
+ 208 0214 8B450C   		movl	12(%ebp), %eax
+ 209 0217 89442404 		movl	%eax, 4(%esp)
+ 210 021b 8B4508   		movl	8(%ebp), %eax
+ 211 021e 890424   		movl	%eax, (%esp)
+ 212 0221 E8A5FEFF 		call	_boxfill8
+ 212      FF
+ 213 0226 8B4510   		movl	16(%ebp), %eax
+ 214 0229 8D50FF   		leal	-1(%eax), %edx
+ 215 022c 8B4514   		movl	20(%ebp), %eax
+ 216 022f 0FB6C0   		movzbl	%al, %eax
+ 217 0232 89542418 		movl	%edx, 24(%esp)
+ 218 0236 C7442414 		movl	$0, 20(%esp)
+ 218      00000000 
+ 219 023e C7442410 		movl	$0, 16(%esp)
+ 219      00000000 
+ 220 0246 C744240C 		movl	$0, 12(%esp)
+ 220      00000000 
+ 221 024e 89442408 		movl	%eax, 8(%esp)
+ 222 0252 8B450C   		movl	12(%ebp), %eax
+ 223 0255 89442404 		movl	%eax, 4(%esp)
+ 224 0259 8B4508   		movl	8(%ebp), %eax
+ 225 025c 890424   		movl	%eax, (%esp)
+ 226 025f E867FEFF 		call	_boxfill8
+ 226      FF
+ 227 0264 8B4510   		movl	16(%ebp), %eax
+ 228 0267 8D58FF   		leal	-1(%eax), %ebx
+ 229 026a 8B450C   		movl	12(%ebp), %eax
+ 230 026d 8D48FF   		leal	-1(%eax), %ecx
+ 231 0270 8B450C   		movl	12(%ebp), %eax
+ 232 0273 8D50FF   		leal	-1(%eax), %edx
+ 233 0276 8B4514   		movl	20(%ebp), %eax
+ 234 0279 0FB6C0   		movzbl	%al, %eax
+ 235 027c 895C2418 		movl	%ebx, 24(%esp)
+ 236 0280 894C2414 		movl	%ecx, 20(%esp)
+ 237 0284 C7442410 		movl	$0, 16(%esp)
+ 237      00000000 
+ 238 028c 8954240C 		movl	%edx, 12(%esp)
+ 239 0290 89442408 		movl	%eax, 8(%esp)
+ 240 0294 8B450C   		movl	12(%ebp), %eax
+ 241 0297 89442404 		movl	%eax, 4(%esp)
+ 242 029b 8B4508   		movl	8(%ebp), %eax
+ 243 029e 890424   		movl	%eax, (%esp)
+ 244 02a1 E825FEFF 		call	_boxfill8
+ 244      FF
+ 245 02a6 8B4510   		movl	16(%ebp), %eax
+ 246 02a9 8D58FF   		leal	-1(%eax), %ebx
+ 247 02ac 8B450C   		movl	12(%ebp), %eax
+ 248 02af 8D48FF   		leal	-1(%eax), %ecx
+ 249 02b2 8B4510   		movl	16(%ebp), %eax
+ 250 02b5 8D50FF   		leal	-1(%eax), %edx
+ 251 02b8 8B4514   		movl	20(%ebp), %eax
+ 252 02bb 0FB6C0   		movzbl	%al, %eax
+ 253 02be 895C2418 		movl	%ebx, 24(%esp)
+GAS LISTING graphic_x.s 			page 6
+
+
+ 254 02c2 894C2414 		movl	%ecx, 20(%esp)
+ 255 02c6 89542410 		movl	%edx, 16(%esp)
+ 256 02ca C744240C 		movl	$0, 12(%esp)
+ 256      00000000 
+ 257 02d2 89442408 		movl	%eax, 8(%esp)
+ 258 02d6 8B450C   		movl	12(%ebp), %eax
+ 259 02d9 89442404 		movl	%eax, 4(%esp)
+ 260 02dd 8B4508   		movl	8(%ebp), %eax
+ 261 02e0 890424   		movl	%eax, (%esp)
+ 262 02e3 E8E3FDFF 		call	_boxfill8
+ 262      FF
+ 263 02e8 90       		nop
+ 264 02e9 8B5DFC   		movl	-4(%ebp), %ebx
+ 265 02ec C9       		leave
+ 266              		.cfi_restore 5
+ 267              		.cfi_restore 3
+ 268              		.cfi_def_cfa 4, 4
+ 269 02ed C3       		ret
+ 270              		.cfi_endproc
+ 271              	LFE3:
+ 272 02ee 9090     		.data
+ 273              		.align 32
+ 274              	_table_rgb.0:
+ 275 0000 000000FF 		.ascii "\0\0\0\377\0\0\0\377\0\377\377\0\0\0\377\377\0\377\0\377\377\377\377\377\300\300\300\200\0
+ 275      000000FF 
+ 275      00FFFF00 
+ 275      0000FFFF 
+ 275      00FF00FF 
+ 276              		.ident	"GCC: (GNU) 10.2.0"
+ 277              		.def	_io_load_eflags;	.scl	2;	.type	32;	.endef
+ 278              		.def	_disable_interrupt;	.scl	2;	.type	32;	.endef
+ 279              		.def	_io_out8;	.scl	2;	.type	32;	.endef
+ 280 0048 00000000 		.def	_io_store_eflags;	.scl	2;	.type	32;	.endef
+ 280      00000000 
+ 280      00000000 
+ 280      00000000 
+ 280      00000000 

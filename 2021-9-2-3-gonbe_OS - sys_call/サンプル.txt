@@ -1,0 +1,25 @@
+サンプル
+
+	mov	esp,0x10000
+	mov	[sht],ecx	; sheet
+
+	mov	ebx,3		; 画面塗りつぶし
+	mov	ecx,[sht]	; sheet
+	mov	dl,1		; color=red
+	int	0x40
+
+L1:	mov	ebx,1		; キー入力
+	mov	ecx,[sht]	; sheet
+	int	0x40
+	cmp	al,0		; 文字コード → al
+	jz	L1
+
+	mov	ebx,4		; １バイトヘキサ表示
+	mov	ecx,[sht]	; sheet
+	mov	dl,al		; 文字コード
+	int	0x40
+
+end:	hlt
+	jmp	end
+
+sht:	dd	0

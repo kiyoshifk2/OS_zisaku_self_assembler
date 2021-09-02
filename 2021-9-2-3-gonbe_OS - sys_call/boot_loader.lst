@@ -1,0 +1,244 @@
+     1                                  ;
+     2                                  ;	boot drive number is always 0x80
+     3                                  ;
+     4                                  
+     5                                  [BITS 16]
+     6                                  		ORG		0x7c00
+     7                                  
+     8 00000000 EB4E                    	JMP	entry_tmp
+     9 00000002 90                      	DB	0x90
+    10 00000003 474F4E4245202020        	DB	"GONBE   "	;8 byte
+    11 0000000B 0002                    	DW	512		;セクタサイズ/
+    12 0000000D 01                      	DB	1		;クラスタサイズ/
+    13 0000000E 0002                    	DW	0x200		;予約セクタ数/
+    14 00000010 02                      	DB	2		;FAT数/
+    15 00000011 1000                    	DW	16		;ディレクトリエントリー数/
+    16 00000013 1027                    	DW	10000		;そうセクタ数/
+    17 00000015 F0                      	DB	0xf0		;0xf0:リムーバブルメディア/
+    18 00000016 0100                    	DW	1		;FAT が占めるセクタすう/
+    19 00000018 0000                    	DW	0		;トラック当たりのセクタ数/
+    20 0000001A 0000                    	DW	0		;ヘッド数/
+    21 0000001C 00000000                	DD	0
+    22 00000020 00000000                	DD	0
+    23 00000024 80                      	db	0x80		;固定ディスクでは 0x80
+    24 00000025 00                      	db	0		;reserved
+    25 00000026 29                      	db	0x29		;シグネチャー/
+    26 00000027 FFFFFFFF                	DD	0xffffffff	;ボリュームシリアルナンバー/
+    27 0000002B 474F4E424520202020-     	DB	"GONBE      "	;ボリュームラベル 11byte
+    27 00000034 2020               
+    28 00000036 4641543132202020        	DB	"FAT12   "
+    29 0000003E 00<rept>                	TIMES	18 DB 0		;address=0000003e
+    30                                  
+    31                                  CYLS		equ		0x0ff0
+    32                                  
+    33                                  entry_tmp:
+    34 00000050 EA[A100]0000            		jmp		0:entry
+    35                                  
+    36                                  
+    37 00000055 3D3D3D204F53206C6F-     title:	db		'=== OS load 180 sector 512x2 ===',0x0d,0x0a,0
+    37 0000005E 616420313830207365-
+    37 00000067 63746F722035313278-
+    37 00000070 32203D3D3D0D0A00   
+    38 00000078 2A2A2A206469736B20-     err_msg:	db		'*** disk 0x80 error',0x0d,0x0a,0
+    38 00000081 30783830206572726F-
+    38 0000008A 720D0A00           
+    39 0000008E 3D3D3D206C6F616420-     success_msg:	db	'=== load success',0x0d,0x0a,0
+    39 00000097 737563636573730D0A-
+    39 000000A0 00                 
+    40                                  
+    41                                  entry:
+    42 000000A1 B80000                  		MOV		AX,0			; initialize register
+    43 000000A4 8ED8                    		MOV		DS,AX
+    44 000000A6 8ED0                    		MOV		SS,AX
+    45 000000A8 BC007C                  		MOV		SP,0x7c00
+    46                                  ;;;        sti
+    47                                  
+    48 000000AB BB[5500]                		mov		bx,title
+    49 000000AE E8BE00                  		call	dispstr
+    50                                  
+    51                                  ;-------------------------------------------------------------------------------
+    52                                  
+    53 000000B1 B8E007                  	mov	ax, 0x07e0
+    54 000000B4 8EC0                    	mov	es,ax		;es = 0x07e0
+    55 000000B6 BB0000                  	mov	bx,0		;buffer offset
+    56 000000B9 BA0000                  	mov	dx,0		;LBA high
+    57 000000BC B90100                  	mov	cx,1		;LBA low
+    58                                  
+    59                                  main_L1:
+    60 000000BF E83E00                  	call	sector_read
+    61 000000C2 8CC0                    	mov	ax,es
+    62 000000C4 83C020                  	add	ax,0x0020
+    63 000000C7 8EC0                    	mov	es,ax
+    64 000000C9 41                      	inc	cx
+    65 000000CA 81F98001                	cmp	cx,384		;384 sector
+    66 000000CE 75EF                    	jnz	main_L1
+    67                                  
+    68                                  
+    69                                  ;-----------------------------------------------------------------------------
+    70                                  
+    71 000000D0 BB[8E00]                	mov		bx,success_msg
+    72 000000D3 E89900                  	call	dispstr
+    73                                  		
+    74 000000D6 B8BC1E                  		mov	ax,0x1ebc
+    75 000000D9 8EC0                    		mov	es,ax
+    76 000000DB E86200                  		call	dump
+    77                                  
+    78 000000DE B00D                    		mov	al,0x0d
+    79 000000E0 E87C00                  		call	disp
+    80 000000E3 B00A                    		mov	al,0x0a
+    81 000000E5 E87700                  		call	disp
+    82                                  
+    83 000000E8 C606F00F0A              		mov	byte [CYLS],10
+    84                                  
+    85 000000ED E9(0080)                		jmp	0x8000				; jmp to OS
+    86                                  
+    87                                  ;success_end:
+    88                                  ;		hlt
+    89                                  ;		jmp		success_end		;0xc200	; jmp OS entry
+    90                                  
+    91                                  ;-------------------------------------------------------------------------------
+    92                                  ;	1 sector read
+    93                                  ;	es:bx   buffer address
+    94                                  ;	cx      LBA low word
+    95                                  ;	dx	LBA high word
+    96                                  ;
+    97                                  
+    98 000000F0 1000                    packet:	dw		0x10			;  packet size
+    99 000000F2 0100                    	dw		1				; number of block
+   100 000000F4 0000E007                	dw		0x0,0x07e0		; buffer address segment:offset
+   101 000000F8 0100000000000000        	dw		0x1,0,0,0		; start sector
+   102                                  
+   103                                  sector_read:
+   104 00000100 50                      	push		ax
+   105 00000101 53                      	push		bx
+   106 00000102 51                      	push		cx
+   107 00000103 52                      	push		dx
+   108 00000104 06                      	push		es
+   109 00000105 8CC0                    	mov		ax,es
+   110 00000107 A3[F600]                	mov		[packet+6],ax	; buffer segment
+   111 0000010A 891E[F400]              	mov		[packet+4],bx	; buffer offset
+   112 0000010E 890E[F800]              	mov		[packet+8],cx	; LBA low word
+   113 00000112 8916[FA00]              	mov		[packet+10],dx	; LBA high word
+   114                                  
+   115 00000116 B60A                    	mov		dh,10				; retry counter
+   116                                  sector_read_L1:
+   117 00000118 B280                    	mov		dl,0x80				; drive number boot HDD
+   118 0000011A B442                    	mov		ah,0x42				; ext read
+   119 0000011C BE[F000]                	mov		si,packet
+   120                                  ;;	mov		al,0x00				; write
+   121                                  
+   122 0000011F 52                      	push	dx
+   123 00000120 CD13                    	int		0x13				; disk services
+   124 00000122 5A                      	pop		dx
+   125 00000123 7315                    	jnb		success				; nc if success
+   126                                  ; error
+   127 00000125 52                      	push	dx
+   128 00000126 B400                    	mov		ah,0				; system reset
+   129 00000128 B200                    	mov		dl,0
+   130 0000012A CD13                    	int		0x13
+   131 0000012C 5A                      	pop		dx
+   132 0000012D FECE                    	dec		dh				; retry counter count
+   133 0000012F 75E7                    	jnz		sector_read_L1			; retry
+   134 00000131 BB[7800]                	mov		bx,err_msg
+   135 00000134 E83800                  	call	dispstr
+   136                                  error_end:
+   137 00000137 F4                      	hlt
+   138 00000138 EBFD                    	jmp		error_end
+   139                                  
+   140                                  success:
+   141 0000013A 07                      	pop		es
+   142 0000013B 5A                      	pop		dx
+   143 0000013C 59                      	pop		cx
+   144 0000013D 5B                      	pop		bx
+   145 0000013E 58                      	pop		ax
+   146 0000013F C3                      	ret
+   147                                  
+   148                                  ;-----------------------------------------------------------------------------
+   149                                  
+   150                                  dump:
+   151 00000140 B00D                    		mov	al, 0x0d
+   152 00000142 E81A00                  		call	disp
+   153 00000145 B00A                    		mov	al, 0x0a
+   154 00000147 E81500                  		call	disp
+   155 0000014A BB0000                  		mov	bx, 0
+   156                                  dump1:
+   157 0000014D 26                      		es
+   158 0000014E 8A07                    		mov	al, [bx]
+   159 00000150 E82E00                  		call	disphex_al
+   160 00000153 B020                    		mov	al, ' '
+   161 00000155 E80700                  		call	disp
+   162 00000158 43                      		inc	bx
+   163 00000159 83FB10                  		cmp	bx, 16
+   164 0000015C 75EF                    		jnz	dump1
+   165 0000015E C3                      		ret
+   166                                  
+   167                                  disp:	; disp charactor al
+   168 0000015F 50                      		push	ax
+   169 00000160 53                      		push	bx
+   170 00000161 51                      		push	cx
+   171 00000162 52                      		push	dx
+   172 00000163 B40E                    		mov		ah,0x0e			; display 1 charactor
+   173 00000165 BB0F00                  		mov		bx,15			; color code
+   174 00000168 CD10                    		int		0x10			; call video bios
+   175 0000016A 5A                      		pop		dx
+   176 0000016B 59                      		pop		cx
+   177 0000016C 5B                      		pop		bx
+   178 0000016D 58                      		pop		ax
+   179 0000016E C3                      		ret
+   180                                  
+   181                                  dispstr:	; cs:bx string addr '\0' terminate
+   182 0000016F 50                      		push	ax
+   183 00000170 53                      		push	bx
+   184                                  dispstr1:
+   185 00000171 2E                      		cs
+   186 00000172 8A07                    		mov		al,[bx]
+   187 00000174 3C00                    		cmp		al,0
+   188 00000176 7406                    		jz		dispstr2
+   189 00000178 E8E4FF                  		call	disp
+   190 0000017B 43                      		inc		bx
+   191 0000017C EBF3                    		jmp		dispstr1
+   192                                  dispstr2:
+   193 0000017E 5B                      		pop		bx
+   194 0000017F 58                      		pop		ax
+   195 00000180 C3                      		ret
+   196                                  
+   197                                  disphex_al:	; display al hex
+   198 00000181 50                      		push	ax
+   199 00000182 51                      		push	cx
+   200 00000183 88C4                    		mov		ah,al
+   201 00000185 B104                    		mov		cl,4
+   202 00000187 D2E8                    		shr		al,cl
+   203 00000189 E80A00                  		call	disphex1
+   204 0000018C 88E0                    		mov		al,ah
+   205 0000018E 240F                    		and		al,0x0f
+   206 00000190 E80300                  		call	disphex1
+   207 00000193 59                      		pop		cx
+   208 00000194 58                      		pop		ax
+   209 00000195 C3                      		ret
+   210                                  
+   211                                  disphex1:
+   212 00000196 3C0A                    		cmp		al,10
+   213 00000198 7204                    		jb		disphex1a		; jmp on carry, 0～9
+   214                                  		; 10～15
+   215 0000019A 0437                    		add		al, 'A'-10
+   216 0000019C EBC1                    		jmp		disp
+   217                                  disphex1a:
+   218 0000019E 0430                    		add		al, '0'
+   219 000001A0 EBBD                    		jmp		disp
+   220                                  
+   221                                  ;		resb	0x7dbe-$		; partition table start address
+   222 000001A2 00<rept>                		TIMES	0x1be-($-$$) DB 0
+   223                                  partition_table:
+   224 000001BE 8000010001FEFFFF01-     	db		0x80,0,1,0, 0x01, 0xfe,0xff,0xff, 1,0,0,0, 0xff,0xff,0xff,0xff
+   224 000001C7 000000FFFFFFFF     
+   225 000001CE 000000000000000000-             db		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+   225 000001D7 00000000000000     
+   226 000001DE 000000000000000000-             db		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+   226 000001E7 00000000000000     
+   227 000001EE 000000000000000000-             db		0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0
+   227 000001F7 00000000000000     
+   228                                  
+   229                                  ;		RESB	0x7dfe-$
+   230                                  ;		TIMES	0x1fe-($-$$) DB 0
+   231                                  
+   232 000001FE 55AA                    		DB		0x55, 0xaa

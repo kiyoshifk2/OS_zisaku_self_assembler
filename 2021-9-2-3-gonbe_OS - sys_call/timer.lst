@@ -1,0 +1,783 @@
+GAS LISTING timer_x.s 			page 1
+
+
+   1              		.file	"timer.c"
+   2              		.text
+   3              		.globl	_timerctl
+   4              		.bss
+   5              		.align 32
+   6              	_timerctl:
+   7 0000 00000000 		.space 10004
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   8              		.globl	_APP_ch
+   9              	_APP_ch:
+  10 2714 00       		.space 1
+  11              		.text
+  12              		.globl	_init_pit
+  13              		.def	_init_pit;	.scl	2;	.type	32;	.endef
+  14              	_init_pit:
+  15              	LFB0:
+  16              		.cfi_startproc
+  17 0000 55       		pushl	%ebp
+  18              		.cfi_def_cfa_offset 8
+  19              		.cfi_offset 5, -8
+  20 0001 89E5     		movl	%esp, %ebp
+  21              		.cfi_def_cfa_register 5
+  22 0003 83EC18   		subl	$24, %esp
+  23 0006 C7442404 		movl	$52, 4(%esp)
+  23      34000000 
+  24 000e C7042443 		movl	$67, (%esp)
+  24      000000
+  25 0015 E8000000 		call	_io_out8
+  25      00
+  26 001a C7442404 		movl	$156, 4(%esp)
+  26      9C000000 
+  27 0022 C7042440 		movl	$64, (%esp)
+  27      000000
+  28 0029 E8000000 		call	_io_out8
+  28      00
+  29 002e C7442404 		movl	$46, 4(%esp)
+  29      2E000000 
+  30 0036 C7042440 		movl	$64, (%esp)
+  30      000000
+  31 003d E8000000 		call	_io_out8
+  31      00
+  32 0042 C7050000 		movl	$0, _timerctl
+  32      00000000 
+  32      0000
+  33 004c 90       		nop
+  34 004d C9       		leave
+  35              		.cfi_restore 5
+  36              		.cfi_def_cfa 4, 4
+  37 004e C3       		ret
+  38              		.cfi_endproc
+  39              	LFE0:
+  40              		.globl	_init_pic
+  41              		.def	_init_pic;	.scl	2;	.type	32;	.endef
+  42              	_init_pic:
+GAS LISTING timer_x.s 			page 2
+
+
+  43              	LFB1:
+  44              		.cfi_startproc
+  45 004f 55       		pushl	%ebp
+  46              		.cfi_def_cfa_offset 8
+  47              		.cfi_offset 5, -8
+  48 0050 89E5     		movl	%esp, %ebp
+  49              		.cfi_def_cfa_register 5
+  50 0052 83EC18   		subl	$24, %esp
+  51 0055 C7442404 		movl	$255, 4(%esp)
+  51      FF000000 
+  52 005d C7042421 		movl	$33, (%esp)
+  52      000000
+  53 0064 E8000000 		call	_io_out8
+  53      00
+  54 0069 C7442404 		movl	$255, 4(%esp)
+  54      FF000000 
+  55 0071 C70424A1 		movl	$161, (%esp)
+  55      000000
+  56 0078 E8000000 		call	_io_out8
+  56      00
+  57 007d C7442404 		movl	$17, 4(%esp)
+  57      11000000 
+  58 0085 C7042420 		movl	$32, (%esp)
+  58      000000
+  59 008c E8000000 		call	_io_out8
+  59      00
+  60 0091 C7442404 		movl	$32, 4(%esp)
+  60      20000000 
+  61 0099 C7042421 		movl	$33, (%esp)
+  61      000000
+  62 00a0 E8000000 		call	_io_out8
+  62      00
+  63 00a5 C7442404 		movl	$4, 4(%esp)
+  63      04000000 
+  64 00ad C7042421 		movl	$33, (%esp)
+  64      000000
+  65 00b4 E8000000 		call	_io_out8
+  65      00
+  66 00b9 C7442404 		movl	$1, 4(%esp)
+  66      01000000 
+  67 00c1 C7042421 		movl	$33, (%esp)
+  67      000000
+  68 00c8 E8000000 		call	_io_out8
+  68      00
+  69 00cd C7442404 		movl	$17, 4(%esp)
+  69      11000000 
+  70 00d5 C70424A0 		movl	$160, (%esp)
+  70      000000
+  71 00dc E8000000 		call	_io_out8
+  71      00
+  72 00e1 C7442404 		movl	$40, 4(%esp)
+  72      28000000 
+  73 00e9 C70424A1 		movl	$161, (%esp)
+  73      000000
+  74 00f0 E8000000 		call	_io_out8
+  74      00
+  75 00f5 C7442404 		movl	$2, 4(%esp)
+GAS LISTING timer_x.s 			page 3
+
+
+  75      02000000 
+  76 00fd C70424A1 		movl	$161, (%esp)
+  76      000000
+  77 0104 E8000000 		call	_io_out8
+  77      00
+  78 0109 C7442404 		movl	$1, 4(%esp)
+  78      01000000 
+  79 0111 C70424A1 		movl	$161, (%esp)
+  79      000000
+  80 0118 E8000000 		call	_io_out8
+  80      00
+  81 011d C7442404 		movl	$251, 4(%esp)
+  81      FB000000 
+  82 0125 C7042421 		movl	$33, (%esp)
+  82      000000
+  83 012c E8000000 		call	_io_out8
+  83      00
+  84 0131 C7442404 		movl	$255, 4(%esp)
+  84      FF000000 
+  85 0139 C70424A1 		movl	$161, (%esp)
+  85      000000
+  86 0140 E8000000 		call	_io_out8
+  86      00
+  87 0145 90       		nop
+  88 0146 C9       		leave
+  89              		.cfi_restore 5
+  90              		.cfi_def_cfa 4, 4
+  91 0147 C3       		ret
+  92              		.cfi_endproc
+  93              	LFE1:
+  94              		.globl	_inthandler20
+  95              		.def	_inthandler20;	.scl	2;	.type	32;	.endef
+  96              	_inthandler20:
+  97              	LFB2:
+  98              		.cfi_startproc
+  99 0148 55       		pushl	%ebp
+ 100              		.cfi_def_cfa_offset 8
+ 101              		.cfi_offset 5, -8
+ 102 0149 89E5     		movl	%esp, %ebp
+ 103              		.cfi_def_cfa_register 5
+ 104 014b 83EC28   		subl	$40, %esp
+ 105 014e C7442404 		movl	$96, 4(%esp)
+ 105      60000000 
+ 106 0156 C7042420 		movl	$32, (%esp)
+ 106      000000
+ 107 015d E8000000 		call	_io_out8
+ 107      00
+ 108 0162 A1000000 		movl	_timerctl, %eax
+ 108      00
+ 109 0167 83C001   		addl	$1, %eax
+ 110 016a A3000000 		movl	%eax, _timerctl
+ 110      00
+ 111 016f E88D0200 		call	_timer_key
+ 111      00
+ 112 0174 C745F400 		movl	$0, -12(%ebp)
+ 112      000000
+ 113 017b E9830100 		jmp	L5
+GAS LISTING timer_x.s 			page 4
+
+
+ 113      00
+ 114              	L8:
+ 115 0180 8B55F4   		movl	-12(%ebp), %edx
+ 116 0183 89D0     		movl	%edx, %eax
+ 117 0185 C1E002   		sall	$2, %eax
+ 118 0188 01D0     		addl	%edx, %eax
+ 119 018a C1E002   		sall	$2, %eax
+ 120 018d 05140000 		addl	$_timerctl+20, %eax
+ 120      00
+ 121 0192 8B00     		movl	(%eax), %eax
+ 122 0194 85C0     		testl	%eax, %eax
+ 123 0196 0F846301 		je	L6
+ 123      0000
+ 124 019c E84C0200 		call	_GetTickCount
+ 124      00
+ 125 01a1 89C2     		movl	%eax, %edx
+ 126 01a3 8B4DF4   		movl	-12(%ebp), %ecx
+ 127 01a6 89C8     		movl	%ecx, %eax
+ 128 01a8 C1E002   		sall	$2, %eax
+ 129 01ab 01C8     		addl	%ecx, %eax
+ 130 01ad C1E002   		sall	$2, %eax
+ 131 01b0 050C0000 		addl	$_timerctl+12, %eax
+ 131      00
+ 132 01b5 8B00     		movl	(%eax), %eax
+ 133 01b7 89D1     		movl	%edx, %ecx
+ 134 01b9 29C1     		subl	%eax, %ecx
+ 135 01bb 8B55F4   		movl	-12(%ebp), %edx
+ 136 01be 89D0     		movl	%edx, %eax
+ 137 01c0 C1E002   		sall	$2, %eax
+ 138 01c3 01D0     		addl	%edx, %eax
+ 139 01c5 C1E002   		sall	$2, %eax
+ 140 01c8 05100000 		addl	$_timerctl+16, %eax
+ 140      00
+ 141 01cd 8B00     		movl	(%eax), %eax
+ 142 01cf 39C1     		cmpl	%eax, %ecx
+ 143 01d1 0F822801 		jb	L6
+ 143      0000
+ 144 01d7 8B55F4   		movl	-12(%ebp), %edx
+ 145 01da 89D0     		movl	%edx, %eax
+ 146 01dc C1E002   		sall	$2, %eax
+ 147 01df 01D0     		addl	%edx, %eax
+ 148 01e1 C1E002   		sall	$2, %eax
+ 149 01e4 05140000 		addl	$_timerctl+20, %eax
+ 149      00
+ 150 01e9 8B00     		movl	(%eax), %eax
+ 151 01eb 83F801   		cmpl	$1, %eax
+ 152 01ee 754E     		jne	L7
+ 153 01f0 8B45F4   		movl	-12(%ebp), %eax
+ 154 01f3 8D880001 		leal	256(%eax), %ecx
+ 154      0000
+ 155 01f9 8B55F4   		movl	-12(%ebp), %edx
+ 156 01fc 89D0     		movl	%edx, %eax
+ 157 01fe C1E002   		sall	$2, %eax
+ 158 0201 01D0     		addl	%edx, %eax
+ 159 0203 C1E002   		sall	$2, %eax
+ 160 0206 05040000 		addl	$_timerctl+4, %eax
+ 160      00
+GAS LISTING timer_x.s 			page 5
+
+
+ 161 020b 8B00     		movl	(%eax), %eax
+ 162 020d 894C2404 		movl	%ecx, 4(%esp)
+ 163 0211 890424   		movl	%eax, (%esp)
+ 164 0214 E8000000 		call	_fifo32_put
+ 164      00
+ 165 0219 85C0     		testl	%eax, %eax
+ 166 021b 0F85DE00 		jne	L6
+ 166      0000
+ 167 0221 8B55F4   		movl	-12(%ebp), %edx
+ 168 0224 89D0     		movl	%edx, %eax
+ 169 0226 C1E002   		sall	$2, %eax
+ 170 0229 01D0     		addl	%edx, %eax
+ 171 022b C1E002   		sall	$2, %eax
+ 172 022e 05140000 		addl	$_timerctl+20, %eax
+ 172      00
+ 173 0233 C7000000 		movl	$0, (%eax)
+ 173      0000
+ 174 0239 E9C10000 		jmp	L6
+ 174      00
+ 175              	L7:
+ 176 023e 8B55F4   		movl	-12(%ebp), %edx
+ 177 0241 89D0     		movl	%edx, %eax
+ 178 0243 C1E002   		sall	$2, %eax
+ 179 0246 01D0     		addl	%edx, %eax
+ 180 0248 C1E002   		sall	$2, %eax
+ 181 024b 05140000 		addl	$_timerctl+20, %eax
+ 181      00
+ 182 0250 8B00     		movl	(%eax), %eax
+ 183 0252 83F803   		cmpl	$3, %eax
+ 184 0255 0F85A400 		jne	L6
+ 184      0000
+ 185 025b 8B55F4   		movl	-12(%ebp), %edx
+ 186 025e 89D0     		movl	%edx, %eax
+ 187 0260 C1E002   		sall	$2, %eax
+ 188 0263 01D0     		addl	%edx, %eax
+ 189 0265 C1E002   		sall	$2, %eax
+ 190 0268 05080000 		addl	$_timerctl+8, %eax
+ 190      00
+ 191 026d 8B00     		movl	(%eax), %eax
+ 192 026f 8945F0   		movl	%eax, -16(%ebp)
+ 193 0272 E8760100 		call	_GetTickCount
+ 193      00
+ 194 0277 89C2     		movl	%eax, %edx
+ 195 0279 8B4DF4   		movl	-12(%ebp), %ecx
+ 196 027c 89C8     		movl	%ecx, %eax
+ 197 027e C1E002   		sall	$2, %eax
+ 198 0281 01C8     		addl	%ecx, %eax
+ 199 0283 C1E002   		sall	$2, %eax
+ 200 0286 050C0000 		addl	$_timerctl+12, %eax
+ 200      00
+ 201 028b 8B00     		movl	(%eax), %eax
+ 202 028d 89D1     		movl	%edx, %ecx
+ 203 028f 29C1     		subl	%eax, %ecx
+ 204 0291 8B55F4   		movl	-12(%ebp), %edx
+ 205 0294 89D0     		movl	%edx, %eax
+ 206 0296 C1E002   		sall	$2, %eax
+ 207 0299 01D0     		addl	%edx, %eax
+GAS LISTING timer_x.s 			page 6
+
+
+ 208 029b C1E002   		sall	$2, %eax
+ 209 029e 05100000 		addl	$_timerctl+16, %eax
+ 209      00
+ 210 02a3 8B00     		movl	(%eax), %eax
+ 211 02a5 39C1     		cmpl	%eax, %ecx
+ 212 02a7 7256     		jb	L6
+ 213 02a9 A1000000 		movl	_taskctl, %eax
+ 213      00
+ 214 02ae 8B400C   		movl	12(%eax), %eax
+ 215 02b1 85C0     		testl	%eax, %eax
+ 216 02b3 754A     		jne	L6
+ 217 02b5 8B45F0   		movl	-16(%ebp), %eax
+ 218 02b8 8B4004   		movl	4(%eax), %eax
+ 219 02bb 83F802   		cmpl	$2, %eax
+ 220 02be 743F     		je	L6
+ 221 02c0 8B55F4   		movl	-12(%ebp), %edx
+ 222 02c3 89D0     		movl	%edx, %eax
+ 223 02c5 C1E002   		sall	$2, %eax
+ 224 02c8 01D0     		addl	%edx, %eax
+ 225 02ca C1E002   		sall	$2, %eax
+ 226 02cd 05140000 		addl	$_timerctl+20, %eax
+ 226      00
+ 227 02d2 C7000000 		movl	$0, (%eax)
+ 227      0000
+ 228 02d8 A1000000 		movl	_taskctl, %eax
+ 228      00
+ 229 02dd 8B00     		movl	(%eax), %eax
+ 230 02df 8945EC   		movl	%eax, -20(%ebp)
+ 231 02e2 C7442404 		movl	$-1, 4(%esp)
+ 231      FFFFFFFF 
+ 232 02ea 8B45F0   		movl	-16(%ebp), %eax
+ 233 02ed 890424   		movl	%eax, (%esp)
+ 234 02f0 E8000000 		call	_task_run
+ 234      00
+ 235 02f5 A1000000 		movl	_taskctl, %eax
+ 235      00
+ 236 02fa 8B55EC   		movl	-20(%ebp), %edx
+ 237 02fd 8910     		movl	%edx, (%eax)
+ 238              	L6:
+ 239 02ff 8345F401 		addl	$1, -12(%ebp)
+ 240              	L5:
+ 241 0303 817DF4F3 		cmpl	$499, -12(%ebp)
+ 241      010000
+ 242 030a 0F8E70FE 		jle	L8
+ 242      FFFF
+ 243 0310 A1200300 		movl	_cnt.2, %eax
+ 243      00
+ 244 0315 85C0     		testl	%eax, %eax
+ 245 0317 740D     		je	L9
+ 246 0319 A1200300 		movl	_cnt.2, %eax
+ 246      00
+ 247 031e 83E801   		subl	$1, %eax
+ 248 0321 A3200300 		movl	%eax, _cnt.2
+ 248      00
+ 249              	L9:
+ 250 0326 A1200300 		movl	_cnt.2, %eax
+ 250      00
+GAS LISTING timer_x.s 			page 7
+
+
+ 251 032b 85C0     		testl	%eax, %eax
+ 252 032d 7505     		jne	L11
+ 253 032f E8000000 		call	_task_switch
+ 253      00
+ 254              	L11:
+ 255 0334 90       		nop
+ 256 0335 C9       		leave
+ 257              		.cfi_restore 5
+ 258              		.cfi_def_cfa 4, 4
+ 259 0336 C3       		ret
+ 260              		.cfi_endproc
+ 261              	LFE2:
+ 262              		.data
+ 263              	LC0:
+ 264 0000 2A2A2074 		.ascii "** timer area nothing\12\0"
+ 264      696D6572 
+ 264      20617265 
+ 264      61206E6F 
+ 264      7468696E 
+ 265              		.text
+ 266              		.globl	_set_oneshot_timer
+ 267              		.def	_set_oneshot_timer;	.scl	2;	.type	32;	.endef
+ 268              	_set_oneshot_timer:
+ 269              	LFB3:
+ 270              		.cfi_startproc
+ 271 0337 55       		pushl	%ebp
+ 272              		.cfi_def_cfa_offset 8
+ 273              		.cfi_offset 5, -8
+ 274 0338 89E5     		movl	%esp, %ebp
+ 275              		.cfi_def_cfa_register 5
+ 276 033a 83EC28   		subl	$40, %esp
+ 277 033d C745F400 		movl	$0, -12(%ebp)
+ 277      000000
+ 278 0344 E9840000 		jmp	L13
+ 278      00
+ 279              	L16:
+ 280 0349 8B55F4   		movl	-12(%ebp), %edx
+ 281 034c 89D0     		movl	%edx, %eax
+ 282 034e C1E002   		sall	$2, %eax
+ 283 0351 01D0     		addl	%edx, %eax
+ 284 0353 C1E002   		sall	$2, %eax
+ 285 0356 05140000 		addl	$_timerctl+20, %eax
+ 285      00
+ 286 035b 8B00     		movl	(%eax), %eax
+ 287 035d 85C0     		testl	%eax, %eax
+ 288 035f 7568     		jne	L14
+ 289 0361 8B55F4   		movl	-12(%ebp), %edx
+ 290 0364 89D0     		movl	%edx, %eax
+ 291 0366 C1E002   		sall	$2, %eax
+ 292 0369 01D0     		addl	%edx, %eax
+ 293 036b C1E002   		sall	$2, %eax
+ 294 036e 8D900400 		leal	_timerctl+4(%eax), %edx
+ 294      0000
+ 295 0374 8B4508   		movl	8(%ebp), %eax
+ 296 0377 8902     		movl	%eax, (%edx)
+ 297 0379 E86F0000 		call	_GetTickCount
+ 297      00
+GAS LISTING timer_x.s 			page 8
+
+
+ 298 037e 89C2     		movl	%eax, %edx
+ 299 0380 8B4DF4   		movl	-12(%ebp), %ecx
+ 300 0383 89C8     		movl	%ecx, %eax
+ 301 0385 C1E002   		sall	$2, %eax
+ 302 0388 01C8     		addl	%ecx, %eax
+ 303 038a C1E002   		sall	$2, %eax
+ 304 038d 050C0000 		addl	$_timerctl+12, %eax
+ 304      00
+ 305 0392 8910     		movl	%edx, (%eax)
+ 306 0394 8B55F4   		movl	-12(%ebp), %edx
+ 307 0397 89D0     		movl	%edx, %eax
+ 308 0399 C1E002   		sall	$2, %eax
+ 309 039c 01D0     		addl	%edx, %eax
+ 310 039e C1E002   		sall	$2, %eax
+ 311 03a1 8D901000 		leal	_timerctl+16(%eax), %edx
+ 311      0000
+ 312 03a7 8B450C   		movl	12(%ebp), %eax
+ 313 03aa 8902     		movl	%eax, (%edx)
+ 314 03ac 8B55F4   		movl	-12(%ebp), %edx
+ 315 03af 89D0     		movl	%edx, %eax
+ 316 03b1 C1E002   		sall	$2, %eax
+ 317 03b4 01D0     		addl	%edx, %eax
+ 318 03b6 C1E002   		sall	$2, %eax
+ 319 03b9 05140000 		addl	$_timerctl+20, %eax
+ 319      00
+ 320 03be C7000100 		movl	$1, (%eax)
+ 320      0000
+ 321 03c4 8B45F4   		movl	-12(%ebp), %eax
+ 322 03c7 EB22     		jmp	L15
+ 323              	L14:
+ 324 03c9 8345F401 		addl	$1, -12(%ebp)
+ 325              	L13:
+ 326 03cd 817DF4F3 		cmpl	$499, -12(%ebp)
+ 326      010000
+ 327 03d4 0F8E6FFF 		jle	L16
+ 327      FFFF
+ 328 03da C7042400 		movl	$LC0, (%esp)
+ 328      000000
+ 329 03e1 E8000000 		call	_fatal_a
+ 329      00
+ 330 03e6 B8000000 		movl	$0, %eax
+ 330      00
+ 331              	L15:
+ 332 03eb C9       		leave
+ 333              		.cfi_restore 5
+ 334              		.cfi_def_cfa 4, 4
+ 335 03ec C3       		ret
+ 336              		.cfi_endproc
+ 337              	LFE3:
+ 338              		.globl	_GetTickCount
+ 339              		.def	_GetTickCount;	.scl	2;	.type	32;	.endef
+ 340              	_GetTickCount:
+ 341              	LFB4:
+ 342              		.cfi_startproc
+ 343 03ed 55       		pushl	%ebp
+ 344              		.cfi_def_cfa_offset 8
+ 345              		.cfi_offset 5, -8
+GAS LISTING timer_x.s 			page 9
+
+
+ 346 03ee 89E5     		movl	%esp, %ebp
+ 347              		.cfi_def_cfa_register 5
+ 348 03f0 8B150000 		movl	_timerctl, %edx
+ 348      0000
+ 349 03f6 89D0     		movl	%edx, %eax
+ 350 03f8 C1E002   		sall	$2, %eax
+ 351 03fb 01D0     		addl	%edx, %eax
+ 352 03fd 01C0     		addl	%eax, %eax
+ 353 03ff 5D       		popl	%ebp
+ 354              		.cfi_restore 5
+ 355              		.cfi_def_cfa 4, 4
+ 356 0400 C3       		ret
+ 357              		.cfi_endproc
+ 358              	LFE4:
+ 359              		.globl	_timer_key_mode
+ 360              		.bss
+ 361 2715 000000   		.align 4
+ 362              	_timer_key_mode:
+ 363 2718 00000000 		.space 4
+ 364              		.globl	_ut_getc_tbl
+ 365              		.data
+ 366 0017 00000000 		.align 32
+ 366      00000000 
+ 366      00
+ 367              	_ut_getc_tbl:
+ 368 0020 001B     		.ascii "\0\33"
+ 369 0022 31323334 		.ascii "1234567890-^\10\11qwertyuiop@[\12\217asdfghjkl;:\0\216]zxcvbnm,./\216\0\224 \215\200\201\2
+ 369      35363738 
+ 369      39302D5E 
+ 369      08097177 
+ 369      65727479 
+ 370 00a0 001B2122 		.ascii "\0\33!\"#$%&'()\0=~\10\11QWERTYUIOP`{\12\217ASDFGHJKL+*\0\216}ZXCVBNM<>?\216\0\224 \215\20
+ 370      23242526 
+ 370      27282900 
+ 370      3D7E0809 
+ 370      51574552 
+ 371 0120 00000000 		.ascii "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\0\0\0\0\0\0\0\0\0\0\0\0\216
+ 371      00000000 
+ 371      00000000 
+ 371      00000000 
+ 371      00000000 
+ 372 01a0 00000000 		.ascii "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\0\0\0\0\0\0\0\0\0\0\0\0\216
+ 372      00000000 
+ 372      00000000 
+ 372      00000000 
+ 372      00000000 
+ 373 0220 00000000 		.ascii "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\0\0\0\0\0\0\0\0\0\0\0\0\216
+ 373      00000000 
+ 373      00000000 
+ 373      00000000 
+ 373      00000000 
+ 374 02a0 00000000 		.ascii "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\0\0\0\0\0\0\0\0\0\0\0\0\216
+ 374      00000000 
+ 374      00000000 
+ 374      00000000 
+ 374      00000000 
+ 375              		.text
+GAS LISTING timer_x.s 			page 10
+
+
+ 376              		.globl	_timer_key
+ 377              		.def	_timer_key;	.scl	2;	.type	32;	.endef
+ 378              	_timer_key:
+ 379              	LFB5:
+ 380              		.cfi_startproc
+ 381 0401 55       		pushl	%ebp
+ 382              		.cfi_def_cfa_offset 8
+ 383              		.cfi_offset 5, -8
+ 384 0402 89E5     		movl	%esp, %ebp
+ 385              		.cfi_def_cfa_register 5
+ 386 0404 83EC28   		subl	$40, %esp
+ 387 0407 A1000000 		movl	_shtctl, %eax
+ 387      00
+ 388 040c 8B4010   		movl	16(%eax), %eax
+ 389 040f 85C0     		testl	%eax, %eax
+ 390 0411 0F88ED01 		js	L34
+ 390      0000
+ 391 0417 A1000000 		movl	_shtctl, %eax
+ 391      00
+ 392 041c 8B150000 		movl	_shtctl, %edx
+ 392      0000
+ 393 0422 8B5210   		movl	16(%edx), %edx
+ 394 0425 83C204   		addl	$4, %edx
+ 395 0428 8B449004 		movl	4(%eax,%edx,4), %eax
+ 396 042c 8945F0   		movl	%eax, -16(%ebp)
+ 397 042f E8000000 		call	_key_input
+ 397      00
+ 398 0434 8945EC   		movl	%eax, -20(%ebp)
+ 399 0437 C7442404 		movl	$2553856, 4(%esp)
+ 399      00F82600 
+ 400 043f C70424FF 		movl	$2047, (%esp)
+ 400      070000
+ 401 0446 E8000000 		call	_load_idtr
+ 401      00
+ 402 044b 0FB6051C 		movzbl	_key_buf.1, %eax
+ 402      270000
+ 403 0452 A21D2700 		movb	%al, _key_buf.1+1
+ 403      00
+ 404 0457 8B45EC   		movl	-20(%ebp), %eax
+ 405 045a A21C2700 		movb	%al, _key_buf.1
+ 405      00
+ 406 045f 0FB6051C 		movzbl	_key_buf.1, %eax
+ 406      270000
+ 407 0466 3C2A     		cmpb	$42, %al
+ 408 0468 751A     		jne	L22
+ 409 046a 0FB6051D 		movzbl	_key_buf.1+1, %eax
+ 409      270000
+ 410 0471 3CE0     		cmpb	$-32, %al
+ 411 0473 750F     		jne	L22
+ 412 0475 C7051827 		movl	$0, _timer_key_mode
+ 412      00000000 
+ 412      0000
+ 413 047f E9810100 		jmp	L19
+ 413      00
+ 414              	L22:
+ 415 0484 8B45EC   		movl	-20(%ebp), %eax
+ 416 0487 25800000 		andl	$128, %eax
+GAS LISTING timer_x.s 			page 11
+
+
+ 416      00
+ 417 048c 85C0     		testl	%eax, %eax
+ 418 048e 7409     		je	L23
+ 419 0490 C6051427 		movb	$0, _APP_ch
+ 419      000000
+ 420 0497 EB21     		jmp	L24
+ 421              	L23:
+ 422 0499 8B45F0   		movl	-16(%ebp), %eax
+ 423 049c 8B809000 		movl	144(%eax), %eax
+ 423      0000
+ 424 04a2 8B55EC   		movl	-20(%ebp), %edx
+ 425 04a5 0FB6D2   		movzbl	%dl, %edx
+ 426 04a8 C1E007   		sall	$7, %eax
+ 427 04ab 01D0     		addl	%edx, %eax
+ 428 04ad 05200000 		addl	$_ut_getc_tbl, %eax
+ 428      00
+ 429 04b2 0FB600   		movzbl	(%eax), %eax
+ 430 04b5 A2142700 		movb	%al, _APP_ch
+ 430      00
+ 431              	L24:
+ 432 04ba A1182700 		movl	_timer_key_mode, %eax
+ 432      00
+ 433 04bf 85C0     		testl	%eax, %eax
+ 434 04c1 751F     		jne	L25
+ 435 04c3 8B45EC   		movl	-20(%ebp), %eax
+ 436 04c6 25800000 		andl	$128, %eax
+ 436      00
+ 437 04cb 85C0     		testl	%eax, %eax
+ 438 04cd 0F843201 		je	L19
+ 438      0000
+ 439 04d3 C7051827 		movl	$1, _timer_key_mode
+ 439      00000100 
+ 439      0000
+ 440 04dd E9230100 		jmp	L19
+ 440      00
+ 441              	L25:
+ 442 04e2 A1182700 		movl	_timer_key_mode, %eax
+ 442      00
+ 443 04e7 83F801   		cmpl	$1, %eax
+ 444 04ea 0F851501 		jne	L19
+ 444      0000
+ 445 04f0 8B45EC   		movl	-20(%ebp), %eax
+ 446 04f3 25800000 		andl	$128, %eax
+ 446      00
+ 447 04f8 85C0     		testl	%eax, %eax
+ 448 04fa 0F850501 		jne	L19
+ 448      0000
+ 449 0500 8365EC7F 		andl	$127, -20(%ebp)
+ 450 0504 C7051827 		movl	$0, _timer_key_mode
+ 450      00000000 
+ 450      0000
+ 451 050e E8DAFEFF 		call	_GetTickCount
+ 451      FF
+ 452 0513 8B152427 		movl	_time1.0, %edx
+ 452      0000
+ 453 0519 29D0     		subl	%edx, %eax
+ 454 051b 83F859   		cmpl	$89, %eax
+GAS LISTING timer_x.s 			page 12
+
+
+ 455 051e 770F     		ja	L26
+ 456 0520 E8C8FEFF 		call	_GetTickCount
+ 456      FF
+ 457 0525 A3242700 		movl	%eax, _time1.0
+ 457      00
+ 458 052a E9D60000 		jmp	L19
+ 458      00
+ 459              	L26:
+ 460 052f E8B9FEFF 		call	_GetTickCount
+ 460      FF
+ 461 0534 A3242700 		movl	%eax, _time1.0
+ 461      00
+ 462 0539 8B45F0   		movl	-16(%ebp), %eax
+ 463 053c 8B809000 		movl	144(%eax), %eax
+ 463      0000
+ 464 0542 C1E007   		sall	$7, %eax
+ 465 0545 89C2     		movl	%eax, %edx
+ 466 0547 8B45EC   		movl	-20(%ebp), %eax
+ 467 054a 01D0     		addl	%edx, %eax
+ 468 054c 05200000 		addl	$_ut_getc_tbl, %eax
+ 468      00
+ 469 0551 0FB600   		movzbl	(%eax), %eax
+ 470 0554 0FB6C0   		movzbl	%al, %eax
+ 471 0557 8945E8   		movl	%eax, -24(%ebp)
+ 472 055a 8165E8FF 		andl	$255, -24(%ebp)
+ 472      000000
+ 473 0561 C745F400 		movl	$0, -12(%ebp)
+ 473      000000
+ 474 0568 817DE88E 		cmpl	$142, -24(%ebp)
+ 474      000000
+ 475 056f 7509     		jne	L27
+ 476 0571 C745F401 		movl	$1, -12(%ebp)
+ 476      000000
+ 477 0578 EB46     		jmp	L28
+ 478              	L27:
+ 479 057a 817DE88F 		cmpl	$143, -24(%ebp)
+ 479      000000
+ 480 0581 7509     		jne	L29
+ 481 0583 C745F402 		movl	$2, -12(%ebp)
+ 481      000000
+ 482 058a EB34     		jmp	L28
+ 483              	L29:
+ 484 058c 817DE894 		cmpl	$148, -24(%ebp)
+ 484      000000
+ 485 0593 7509     		jne	L30
+ 486 0595 C745F403 		movl	$3, -12(%ebp)
+ 486      000000
+ 487 059c EB22     		jmp	L28
+ 488              	L30:
+ 489 059e 817DE890 		cmpl	$144, -24(%ebp)
+ 489      000000
+ 490 05a5 7509     		jne	L31
+ 491 05a7 C745F404 		movl	$4, -12(%ebp)
+ 491      000000
+ 492 05ae EB10     		jmp	L28
+ 493              	L31:
+ 494 05b0 817DE892 		cmpl	$146, -24(%ebp)
+GAS LISTING timer_x.s 			page 13
+
+
+ 494      000000
+ 495 05b7 7507     		jne	L28
+ 496 05b9 C745F405 		movl	$5, -12(%ebp)
+ 496      000000
+ 497              	L28:
+ 498 05c0 837DF400 		cmpl	$0, -12(%ebp)
+ 499 05c4 7429     		je	L32
+ 500 05c6 8B45F0   		movl	-16(%ebp), %eax
+ 501 05c9 8B809000 		movl	144(%eax), %eax
+ 501      0000
+ 502 05cf 3945F4   		cmpl	%eax, -12(%ebp)
+ 503 05d2 750F     		jne	L33
+ 504 05d4 8B45F0   		movl	-16(%ebp), %eax
+ 505 05d7 C7809000 		movl	$0, 144(%eax)
+ 505      00000000 
+ 505      0000
+ 506 05e1 EB0C     		jmp	L32
+ 507              	L33:
+ 508 05e3 8B45F0   		movl	-16(%ebp), %eax
+ 509 05e6 8B55F4   		movl	-12(%ebp), %edx
+ 510 05e9 89909000 		movl	%edx, 144(%eax)
+ 510      0000
+ 511              	L32:
+ 512 05ef 8B45E8   		movl	-24(%ebp), %eax
+ 513 05f2 89442404 		movl	%eax, 4(%esp)
+ 514 05f6 C7042400 		movl	$_main_fifo, (%esp)
+ 514      000000
+ 515 05fd E8000000 		call	_fifo32_put
+ 515      00
+ 516 0602 EB01     		jmp	L19
+ 517              	L34:
+ 518 0604 90       		nop
+ 519              	L19:
+ 520 0605 C9       		leave
+ 521              		.cfi_restore 5
+ 522              		.cfi_def_cfa 4, 4
+ 523 0606 C3       		ret
+ 524              		.cfi_endproc
+ 525              	LFE5:
+ 526 0607 90       		.data
+ 527              		.align 4
+ 528              	_cnt.2:
+ 529 0320 0A000000 		.long	10
+ 530              	.lcomm _key_buf.1,5,4
+ 531              	.lcomm _time1.0,4,4
+ 532              		.ident	"GCC: (GNU) 10.2.0"
+ 533              		.def	_io_out8;	.scl	2;	.type	32;	.endef
+ 534              		.def	_fifo32_put;	.scl	2;	.type	32;	.endef
+ 535              		.def	_task_run;	.scl	2;	.type	32;	.endef
+ 536              		.def	_task_switch;	.scl	2;	.type	32;	.endef
+ 537              		.def	_fatal_a;	.scl	2;	.type	32;	.endef
+ 538              		.def	_key_input;	.scl	2;	.type	32;	.endef
+ 539 0324 00000000 		.def	_load_idtr;	.scl	2;	.type	32;	.endef
+ 539      00000000 
+ 539      00000000 
+ 539      00000000 
+ 539      00000000 
+GAS LISTING timer_x.s 			page 14
+
+
