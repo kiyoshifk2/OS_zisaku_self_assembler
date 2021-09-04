@@ -4,10 +4,10 @@
 
 #define BUF_LEN				(1024*1024)
 #define MAX_SYMBUF_LEN			64
-#define X_MAX				448				// 画面ドット数
-#define Y_MAX				320
-#define X_SIZE				74				// 半角文字数
-#define Y_SIZE				20				// ライン数
+#define X_MAX				cmd_sht->bxsize1		// 画面ドット数
+#define Y_MAX				cmd_sht->bysize1
+#define X_SIZE				cmd_sht->last_cur_x		// 文字数
+#define Y_SIZE				cmd_sht->last_cur_y		// ライン数
 
 
 char *sed_buf;
@@ -23,7 +23,7 @@ static int s_ypos;							// 画面先頭の現在行番号（０から始まる）
 extern struct sheet *cmd_sht;
 
 
-static int sed_disp_1_char(int *xpos, int ypos, char *str);
+static int sed_disp_1_char(int *xpos, int ypos, char *str);	/* １文字表示して xpos update	*/
 
 
 /********************************************************************************/
@@ -83,11 +83,12 @@ static int cursor_to_ptr()
 	ptr = search_line(ypos);				// 行の先端にする
 	xp = 0;
 	while(xp < xpos){
-		ret = sed_disp_1_char(&xp, ypos, &sed_buf[ptr]);
+		ret = sed_disp_1_char(&xp, ypos, &sed_buf[ptr]);	/* １文字表示して xpos update	*/
 		if(ret < 100){
 			ptr += ret;
 		}
 		else if(ret==100){					// ファイル末端
+			ptr++;
 			return ptr;
 		}
 		else if(ret==101){					// '\n'
@@ -97,17 +98,18 @@ static int cursor_to_ptr()
 	return ptr;
 }
 
+/*	ptr から xpos/ypos を作る	*/
 static void ptr_to_cursor(int ptr)
 {
-	int p, xp, ret;
+	int xp, ret;
 	char *pt, *tmp;
 	
-	p = 0;
 	pt = sed_buf;
 	xpos = 0;
 	ypos = 0;
+	/*	ypos と pt(現在位置の行頭) を作る	*/
 	for(;;){
-		if(ptr <= p){
+		if(ptr <= 0){
 			return;
 		}
 		tmp = strchr(pt, '\n');
@@ -125,7 +127,7 @@ static void ptr_to_cursor(int ptr)
 	xp = 0;
 	for(;;){
 		xpos = xp;
-		ret = sed_disp_1_char(&xp, ypos, pt);
+		ret = sed_disp_1_char(&xp, ypos, pt);	/* １文字表示して xpos update	*/
 		if(ret < 100){
 			pt += ret;
 		}
@@ -142,6 +144,7 @@ static void ptr_to_cursor(int ptr)
 }
 /********************************************************************************/
 /*		sed_disp_1_char															*/
+/*	１文字表示して xpos update						*/
 /********************************************************************************/
 static int sed_disp_1_char(int *xpos, int ypos, char *str)
 {
@@ -153,9 +156,11 @@ static int sed_disp_1_char(int *xpos, int ypos, char *str)
 	if(c=='\0'){
 		return 100;							// ファイル末端
 	}
+	/*	１バイト文字なら	*/
 	if(byte==1){
+		/*	背景塗りつぶし	*/
 		for(y=0; y<16; y++){
-			for(x=0; x<6; x++){
+			for(x=0; x<12; x++){
 				if(*cmd_sht->rev_flag==0){
 					pset(cmd_sht, xbit+x, ybit+y, *cmd_sht->back_color);	// 背景塗りつぶし
 				}
@@ -164,6 +169,7 @@ static int sed_disp_1_char(int *xpos, int ypos, char *str)
 				}
 			}
 		}
+		/*	タブならば	*/
 		if(c=='\t'){
 			cnt = 0;
 			do{
@@ -174,17 +180,20 @@ static int sed_disp_1_char(int *xpos, int ypos, char *str)
 			while(*xpos & 3);
 			return 1;						// 表示文字数１
 		}
+		/*	改行ならば	*/
 		else if(c=='\n'){
-			disp_char(cmd_sht, xbit, ybit+4, "↓");
+			disp_char(cmd_sht, xbit, ybit, "↓");
 			(*xpos)++;
 			return 101;						// 行末
 		}
+		/*	その他の文字	*/
 		else{
-			disp_char(cmd_sht, xbit, ybit+4, str);
+			disp_char(cmd_sht, xbit, ybit, str);
 			(*xpos)++;
 			return 1;						// 表示文字数１
 		}
 	}
+	/*	２バイト文字なら	*/
 	else{
 		disp_char(cmd_sht, xbit, ybit, str);
 		*xpos += 2;
@@ -202,7 +211,7 @@ static void sed_disp_1_line(int ypos, char *str)
 	
 	xp = 0;
 	for(;;){
-		ret = sed_disp_1_char(&xp, ypos, str);
+		ret = sed_disp_1_char(&xp, ypos, str);	/* １文字表示して xpos update	*/
 		if(ret < 100){
 			str += ret;
 		}
@@ -390,7 +399,7 @@ static void sed_RIGHT()
 		return;
 	sjis_parse(&sed_buf[ptr], &byte);
 	ptr += byte;
-	ptr_to_cursor(ptr);						// バッファ位置からカーソル位置を求める
+	ptr_to_cursor(ptr);	/*	ptr から xpos/ypos を作る	*/
 	if(ypos >= s_ypos+Y_SIZE){
 		s_ypos++;
 //		sed_display();
@@ -425,7 +434,7 @@ static void sed_LEFT()
 		sjis_parse(&sed_buf[ptr-2], &byte);
 		ptr -= byte;
 	}
-	ptr_to_cursor(ptr);						// バッファ位置からカーソル位置を求める
+	ptr_to_cursor(ptr);	/*	ptr から xpos/ypos を作る	*/
 	if(s_ypos > ypos){
 		s_ypos = ypos;
 //		sed_display();
@@ -515,7 +524,7 @@ static void sed_END()
 	else{
 		ptr = (pt-sed_buf);
 	}
-	ptr_to_cursor(ptr);
+	ptr_to_cursor(ptr);	/*	ptr から xpos/ypos を作る	*/
 
 	if(s_xpos > xpos){
 		s_xpos = xpos;
@@ -602,7 +611,7 @@ static void sed_BS()
 	}
 	else{
 		memmove(&sed_buf[ptr-byte], &sed_buf[ptr], strlen(&sed_buf[ptr])+1);
-		buf_len--;
+		buf_len -= byte;
 		redraw();
 		sed_LEFT();
 	}
